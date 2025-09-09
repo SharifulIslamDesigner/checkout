@@ -1,0 +1,32 @@
+/* app/contact/Contact.module.css */
+.gobikeContactPageWrapper { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1a1a1a;line-height:1.8; padding: 2rem 0; }
+.contactContainer { max-width:1200px;margin:0 auto;padding:20px }
+.contactIntroGrid { display:grid;grid-template-columns:1fr;gap:40px;align-items:center;margin-bottom:60px }
+.contactIntroText h1 { font-size:36px;font-weight:800;margin-top:0;margin-bottom:20px;letter-spacing:-1px;line-height:1.2 }
+.contactIntroText p { font-size:17px;color:#333 }
+.contactIntroText a { color:#007bff;font-weight:600;text-decoration:none }
+.contactSocialLinks { margin:25px 0 }
+.contactSocialLinks a { display:inline-block;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;margin-right:15px; transition: transform 0.2s; }
+.contactSocialLinks a:hover { transform: translateY(-3px); }
+.socialFacebook { background-color:#1877f2 }
+.socialInstagram { background:radial-gradient(circle at 30% 107%,#fdf497 0,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285aeb 90%) }
+.contactInfoBox { background-color:#f8f9fa;border-left:4px solid #007bff;padding:20px;border-radius:0 8px 8px 0; margin-top: 1.5rem; }
+.contactInfoBox p { margin:0;font-size:16px;color:#333;line-height:1.6 }
+.contactIntroImage img { max-width:100%;height:auto;display:block;border-radius:12px }
+.gobikeFormContainer { max-width:600px;margin:60px auto;text-align:center }
+.gobikeFormContainer h2 { font-size:28px;font-weight:700;margin-bottom:30px }
+.gobikeFormContainer input, .gobikeFormContainer textarea { width:100%;padding:15px;margin-bottom:20px;border:1px solid #ccc;border-radius:8px;font-size:16px;box-sizing:border-box; font-family: inherit; }
+.gobikeFormContainer textarea { height:150px;resize:vertical }
+.gobikeFormContainer button { background-color:#000;color:#fff;border:none;padding:15px 40px;font-size:18px;font-weight:700;border-radius:8px;cursor:pointer;width:100%;transition:background-color .3s }
+.gobikeFormContainer button:hover:not(:disabled) { background-color:#333 }
+.gobikeFormContainer button:disabled { background-color: #ccc; cursor: not-allowed; }
+.formMessage { padding:15px;margin-top:20px;border-radius:8px;text-align:left }
+.formSuccess { background-color:#d4edda;color:#155724;border:1px solid #c3e6cb }
+.formError { background-color:#f8d7da;color:#721c24;border:1px solid #f5c6cb }
+.consumerRightsSection { margin-top:60px;background-color:#f8f9fa;padding:40px 20px;border-radius:16px }
+.consumerRightsContent { max-width:800px;margin:0 auto;text-align:center }
+.consumerRightsContent svg { margin-bottom:20px }
+.consumerRightsContent h2 { font-size:28px;font-weight:700;margin-top:0;margin-bottom:20px;letter-spacing:-.5px }
+.consumerRightsContent p { font-size:17px;color:#333;margin-bottom:25px }
+.consumerRightsButton { display:inline-block;background-color:#000;color:#fff;padding:12px 30px;border-radius:50px;text-decoration:none;font-weight:600;font-size:16px }
+@media (min-width:992px){ .contactIntroGrid{grid-template-columns:2fr 1fr;gap:50px} }

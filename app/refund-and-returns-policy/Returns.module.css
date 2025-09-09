@@ -1,0 +1,91 @@
+/* app/refund-and-returns-policy/Returns.module.css */
+.gobikePolicyPage {
+    font-family: 'Inter', sans-serif;
+    color: #333;
+    line-height: 1.7;
+    background-color: #fff;
+}
+.policyContainer {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+.policyHeader h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-align: center;
+    margin: 0 0 15px 0;
+}
+.policyHeader p {
+    text-align: center;
+    font-size: 18px;
+    color: #555;
+    max-width: 700px;
+    margin: 0 auto 50px auto;
+}
+.policySection {
+    margin-bottom: 40px;
+}
+.policySection h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f0f0;
+}
+.policySection p, .policySection ul, .policySection ol {
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+.policySection ul {
+    list-style: none;
+    padding-left: 0;
+}
+.policySection ul li {
+    padding-left: 30px;
+    position: relative;
+    margin-bottom: 10px;
+}
+.policySection ul li::before {
+    content: '✓';
+    color: #28a745;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+    top: 1px;
+}
+.policySection strong {
+    font-weight: 600;
+    color: #1a1a1a;
+}
+.policySection a {
+    color: #007bff;
+    font-weight: 600;
+    text-decoration: underline;
+}
+.highlightBox {
+    background-color: #f8f9fa;
+    border-left: 4px solid #007bff;
+    padding: 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+}
+.warningBox {
+    background-color: #fff8f8;
+    border-left: 4px solid #dc3545;
+}
+.finalSummary {
+    background-color: #f8f9fa;
+    padding: 30px;
+    border-radius: 12px;
+}
+.contactInfoBlock {
+    border: 1px solid #e9e9e9;
+    padding: 30px;
+    border-radius: 12px;
+    margin-top: 30px;
+}
