@@ -6,6 +6,7 @@ import client from '../../lib/apolloClient';
 import styles from './BikesPage.module.css'; // নিশ্চিত করুন এই CSS ফাইলটি আছে
 import ProductCard from '../products/ProductCard';
 import PaginationControls from '../products/PaginationControls';
+import Image from 'next/image';
 
 const PRODUCTS_PER_PAGE = 12;
 
@@ -85,10 +86,23 @@ export default async function BikesPage({ searchParams }: {
   return (
     <div className={styles.pageContainer}>
       <header className={styles.header}>
-        <h1>Australia's Top-Rated Electric Bikes for Kids</h1>
-        <p>
-          Discover the perfect ride to kickstart your child&apos;s adventure. Our electric bikes are designed for safety, durability, and maximum fun, making them the #1 choice for families across Australia.
-        </p>
+        <div className={styles.heroContent}>
+          <h1 className={styles.heroTitle}>Australia's Top-Rated Electric Bikes for Kids</h1>
+          <p className={styles.heroSubtitle}>
+            Give your child the gift of adventure! Our electric balance bikes are engineered for safety, built for fun, and designed to create lifelong memories.
+          </p>
+          <Link href="#bike-collection" className={styles.heroButton}>Explore The Collection</Link>
+        </div>
+        <div className={styles.heroImageContainer}>
+            <Image 
+                src="https://sharifulbuilds.com/wp-content/uploads/2025/08/Gobike-kids-electric-bike-ebike-for-kids-2-scaled-1.webp" // <-- আপনার একটি আকর্ষণীয় ছবি দিন
+                alt="Happy child riding a GoBike electric bike"
+                width={600}
+                height={600}
+                priority={true}
+                className={styles.heroImage}
+            />
+        </div>
       </header>
       <main className={styles.productsGridContainer}>
         {products.length > 0 ? (
@@ -102,14 +116,38 @@ export default async function BikesPage({ searchParams }: {
         )}
         <PaginationControls pageInfo={pageInfo} />
       </main>
+      <section className={styles.whyChooseUs}>
+        <div className={styles.whyChooseUsImage}>
+             <Image 
+                src="https://sharifulbuilds.com/wp-content/uploads/2025/08/Gobike-kids-electric-bike-ebike-for-kids-1-scaled-1.webp" // <-- আরেকটি সুন্দর ছবি দিন
+                alt="GoBike parts and features"
+                width={500}
+                height={500}
+                className={styles.sectionImage}
+            />
+        </div>
+        <div className={styles.whyChooseUsContent}>
+            <h2>Engineered for Safety, Built for Fun.</h2>
+            <p>Every GoBike is more than just a toy. It's a premium-quality ride designed with your child's safety as our number one priority.</p>
+            <ul>
+                <li><strong>Lightweight & Durable Frame:</strong> Easy for kids to handle, tough enough for any adventure.</li>
+                <li><strong>Safe Speed Modes:</strong> Start with a slow learning mode and unlock faster speeds as they grow in confidence.</li>
+                <li><strong>Reliable Braking System:</strong> Powerful disc brakes for safe and immediate stopping power.</li>
+                <li><strong>Long-Lasting Battery:</strong> More ride time, less charge time. The fun never has to stop!</li>
+            </ul>
+             <Link href="/about" className={styles.secondaryButton}>Learn Our Story</Link>
+        </div>
+      </section>
+
+      {/* --- SEO Bottom Section --- */}
       <section className={styles.seoBottomSection}>
-        <h2>Built for Adventure, Backed by Quality</h2>
+        <h2>Your Journey to Adventure Starts Here</h2>
         <p>
-          Each bike in our collection passes rigorous safety checks and is built with high-quality components to handle any adventure. From the first wobbly ride to confident cruising, we&apos;re here to support your journey.
+          At GoBike, we believe in the power of outdoor play. Our electric bikes are the perfect tool to get your kids off screens and into the great outdoors, building confidence and coordination along the way. We are a proud Aussie brand, committed to providing the best quality and service.
         </p>
         <div className={styles.internalLinks}>
-          <Link href="/products" className={styles.internalLink}>Shop All Products</Link>
-          <Link href="/about" className={styles.internalLink}>Learn Our Story</Link>
+          <Link href="/products" className={styles.internalLink}>Shop All Spare Parts</Link>
+          <Link href="/contact" className={styles.internalLink}>Contact Our Team</Link>
           <Link href="/faq" className={styles.internalLink}>Find Answers (FAQ)</Link>
         </div>
       </section>

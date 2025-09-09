@@ -12,6 +12,16 @@ const nextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'sharifulbuilds.com',
+        port: '',
+        pathname: '/wp-content/uploads/**', // শুধুমাত্র uploads ফোল্ডার থেকে ছবি আনার অনুমতি
+      },
+    ],
+  },
   // --- এই পর্যন্ত ---
 };
 

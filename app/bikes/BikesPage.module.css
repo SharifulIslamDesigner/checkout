@@ -1,50 +1,185 @@
+/* === Main Container === */
 .pageContainer {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-family: sans-serif;
+  width: 100%;
+  overflow-x: hidden;
 }
 
-.header {
+/* === Header / Hero Section === */
+.header { /* আপনার কোডে <header> ট্যাগের className={styles.header} ছিল, তাই .header ব্যবহার করা হচ্ছে */
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  max-width: 1200px;
+  margin: 2rem auto 4rem auto;
+  padding: 2rem;
+  gap: 2rem;
   text-align: center;
-  margin-bottom: 2rem;
-  padding: 2rem;
-  background-color: #f9f9f9;
-  border-radius: 12px;
 }
 
-.header h1 {
-  font-size: 3rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
+.heroContent {
+  order: 2; /* মোবাইলে ছবির নিচে টেক্সট */
 }
 
-.header p {
+.heroTitle {
+  font-size: clamp(1.2rem, 6vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0 0 1rem 0;
+  color: #1a1a1a;
+}
+
+.heroSubtitle {
   font-size: 1.1rem;
   color: #555;
-  max-width: 600px;
-  margin: 0 auto;
+  max-width: 550px;
+  margin: 0 auto 2rem auto;
+  line-height: 1.7;
 }
 
-.productsGridContainer {
-  width: 100%;
-  max-width: 1200px; /* সাইডবার না থাকায় একটি সর্বোচ্চ প্রস্থ দেওয়া হলো */
-  margin: 0 auto; /* সেন্টারে আনার জন্য */
+.heroButton {
+  display: inline-block;
+  background-color: #0070f3;
+  color: #fff;
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 112, 243, 0.2);
+}
+
+.heroButton:hover {
+  background-color: #005bb5;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 112, 243, 0.3);
+}
+
+.heroImageContainer {
+    order: 1; /* মোবাইলে টেক্সটের উপরে ছবি */
+}
+
+.heroImage {
+  max-width: 100%;
+  height: auto;
+  border-radius: 16px;
+}
+
+@media (min-width: 992px) {
+  .header {
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    text-align: left;
+  }
+  .heroContent { order: 1; }
+  .heroImageContainer { order: 2; }
+  .heroSubtitle {
+    margin: 0 0 2rem 0;
+  }
+}
+
+/* === Main Content & Product Grid === */
+.productsGridContainer { /* আপনার কোডে <main> ট্যাগের className={styles.productsGridContainer} ছিল */
+  max-width: 1200px;
+  margin: 4rem auto;
+  padding: 0 2rem;
+  text-align: center;
+}
+
+.productsGridContainer h2 { /* h2 ট্যাগ এখন আর নেই, তাই এটি ঐচ্ছিক */
+  font-size: 1.2rem;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
 }
-/* ... আপনার আগের CSS কোড ... */
 
-/* নিচের SEO সেকশনের জন্য নতুন স্টাইল */
-.seoBottomSection {
-  margin-top: 4rem;
-  padding: 2.5rem;
+/* === Why Choose Us Section === */
+.whyChooseUs {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  align-items: center;
+  max-width: 1200px;
+  margin: 6rem auto;
+  padding: 2rem;
   background-color: #f8f9fa;
   border-radius: 16px;
+}
+
+.whyChooseUsContent h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.whyChooseUsContent p {
+  color: #555;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.whyChooseUsContent ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.whyChooseUsContent ul li {
+  position: relative;
+  padding-left: 30px;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.whyChooseUsContent ul li::before {
+  content: '✓';
+  color: #28a745;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+  top: 2px;
+}
+
+.sectionImage {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+.secondaryButton {
+  display: inline-block;
+  background-color: #000;
+  color: #fff;
+  padding: 0.8rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 500;
+  margin-top: 1.5rem;
+  transition: transform 0.2s ease;
+}
+.secondaryButton:hover {
+    transform: translateY(-3px);
+}
+
+@media (min-width: 992px) {
+  .whyChooseUs {
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    padding: 4rem;
+  }
+}
+
+/* === SEO Bottom Section === */
+.seoBottomSection {
+  margin-top: 4rem;
+  padding: 3rem 2rem;
+  background-color: #fff;
+  border-top: 1px solid #e9ecef;
   text-align: center;
 }
 
@@ -72,8 +207,8 @@
 .internalLink {
   display: inline-block;
   padding: 0.75rem 1.5rem;
-  background-color: #fff;
-  color: #000;
+  background-color: #f8f9fa;
+  color: #333;
   border: 1px solid #ddd;
   border-radius: 50px;
   text-decoration: none;
