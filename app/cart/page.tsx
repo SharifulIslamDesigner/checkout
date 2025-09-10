@@ -16,6 +16,21 @@ export default function CartPage() {
   const subtotal = cartItems.reduce((total, item) => {
     return total + parsePrice(item.price) * item.quantity;
   }, 0);
+  
+  // --- মূল সমাধান: ডাইনামিক চেকআউট URL তৈরি করার ফাংশন ---
+  const generateCheckoutUrl = () => {
+    if (cartItems.length === 0) return '#';
+    
+    const itemsForUrl = cartItems.map(item => ({
+      id: item.databaseId,
+      quantity: item.quantity
+    }));
+    
+    const cartJson = JSON.stringify(itemsForUrl);
+    const encodedCart = encodeURIComponent(cartJson);
+    
+    return `https://sharifulbuilds.com/cart/?cart_items=${encodedCart}`;
+  };
 
   if (cartItems.length === 0 && !loading) {
     return (
@@ -38,30 +53,21 @@ export default function CartPage() {
         <div className={styles.cartItems}>
           {cartItems.map(item => (
             <div key={item.key} className={styles.cartItem}>
-              {item.image ? (
-                  <img src={item.image} alt={item.name} className={styles.itemImage} />
-              ) : (
-                  <div className={styles.placeholderImage} />
-              )}
-              
+              {item.image ? ( <img src={item.image} alt={item.name} className={styles.itemImage} /> ) : ( <div className={styles.placeholderImage} /> )}
               <div className={styles.itemInfo}>
                 <h2 className={styles.itemName}>{item.name}</h2>
                 <div className={styles.itemMeta}>
                     <p className={styles.itemPrice} dangerouslySetInnerHTML={{ __html: item.price }}></p>
                     <div className={styles.quantityControl}>
-                      {/* *** মূল পরিবর্তন: item.key ব্যবহার করা হচ্ছে *** */}
                       <button onClick={() => updateQuantity(item.key, item.quantity - 1)} disabled={loading || item.quantity <= 1}>-</button>
                       <span>{item.quantity}</span>
                       <button onClick={() => updateQuantity(item.key, item.quantity + 1)} disabled={loading}>+</button>
                     </div>
                 </div>
               </div>
-
               <div className={styles.itemActions}>
-                {/* *** মূল পরিবর্তন: item.key ব্যবহার করা হচ্ছে *** */}
                 <button onClick={() => removeFromCart(item.key)} className={styles.removeButton} disabled={loading}>Remove</button>
               </div>
-
             </div>
           ))}
         </div>
@@ -72,8 +78,9 @@ export default function CartPage() {
             <span>Subtotal</span>
             <span>${subtotal.toFixed(2)}</span>
           </div>
-           <a
-            href="https://sharifulbuilds.com/checkout"
+          {/* --- মূল সমাধান: a ট্যাগ এখন ডাইনামিক URL ব্যবহার করছে --- */}
+          <a
+            href={generateCheckoutUrl()}
             className={styles.checkoutButton}
           >
             Proceed to Checkout

@@ -5,7 +5,7 @@ import client from '../../lib/apolloClient';
 import styles from './products.module.css';
 import ProductFilters from './ProductFilters';
 import PaginationControls from './PaginationControls';
-import ProductCard from './ProductCard';
+import ProductsGrid from './ProductsGrid'; // <-- নতুন ক্লায়েন্ট গ্রিড ইম্পোর্ট করা হচ্ছে
 
 const PRODUCTS_PER_PAGE = 12;
 
@@ -100,15 +100,8 @@ export default async function ProductsPage({ searchParams }: {
           <ProductFilters categories={categories} />
         </aside>
         <div className={styles.productsGridContainer}>
-          {products.length > 0 ? (
-            <div className={styles.grid}>
-              {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          ) : (
-            <p>No products found for this category.</p>
-          )}
+          {/* --- মূল সমাধান: সার্ভার থেকে ক্লায়েন্ট কম্পוננטকে ডেটা পাস করা হচ্ছে --- */}
+          <ProductsGrid products={products} />
           <PaginationControls pageInfo={pageInfo} />
         </div>
       </main>

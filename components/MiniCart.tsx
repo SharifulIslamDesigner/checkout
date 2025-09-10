@@ -15,14 +15,9 @@ export default function MiniCart({ isOpen, onClose }: MiniCartProps) {
   const { cartItems, removeFromCart, updateQuantity, loading } = useCart();
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.classList.add('no-scroll');
-    } else {
-      document.body.classList.remove('no-scroll');
-    }
-    return () => {
-      document.body.classList.remove('no-scroll');
-    };
+    if (isOpen) { document.body.classList.add('no-scroll'); } 
+    else { document.body.classList.remove('no-scroll'); }
+    return () => { document.body.classList.remove('no-scroll'); };
   }, [isOpen]);
 
   const parsePrice = (price: string) => {
@@ -35,9 +30,27 @@ export default function MiniCart({ isOpen, onClose }: MiniCartProps) {
     return total + price * item.quantity;
   }, 0);
 
-  if (!isOpen) {
-    return null;
-  }
+  // --- মূল সমাধান: ডাইনামিক চেকআউট URL তৈরি করার ফাংশন ---
+  const generateCheckoutUrl = () => {
+    if (cartItems.length === 0) return '#';
+    
+    // কার্ট আইটেমগুলোকে শুধুমাত্র id এবং quantity সহ একটি নতুন অ্যারেতে পরিণত করা হচ্ছে
+    const itemsForUrl = cartItems.map(item => ({
+      id: item.databaseId,
+      quantity: item.quantity
+    }));
+    
+    // অ্যারেটিকে JSON স্ট্রিং-এ পরিণত করা হচ্ছে
+    const cartJson = JSON.stringify(itemsForUrl);
+    
+    // URL-এর জন্য স্ট্রিংটিকে এনকোড করা হচ্ছে
+    const encodedCart = encodeURIComponent(cartJson);
+    
+    // চূড়ান্ত URL তৈরি করা হচ্ছে
+    return `https://sharifulbuilds.com/cart/?cart_items=${encodedCart}`;
+  };
+
+  if (!isOpen) return null;
 
   return (
     <>
@@ -45,9 +58,7 @@ export default function MiniCart({ isOpen, onClose }: MiniCartProps) {
       <div className={`${styles.miniCartContainer} ${isOpen ? styles.open : ''}`}>
         <header className={styles.header}>
           <h3>Shopping Cart</h3>
-          <button className={styles.closeButton} onClick={onClose}>
-            <IoClose />
-          </button>
+          <button className={styles.closeButton} onClick={onClose}><IoClose /></button>
         </header>
 
         {loading && <div className={styles.loadingBar}>Processing...</div>}
@@ -58,31 +69,19 @@ export default function MiniCart({ isOpen, onClose }: MiniCartProps) {
           ) : (
             cartItems.map(item => (
               <div key={item.key} className={styles.cartItem}>
-                {item.image ? (
-                  <img src={item.image} alt={item.name} className={styles.itemImage} />
-                ) : (
-                  <div className={styles.placeholderImage}/>
-                )}
+                {item.image ? (<img src={item.image} alt={item.name} className={styles.itemImage} />) : (<div className={styles.placeholderImage}/>)}
                 <div className={styles.itemDetails}>
                   <p className={styles.itemName}>{item.name}</p>
-                  
                   <div className={styles.quantityControl}>
                     <span>Qty: </span>
                     <button onClick={() => updateQuantity(item.key, item.quantity - 1)} disabled={loading || item.quantity <= 1}>-</button>
                     <span>{item.quantity}</span>
                     <button onClick={() => updateQuantity(item.key, item.quantity + 1)} disabled={loading}>+</button>
                   </div>
-                  
                   <p className={styles.itemPrice} dangerouslySetInnerHTML={{ __html: item.price }}></p>
                 </div>
                 <div className={styles.itemActions}>
-                    <button 
-                      className={styles.removeButton} 
-                      onClick={() => removeFromCart(item.key)}
-                      disabled={loading}
-                    >
-                      Remove
-                    </button>
+                    <button className={styles.removeButton} onClick={() => removeFromCart(item.key)} disabled={loading}>Remove</button>
                 </div>
               </div>
             ))
@@ -99,9 +98,10 @@ export default function MiniCart({ isOpen, onClose }: MiniCartProps) {
               <Link href="/cart" className={`${styles.actionButton} ${styles.viewCart}`} onClick={onClose}>
                 View Cart
               </Link>
+              {/* --- মূল সমাধান: a ট্যাগ এখন ডাইনামিক URL ব্যবহার করছে --- */}
               <a 
-                href="https://sharifulbuilds.com/checkout" 
-                className={`${styles.actionButton} ${styles.checkout}`} 
+                href={generateCheckoutUrl()}
+                className={`${styles.actionButton} ${styles.checkout}`}
                 onClick={onClose}
               >
                 Checkout
