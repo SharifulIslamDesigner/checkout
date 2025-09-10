@@ -42,7 +42,6 @@
   .hamburger { display: none; }
   .actionIcons { justify-content: flex-end; }
   .logo { justify-content: center; } /* ডেস্কটপে লোগোকে বাম দিকে রাখার জন্য leftSection ব্যবহার করা হচ্ছে */
-  .logoImage { height: 50px; width: auto; }
 }
 
 /* --- মোবাইল মেনু --- */
@@ -66,3 +65,7 @@
 }
 .mobileMenuFooter { border-top: 1px solid #f0f0f0; padding-top: 1.5rem; margin-top: 1.5rem; }
 .menuOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; }
+
+@media ( max-width:1000px ){
+  .logoImage { height: 50px; width: auto; }
+}
