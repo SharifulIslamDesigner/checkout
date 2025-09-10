@@ -13,7 +13,7 @@ import { IoSearch, IoPersonOutline, IoMenu, IoClose } from "react-icons/io5";
 
 export default function Header() {
   const { cartItems, isMiniCartOpen, openMiniCart, closeMiniCart } = useCart();
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -50,7 +50,7 @@ export default function Header() {
           <nav className={styles.desktopNavigation}>
             <Link href="/" className={pathname === '/' ? styles.activeLink : ''}>Home</Link>
             <Link href="/bikes" className={pathname === '/bikes' ? styles.activeLink : ''}>Bikes</Link>
-            <Link href="/products" className={pathname === '/products' ? styles.activeLink : ''}>Shop</Link>
+            <Link href="/products" className={pathname === '/products' ? styles.activeLink : ''}>Spare Parts</Link>
             <Link href="/about" className={pathname === '/about' ? styles.activeLink : ''}>About Us</Link>
             <Link href="/contact" className={pathname === '/contact' ? styles.activeLink : ''}>Contact</Link>
             <Link href="/faq" className={pathname === '/faq' ? styles.activeLink : ''}>FAQs</Link>
@@ -58,8 +58,9 @@ export default function Header() {
 
           {/* --- ডান অংশ: আইকন --- */}
           <div className={styles.actionIcons}>
-            <button className={styles.iconButton} onClick={() => setIsSearchOpen(true)}>
-              <IoSearch size={24} />
+            <button className={styles.iconButtons} onClick={() => setIsSearchOpen(true)}>
+              <IoSearch size={22} />
+              <span>Search products</span>
             </button>
             <a href="https://sharifulbuilds.com/my-account/" className={`${styles.iconButton} ${styles.desktopOnly}`}>
               <IoPersonOutline size={24} />
@@ -75,23 +76,20 @@ export default function Header() {
       {/* --- মোবাইল মেনু প্যানেল --- */}
       <div className={`${styles.mobileMenu} ${isMenuOpen ? styles.menuOpen : ''}`}>
           <div className={styles.mobileMenuHeader}>
-              <div className={styles.mobileSearch}>
-                  <IoSearch />
-                  <input type="text" placeholder="Search products..." />
-              </div>
-              <button onClick={() => setIsMenuOpen(false)} className={styles.iconButton}>
-                  <IoClose size={28} />
-              </button>
+             <button className={styles.mobileSearchButton} onClick={() => setIsSearchOpen(true) }>
+              <IoSearch size={22} />
+              <span>Search products</span>
+            </button>
           </div>
-          <nav className={styles.mobileMenuLinks}>
-                <Link href="/" onClick={closeAllOverlays}>Home</Link>
-                <Link href="/bikes" onClick={closeAllOverlays}>Bikes</Link>
-                <Link href="/blog" onClick={closeAllOverlays}>Blog</Link>
-                <Link href="/products" onClick={closeAllOverlays}>Spare Parts</Link>
-                <Link href="/about" onClick={closeAllOverlays}>About</Link>
-                <Link href="/faq" onClick={closeAllOverlays}>FAQs</Link>
-                <Link href="/contact" onClick={closeAllOverlays}>Contact us</Link>
-          </nav>
+            <nav className={styles.mobileMenuLinks}>
+               <Link href="/" className={pathname === '/' ? styles.activeLink : ''} onClick={closeAllOverlays}>Home</Link>
+               <Link href="/bikes" className={pathname === '/bikes' ? styles.activeLink : ''} onClick={closeAllOverlays}>Bikes</Link>
+               <Link href="/blog" className={pathname === '/blog' ? styles.activeLink : ''} onClick={closeAllOverlays}>Blog</Link>
+               <Link href="/products" className={pathname === '/products' ? styles.activeLink : ''} onClick={closeAllOverlays}>Spare Parts</Link>
+               <Link href="/about" className={pathname === '/about' ? styles.activeLink : ''} onClick={closeAllOverlays}>About</Link>
+               <Link href="/faq" className={pathname === '/faq' ? styles.activeLink : ''} onClick={closeAllOverlays}>FAQs</Link>
+               <Link href="/contact" className={pathname === '/contact' ? styles.activeLink : ''} onClick={closeAllOverlays}>Contact us</Link>
+            </nav>
           <div className={styles.mobileMenuFooter}>
             <a href="https://sharifulbuilds.com/my-account/" className={styles.mobileMenuLink}>
                 <IoPersonOutline />

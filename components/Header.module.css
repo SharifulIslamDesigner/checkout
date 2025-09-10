@@ -21,6 +21,7 @@
 .logoImage { height: 70px; width: auto; }
 .actionIcons { display: flex; align-items: center; justify-content: flex-end; flex: 1 0 100px; gap: 0.5rem; }
 .iconButton { background: none; border: none; cursor: pointer; padding: 0.5rem; color: #333; display: flex; align-items: center; }
+.iconButtons {display: none;}
 .cartIcon { background: none; border: none; cursor: pointer; position: relative; color: #333; font-size: 2rem; padding: 0.5rem; }
 .cartCount { position: absolute; top: 0px; right: -2px; background-color: #000000; color: white; border-radius: 50%; padding: 2px 6px; font-size: .8rem; font-weight: bold; }
 .leftSection { flex: 1 0 100px; display: flex; justify-content: flex-start; }
@@ -34,6 +35,8 @@
 .hamburger { display: flex; }
 
 @media (min-width: 992px) {
+  .iconButtons { gap: 0.5rem; background: none; border: none; cursor: pointer; padding: 0.5rem; color: #333; display: flex; align-items: center;  }
+  .actionIcons { display: flex; align-items: center; justify-content: flex-end; flex: 1 0 100px; gap: 0.5rem; }
   .desktopNavigation { display: flex; gap: 2rem; align-items: center; margin: 0 auto; }
   .desktopNavigation a { text-decoration: none; color: #555; font-weight: 500; transition: color 0.2s ease; }
   .desktopNavigation a:hover, .desktopNavigation a.activeLink { color: #000; font-weight: 600; }
@@ -59,13 +62,29 @@
 .mobileSearch input { border: none; outline: none; font-size: 1rem; width: 100%; }
 .mobileMenuLinks { display: flex; flex-direction: column; gap: 1.5rem; flex-grow: 1; }
 .mobileMenuLinks a, .mobileMenuFooter a, .mobileMenuLink {
-  font-size: 1.2rem; font-weight: 600; color: #333; text-decoration: none;
+  font-size: 1.2rem; font-weight: 500; color: #333; text-decoration: none;
   display: flex; align-items: center; gap: 0.75rem;
-  background: none; border: none; width: 100%; text-align: left; cursor: pointer; padding: 0;
-}
+  background: none; border: none; width: 100%; text-align: left; cursor: pointer; padding: 0 }
+.mobileMenuLink a:hover, a.activeLink { color: #000; font-weight: 600; }
 .mobileMenuFooter { border-top: 1px solid #f0f0f0; padding-top: 1.5rem; margin-top: 1.5rem; }
 .menuOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; }
 
 @media ( max-width:1000px ){
   .logoImage { height: 50px; width: auto; }
+}
+.mobileSearchButton {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #e0e0e0; /* হালকা আন্ডারলাইন */
+  padding: 0.75rem 0.25rem; /* প্যাডিং */
+  margin-right: 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  text-align: left;
 }
