@@ -6,11 +6,9 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  transition: box-shadow 0.2s ease-in-out;
 }
-
 .container {
-  max-width: 1500px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 1.5rem;
   display: flex;
@@ -18,148 +16,53 @@
   align-items: center;
 }
 
-.logo a {
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-decoration: none;
-  color: #333;
-}
+/* --- সাধারণ সেকশন (ডেস্কটপ এবং মোবাইল) --- */
+.logo a { display: flex; align-items: center; text-decoration: none; }
+.logoImage { height: 70px; width: auto; }
+.actionIcons { display: flex; align-items: center; justify-content: flex-end; flex: 1 0 100px; gap: 0.5rem; }
+.iconButton { background: none; border: none; cursor: pointer; padding: 0.5rem; color: #333; display: flex; align-items: center; }
+.cartIcon { background: none; border: none; cursor: pointer; position: relative; color: #333; font-size: 2rem; padding: 0.5rem; }
+.cartCount { position: absolute; top: 0px; right: -2px; background-color: #000000; color: white; border-radius: 50%; padding: 2px 6px; font-size: .8rem; font-weight: bold; }
+.leftSection { flex: 1 0 100px; display: flex; justify-content: flex-start; }
 
-.navigation {
-  display: flex;
-  gap: 2rem;
-  align-items: center;
-}
-
-.navigation a {
-  text-decoration: none;
-  color: #555;
-  font-size: 1rem;
-  transition: color 0.2s ease;
-}
-
-.navigation a:hover {
-  color: #0070f3;
-}
-
-.actionIcons {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.iconButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  color: #333;
-}
-
-.cartIcon {
-  position: relative;
-  text-decoration: none;
-  color: #333;
-  font-size: 1.5rem;
-  padding: 0.5rem;
-}
-
-.cartCount {
-  position: absolute;
-  top: 0px;
-  right: -2px;
-  background-color: #0070f3;
-  color: white;
-  border-radius: 50%;
-  padding: 2px 6px;
-  font-size: 0.75rem;
-  font-weight: bold;
-  line-height: 1;
-}
-
-.hamburger {
-  display: none;
-  cursor: pointer;
-  z-index: 101;
-}
-
-.mobileOnly {
+/* --- শুধুমাত্র ডেস্কটপ (992px এবং এর উপরে) --- */
+.desktopNavigation {
   display: none;
 }
+.desktopOnly { display: none; }
+.mobileOnly { display: flex; }
+.hamburger { display: flex; }
 
-.mobileMenuLink {
-  font-size: 1.8rem;
-  font-weight: bold;
-  border-radius: 8px;
-  text-align: start;
-  width: 100%;
-  text-decoration: none;
-  color: inherit;
-  background-color: transparent;
+@media (min-width: 992px) {
+  .desktopNavigation { display: flex; gap: 2rem; align-items: center; margin: 0 auto; }
+  .desktopNavigation a { text-decoration: none; color: #555; font-weight: 500; transition: color 0.2s ease; }
+  .desktopNavigation a:hover, .desktopNavigation a.activeLink { color: #000; font-weight: 600; }
+  .desktopOnly { display: flex; }
+  .mobileOnly { display: none; }
+  .hamburger { display: none; }
+  .actionIcons { justify-content: flex-end; }
+  .logo { justify-content: center; } /* ডেস্কটপে লোগোকে বাম দিকে রাখার জন্য leftSection ব্যবহার করা হচ্ছে */
+  .logoImage { height: 50px; width: auto; }
 }
 
-
-@media (max-width: 768px) {
-  .navigation {
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100vh;
-    background-color: white;
-    flex-direction: column;
-    justify-content: start;
-    align-items: start;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease-in-out;
-    z-index: 100;
-    gap: 1.5rem;
-    padding: 20px;
-    
-  }
-  .navigation.menuOpen {
-    transform: translateX(0);
-  }
-
-  .actionIcons .iconButton, .actionIcons .cartIcon {
-    display: none;
-  }
-  
-  .actionIcons .cartIcon {
-    display: block;
-  }
-  
-  .hamburger {
-    display: block;
-  }
-
-  .logo {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  .mobileOnly {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    width: 80%;
-    margin-bottom: 2rem;
-  }
-
-  .navigation a {
-    font-size: 1.5rem;
-  }
+/* --- মোবাইল মেনু --- */
+.mobileMenu {
+  position: fixed; top: 0; left: 0; width: 320px; height: 100vh;
+  background-color: white; z-index: 1001;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  display: flex; flex-direction: column;
+  padding: 1.5rem; box-shadow: 5px 0 15px rgba(0,0,0,0.1);
 }
-.activeLink {
-  font-weight: 600; 
-  color: #000; 
+.mobileMenu.menuOpen { transform: translateX(0); }
+.mobileMenuHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid #f0f0f0; padding-bottom: 1rem; }
+.mobileSearch { display: flex; align-items: center; gap: 0.5rem; border: 1px solid #ccc; border-radius: 8px; padding: 0.5rem 0.75rem; flex-grow: 1; margin-right: 1rem; }
+.mobileSearch input { border: none; outline: none; font-size: 1rem; width: 100%; }
+.mobileMenuLinks { display: flex; flex-direction: column; gap: 1.5rem; flex-grow: 1; }
+.mobileMenuLinks a, .mobileMenuFooter a, .mobileMenuLink {
+  font-size: 1.2rem; font-weight: 600; color: #333; text-decoration: none;
+  display: flex; align-items: center; gap: 0.75rem;
+  background: none; border: none; width: 100%; text-align: left; cursor: pointer; padding: 0;
 }
-.logoImage {
-  height: 60px; 
-  width: auto; 
-  display: block; 
-}
-@media (max-width: 768px) {
-  .logoImage { height: 50px;}
-}
+.mobileMenuFooter { border-top: 1px solid #f0f0f0; padding-top: 1.5rem; margin-top: 1.5rem; }
+.menuOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; }

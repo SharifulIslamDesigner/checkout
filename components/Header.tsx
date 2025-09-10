@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -7,75 +7,101 @@ import styles from './Header.module.css';
 import { useCart } from '../context/CartContext';
 import SearchOverlay from './SearchOverlay';
 import MiniCart from './MiniCart';
+import Image from 'next/image';
 
 import { IoSearch, IoPersonOutline, IoMenu, IoClose } from "react-icons/io5";
 
 export default function Header() {
-  // MiniCart এর state এখন CartContext থেকে আসছে
   const { cartItems, isMiniCartOpen, openMiniCart, closeMiniCart } = useCart();
-  
-  // Search এবং Mobile Menu এর জন্য লোকাল state
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
   const pathname = usePathname();
 
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+
+  const closeAllOverlays = () => {
+    setIsMenuOpen(false);
+    setIsSearchOpen(false);
+  }
 
   return (
     <>
       <header className={styles.header}>
         <div className={styles.container}>
           
-          <div className={styles.hamburger} onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <IoClose size={28} /> : <IoMenu size={28} />}
-          </div>
-
-          <div className={styles.logo}>
-            <Link href="/">
-               <img 
-                   src="https://sharifulbuilds.com/wp-content/uploads/2025/06/cropped-GOBIKE-Electric-Bike-for-kids-1.webp" 
-                   alt="MyStore Logo" 
-                   className={styles.logoImage} />
-               </Link>
-          </div>
-
-          <nav className={`${styles.navigation} ${isMenuOpen ? styles.menuOpen : ''}`}>
-            <div className={styles.mobileOnly}>
-              <button className={styles.mobileMenuLink} onClick={() => { setIsSearchOpen(true); setIsMenuOpen(false); }}>Search</button>
-              <Link href="/account" className={styles.mobileMenuLink} onClick={() => setIsMenuOpen(false)}>Account</Link>
+          {/* --- বাম অংশ: ডেস্কটপে লোগো, মোবাইলে হ্যামবার্গার --- */}
+          <div className={styles.leftSection}>
+            <button onClick={() => setIsMenuOpen(true)} className={`${styles.iconButton} ${styles.hamburger}`}>
+                <IoMenu size={28} />
+            </button>
+            <div className={`${styles.logo} ${styles.desktopOnly}`}>
+              <Link href="/">
+                 <Image src="https://sharifulbuilds.com/wp-content/uploads/2025/06/cropped-GOBIKE-Electric-Bike-for-kids-1.webp" alt="GoBike Logo" width={150} height={40} priority className={styles.logoImage} />
+              </Link>
             </div>
+          </div>
 
-            <Link href="/" className={pathname === '/' ? styles.activeLink : ''} onClick={() => setIsMenuOpen(false)}>Home</Link>
-            <Link href="/bikes" className={pathname === '/bikes' ? styles.activeLink : ''} onClick={() => setIsMenuOpen(false)}>Bikes</Link>
-            <Link href="/products" className={pathname === '/products' ? styles.activeLink : ''} onClick={() => setIsMenuOpen(false)}>Shop</Link>
-            <Link href="/about" className={pathname === '/about' ? styles.activeLink : ''} onClick={() => setIsMenuOpen(false)}>About Us</Link>
-            <Link href="/contact" className={pathname === '/contact' ? styles.activeLink : ''} onClick={() => setIsMenuOpen(false)}>Contact</Link>
-            <Link href="/faq" className={pathname === '/faq' ? styles.activeLink : ''} onClick={() => setIsMenuOpen(false)}>FAQs</Link>
+          {/* --- মধ্যম অংশ: মোবাইলে লোগো, ডেস্কটপে নেভিগেশন --- */}
+          <div className={`${styles.logo} ${styles.mobileOnly}`}>
+            <Link href="/">
+               <Image src="https://sharifulbuilds.com/wp-content/uploads/2025/06/cropped-GOBIKE-Electric-Bike-for-kids-1.webp" alt="GoBike Logo" width={140} height={38} priority className={styles.logoImage} />
+            </Link>
+          </div>
+          <nav className={styles.desktopNavigation}>
+            <Link href="/" className={pathname === '/' ? styles.activeLink : ''}>Home</Link>
+            <Link href="/bikes" className={pathname === '/bikes' ? styles.activeLink : ''}>Bikes</Link>
+            <Link href="/products" className={pathname === '/products' ? styles.activeLink : ''}>Shop</Link>
+            <Link href="/about" className={pathname === '/about' ? styles.activeLink : ''}>About Us</Link>
+            <Link href="/contact" className={pathname === '/contact' ? styles.activeLink : ''}>Contact</Link>
+            <Link href="/faq" className={pathname === '/faq' ? styles.activeLink : ''}>FAQs</Link>
           </nav>
 
+          {/* --- ডান অংশ: আইকন --- */}
           <div className={styles.actionIcons}>
             <button className={styles.iconButton} onClick={() => setIsSearchOpen(true)}>
               <IoSearch size={24} />
             </button>
-            <Link href="/account" className={styles.iconButton}>
+            <a href="https://sharifulbuilds.com/my-account/" className={`${styles.iconButton} ${styles.desktopOnly}`}>
               <IoPersonOutline size={24} />
-            </Link>
-            
-            {/* কার্ট আইকন এখন সেন্ট্রাল openMiniCart ফাংশনকে কল করবে */}
+            </a>
             <button className={styles.cartIcon} onClick={openMiniCart}>
               <span>🛒</span>
-              {totalItems > 0 && (
-                <span className={styles.cartCount}>{totalItems}</span>
-              )}
+              {totalItems > 0 && <span className={styles.cartCount}>{totalItems}</span>}
             </button>
           </div>
         </div>
       </header>
+
+      {/* --- মোবাইল মেনু প্যানেল --- */}
+      <div className={`${styles.mobileMenu} ${isMenuOpen ? styles.menuOpen : ''}`}>
+          <div className={styles.mobileMenuHeader}>
+              <div className={styles.mobileSearch}>
+                  <IoSearch />
+                  <input type="text" placeholder="Search products..." />
+              </div>
+              <button onClick={() => setIsMenuOpen(false)} className={styles.iconButton}>
+                  <IoClose size={28} />
+              </button>
+          </div>
+          <nav className={styles.mobileMenuLinks}>
+                <Link href="/" onClick={closeAllOverlays}>Home</Link>
+                <Link href="/bikes" onClick={closeAllOverlays}>Bikes</Link>
+                <Link href="/blog" onClick={closeAllOverlays}>Blog</Link>
+                <Link href="/products" onClick={closeAllOverlays}>Spare Parts</Link>
+                <Link href="/about" onClick={closeAllOverlays}>About</Link>
+                <Link href="/faq" onClick={closeAllOverlays}>FAQs</Link>
+                <Link href="/contact" onClick={closeAllOverlays}>Contact us</Link>
+          </nav>
+          <div className={styles.mobileMenuFooter}>
+            <a href="https://sharifulbuilds.com/my-account/" className={styles.mobileMenuLink}>
+                <IoPersonOutline />
+                <span>My Account</span>
+            </a>
+          </div>
+      </div>
+      {isMenuOpen && <div className={styles.menuOverlay} onClick={() => setIsMenuOpen(false)}></div>}
       
       {isSearchOpen && <SearchOverlay onClose={() => setIsSearchOpen(false)} />}
-      
-      {/* MiniCart এখন সেন্ট্রাল state দ্বারা নিয়ন্ত্রিত হবে */}
       <MiniCart isOpen={isMiniCartOpen} onClose={closeMiniCart} />
     </>
   );
