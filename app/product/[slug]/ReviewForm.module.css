@@ -1,0 +1,34 @@
+/* app/product/[slug]/ReviewForm.module.css */
+.reviewWidget { width: 100%; }
+.reviewsSummary { display: grid; grid-template-columns: 1fr; gap: 1.5rem; padding: 1.5rem; background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; margin-bottom: 2rem; }
+@media (min-width: 768px) { .reviewsSummary { grid-template-columns: 1fr 2fr; align-items: center; } }
+.summaryAverage { text-align: center; border-right: none; padding-right: 0; }
+@media (min-width: 768px) { .summaryAverage { border-right: 1px solid #e0e0e0; padding-right: 1.5rem; } }
+.averageRatingValue { font-size: 3.5rem; font-weight: 700; color: #1a1a1a; line-height: 1; }
+/* --- মূল সমাধান: স্টার ডিসপ্লের জন্য স্টাইল --- */
+.starDisplay { color: #f59e0b; font-size: 1.5rem; margin: 1rem 7rem ; letter-spacing: 2px;display: flex;}
+.basedOnReviews { font-size: 0.9rem; color: #555; margin-top: 0.5rem; }
+.addReviewButton { margin-top: 1rem; padding: 0.75rem 1.5rem; border: 1px solid #ccc; background-color: #fff; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: all 0.2s ease; }
+.addReviewButton:hover { background-color: #f1f1f1; border-color: #aaa; }
+.summaryBreakdown { display: flex; flex-direction: column; gap: 0.6rem; justify-content: center; }
+.ratingBarRow { display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; color: #555; }
+.ratingBar { flex-grow: 1; height: 8px; background-color: #e0e0e0; border-radius: 4px; overflow: hidden; }
+.ratingBar div { height: 100%; background-color: #f59e0b; }
+.reviewForm { margin-top: 2rem; padding: 2rem; border: 1px solid #e9ecef; border-radius: 12px; }
+.reviewForm h4 { font-size: 1.5rem; font-weight: 600; margin: 0 0 0.5rem 0; text-align: left; }
+.reviewForm p { color: #777; margin: 0 0 2rem 0; text-align: left; font-size: 0.9rem; }
+.formRow { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+@media (min-width: 600px) { .formRow { grid-template-columns: 1fr 1fr; } }
+.formGroup { margin-bottom: 1.5rem; }
+.formGroup label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+.formGroup input, .formGroup textarea { width: 100%; padding: 0.8rem 1rem; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; font-family: inherit; }
+.formGroup textarea { min-height: 120px; resize: vertical; }
+.ratingInput { margin-bottom: 1.5rem; }
+.ratingInput label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+.stars { display: flex; gap: 0.25rem; font-size: 2.2rem; }
+.stars label { cursor: pointer; }
+.stars input { display: none; }
+.star { color: #e4e5e9; transition: color 0.2s; }
+.submitButton { background-color: #1a1a1a; color: #fff; border: none; padding: 0.9rem 2.5rem; font-size: 1rem; font-weight: 600; border-radius: 8px; cursor: pointer; }
+.submitButton:disabled { background-color: #ccc; cursor: not-allowed; }
+/* === শুধুমাত্র স্টার ডিসপ্লের জন্য স্টাইল === */
