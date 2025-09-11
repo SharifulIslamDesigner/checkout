@@ -13,7 +13,7 @@ import { IoSearch, IoPersonOutline, IoMenu, IoClose } from "react-icons/io5";
 
 export default function Header() {
   const { cartItems, isMiniCartOpen, openMiniCart, closeMiniCart } = useCart();
-  const [isSearchOpen, setIsSearchOpen] = useState(true);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
