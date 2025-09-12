@@ -1,0 +1,68 @@
+/* QuantityAddToCart.module.css */
+
+.quantityAndCartWrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* দুটি অংশের মধ্যে ফাঁকা জায়গা */
+    margin: 2rem 0;
+}
+
+/* --- পরিমাণ (+/-) অংশের স্টাইল --- */
+.quantitySelector {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden; /* ভেতরের বাটনগুলোকে வட்டাকার কোণায় আটকে রাখে */
+}
+
+.quantitySelector button {
+    background-color: #f9f9f9;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 0.8rem 1.2rem;
+    transition: background-color 0.2s;
+}
+
+.quantitySelector button:hover {
+    background-color: #f0f0f0;
+}
+
+.quantitySelector button:disabled {
+    cursor: not-allowed;
+    color: #aaa;
+}
+
+.quantitySelector span {
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 0 1.5rem;
+    border-left: 1px solid #e0e0e0;
+    border-right: 1px solid #e0e0e0;
+}
+
+/* --- মূল "Add to Cart" বাটনের স্টাইল --- */
+.addToCartButton {
+    flex-grow: 1; /* বাকি সব খালি জায়গা নিয়ে নেয় */
+    background-color: #1a1a1a; /* একটি গাঢ় রঙ */
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.3rem 2rem;
+    font-size: 1.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.addToCartButton:hover {
+    background-color: #333; /* হোভার করলে রঙ কিছুটা হালকা হবে */
+}
+
+.addToCartButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}

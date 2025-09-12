@@ -51,6 +51,7 @@ async function getProductsAndCategories(
               image { sourceUrl }
               ... on SimpleProduct { price(format: FORMATTED) }
               ... on VariableProduct { price(format: FORMATTED) }
+              averageRating
             }
             pageInfo { hasNextPage, hasPreviousPage, startCursor, endCursor }
           }

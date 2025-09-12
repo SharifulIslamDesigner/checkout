@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import styles from './ReviewForm.module.css';
 import { FaStar } from 'react-icons/fa';
@@ -12,13 +12,19 @@ interface ReviewFormProps {
 }
 
 const StarRatingDisplay = ({ rating }: { rating: number }) => {
-    const totalStars = 5;
-    const fullStars = Math.round(rating || 0);
-    const emptyStars = totalStars - fullStars;
+    const [starRating, setStarRating] = useState({ full: 0, empty: 5 });
+
+    useEffect(() => {
+        const totalStars = 5;
+        const fullStars = Math.round(rating || 0);
+        const emptyStars = totalStars - fullStars;
+        setStarRating({ full: fullStars, empty: emptyStars });
+    }, [rating]);
+
     return (
         <div className={styles.starDisplay}>
-            {[...Array(fullStars)].map((_, i) => <FaStar key={`full-${i}`} color="#ffc107" />)}
-            {[...Array(emptyStars)].map((_, i) => <FaStar key={`empty-${i}`} color="#e4e5e9" />)}
+            {[...Array(starRating.full)].map((_, i) => <FaStar key={`full-${i}`} color="#ffc107" />)}
+            {[...Array(starRating.empty)].map((_, i) => <FaStar key={`empty-${i}`} color="#e4e5e9" />)}
         </div>
     );
 };
@@ -37,8 +43,7 @@ export default function ReviewForm({ productId, averageRating, reviewCount }: Re
     if (rating === 0) { toast.error("Please select a star rating."); return; }
     setIsSubmitting(true);
     toast.loading('Submitting your review...');
-  const currentRating = typeof averageRating === 'number' ? averageRating : 0;
-  const currentReviewCount = typeof reviewCount === 'number' ? reviewCount : 0;
+
 
     const endpoint = 'https://sharifulbuilds.com/wp-comments-post.php';
     const formData = new FormData();

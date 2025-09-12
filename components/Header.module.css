@@ -35,7 +35,7 @@
 .hamburger { display: flex; }
 
 @media (min-width: 992px) {
-  .iconButtons { gap: 0.5rem; background: none; border: none; cursor: pointer; padding: 0.5rem; color: #333; display: flex; align-items: center;  }
+  .iconButtons { gap: 0.5rem; background: none; border-bottom: 1px solid;border-color: #d8d8d8; cursor: pointer; padding: 0 0.5rem 0.1rem; color: #333; display: flex; align-items: center;  }
   .actionIcons { display: flex; align-items: center; justify-content: flex-end; flex: 1 0 100px; gap: 0.5rem; }
   .desktopNavigation { display: flex; gap: 2rem; align-items: center; margin: 0 auto; }
   .desktopNavigation a { text-decoration: none; color: #555; font-weight: 500; transition: color 0.2s ease; }
@@ -45,6 +45,7 @@
   .hamburger { display: none; }
   .actionIcons { justify-content: flex-end; }
   .logo { justify-content: center; } /* ডেস্কটপে লোগোকে বাম দিকে রাখার জন্য leftSection ব্যবহার করা হচ্ছে */
+  .iconButtons span{ }
 }
 
 /* --- মোবাইল মেনু --- */

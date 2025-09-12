@@ -2,11 +2,10 @@
 
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
-import styles from '../app/product/[slug]/ProductPage.module.css'; // আপনার CSS এর সঠিক পাথ
+import styles from './QuantityAddToCart.module.css'; // <-- নতুন CSS ফাইল ইম্পোর্ট করুন
 
-// --- Interfaces ---
 interface ProductForCart {
-  id: string; 
+  id: string;
   databaseId: number;
   name: string;
   price?: string;
@@ -17,35 +16,31 @@ export default function QuantityAddToCart({ product }: { product: ProductForCart
   const [quantity, setQuantity] = useState(1);
   const { addToCart, loading } = useCart();
 
-  const handleAddToCart = async () => {
-    if (!product || !product.databaseId) {
-        console.error("Incomplete product data in QuantityAddToCart:", product);
-        return;
-    }
-
-    await addToCart(
-      {
-        id: product.id,
-        databaseId: product.databaseId,
-        name: product.name,
-        price: product.price,
-        image: product.image,
-      },
-      quantity
-    );
+  const handleAddToCart = () => {
+    addToCart(product, quantity);
   };
 
   return (
-    <div className={styles.quantityAndCart}>
+    <div className={styles.quantityAndCartWrapper}>
       <div className={styles.quantitySelector}>
-        <button onClick={() => setQuantity(q => Math.max(1, q - 1))} disabled={loading}>-</button>
+        <button 
+          onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
+          disabled={loading}
+        >
+          -
+        </button>
         <span>{quantity}</span>
-        <button onClick={() => setQuantity(q => q + 1)} disabled={loading}>+</button>
+        <button 
+          onClick={() => setQuantity(prev => prev + 1)}
+          disabled={loading}
+        >
+          +
+        </button>
       </div>
       <button 
-        onClick={handleAddToCart} 
+        className={styles.addToCartButton}
+        onClick={handleAddToCart}
         disabled={loading}
-        className={styles.addToCartButton} // নিশ্চিত করুন এই ক্লাসটি আপনার CSS ফাইলে আছে
       >
         {loading ? 'Adding...' : 'Add to Cart'}
       </button>

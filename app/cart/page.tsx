@@ -16,20 +16,18 @@ export default function CartPage() {
   const subtotal = cartItems.reduce((total, item) => {
     return total + parsePrice(item.price) * item.quantity;
   }, 0);
-  
-  // --- মূল সমাধান: ডাইনামিক চেকআউট URL তৈরি করার ফাংশন ---
+
   const generateCheckoutUrl = () => {
-    if (cartItems.length === 0) return '#';
-    
-    const itemsForUrl = cartItems.map(item => ({
-      id: item.databaseId,
-      quantity: item.quantity
-    }));
-    
-    const cartJson = JSON.stringify(itemsForUrl);
-    const encodedCart = encodeURIComponent(cartJson);
-    
-    return `https://sharifulbuilds.com/cart/?cart_items=${encodedCart}`;
+  if (cartItems.length === 0) return '#';
+  const itemsForUrl = cartItems.map(item => ({
+    id: item.databaseId,
+    quantity: item.quantity
+  }));
+  const cartJson = JSON.stringify(itemsForUrl);
+  const encodedCart = encodeURIComponent(cartJson);
+
+  // *** মূল সমাধান: URL এখন সরাসরি /checkout-কে নির্দেশ করছে ***
+  return `https://sharifulbuilds.com/checkout/?cart_items=${encodedCart}`;
   };
 
   if (cartItems.length === 0 && !loading) {
@@ -78,10 +76,10 @@ export default function CartPage() {
             <span>Subtotal</span>
             <span>${subtotal.toFixed(2)}</span>
           </div>
-          {/* --- মূল সমাধান: a ট্যাগ এখন ডাইনামিক URL ব্যবহার করছে --- */}
           <a
             href={generateCheckoutUrl()}
             className={styles.checkoutButton}
+            rel="prefetch" // <-- শুধুমাত্র এই লাইনটি যোগ করা হয়েছে
           >
             Proceed to Checkout
           </a>

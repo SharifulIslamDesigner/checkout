@@ -1,15 +1,24 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './ProductPage.module.css';
 import Image from 'next/image';
 import QuantityAddToCart from '../../../components/QuantityAddToCart';
 import ReviewForm from './ReviewForm';
 import ProductCard from '../../products/ProductCard';
 
+// --- ইন্টারফেসগুলো নতুন ডেটা স্ট্রাকচার অনুযায়ী আপডেট করা হয়েছে ---
 interface ImageNode { sourceUrl: string; }
 interface Attribute { name: string; options: string[]; }
-interface Review { id: string; author: { node: { name: string; avatar?: { url: string } }; }; content: string; date: string; rating: number; }
+interface ReviewEdge {
+  rating: number;
+  node: {
+    id: string;
+    author: { node: { name: string; avatar?: { url: string } }; };
+    content: string;
+    date: string;
+  };
+}
 interface RelatedProduct { id: string; databaseId: number; name: string; slug: string; image?: ImageNode; price?: string; }
 interface Product {
   id: string;
@@ -21,27 +30,55 @@ interface Product {
   galleryImages: { nodes: ImageNode[]; };
   price?: string;
   attributes: { nodes: Attribute[]; };
+  averageRating: number;
+  reviewCount: number;
   reviews: { 
-      nodes: Review[];
-      reviewCount: number;
-      averageRating: number;
-    };
+    edges: ReviewEdge[];
+  };
   related: { nodes: RelatedProduct[]; };
 }
+// ----------------------------------------------------------------------
+
+
+// StarRating কম্পোনেন্ট (টাইপিং ভুল সংশোধন করা হয়েছে)
 const StarRating = ({ rating }: { rating: number }) => {
-    const totalStars = 5;
-    const fullStars = Math.round(rating || 0);
-    const emptyStars = totalStars - fullStars;
+    // --- কার্যকরী সমাধান: `useState` এর 'S' বড় হাতের হবে ---
+    const [starRating, setStarRating] = useState({ full: 0, empty: 5 });
+
+    useEffect(() => {
+        const totalStars = 5;
+        const fullStars = Math.round(rating || 0);
+        const emptyStars = totalStars - fullStars;
+        setStarRating({ full: fullStars, empty: emptyStars });
+    }, [rating]);
+
     return (
         <div className={styles.starRating}>
-            {[...Array(fullStars)].map((_, i) => <span key={`full-${i}`}>★</span>)}
-            {[...Array(emptyStars)].map((_, i) => <span key={`empty-${i}`}>☆</span>)}
+            {[...Array(starRating.full)].map((_, i) => <span key={`full-${i}`}>★</span>)}
+            {[...Array(starRating.empty)].map((_, i) => <span key={`empty-${i}`}>☆</span>)}
         </div>
     );
 };
+
+// FormattedDate কম্পোনেন্ট (ক্লায়েন্ট-সাইড রেন্ডারিং সহ, অপরিবর্তিত)
+const FormattedDate = ({ dateString }: { dateString: string }) => {
+    const [formattedDate, setFormattedDate] = useState<string | null>(null);
+
+    useEffect(() => {
+        setFormattedDate(new Date(dateString).toLocaleDateString());
+    }, [dateString]);
+
+    if (!formattedDate) {
+        return <span className={styles.reviewDate}></span>;
+    }
+
+    return <span className={styles.reviewDate}>{formattedDate}</span>;
+};
+
+
 export default function ProductClient({ product }: { product: Product }) {
     const [mainImage, setMainImage] = useState<string | undefined>(product.image?.sourceUrl);
-
+    
     if (!product) return null;
 
     const productForCart = {
@@ -53,8 +90,9 @@ export default function ProductClient({ product }: { product: Product }) {
     };
 
     const allImages = [product.image, ...product.galleryImages.nodes].filter(Boolean) as ImageNode[];
-    const customerImages = product.reviews?.nodes
-        ?.map((review: Review) => review.author.node.avatar?.url)
+    
+    const customerImages = product.reviews?.edges
+        ?.map((edge: ReviewEdge) => edge.node.author.node.avatar?.url)
         .filter(Boolean) || [];
         
     return (
@@ -76,9 +114,9 @@ export default function ProductClient({ product }: { product: Product }) {
             <div>
             <h1 className={styles.productTitle}>{product.name}</h1>
             <div className={styles.ratingWrapper}>
-                <div className={styles.rating}>★★★★☆</div>
-                {product.reviews && product.reviews.nodes.length > 0 ? (
-                    <a href="#reviews" className={styles.reviewsCount}>({product.reviews.nodes.length} customer reviews)</a>
+                <div className={styles.rating}>★★★★☆</div> {/* এটিকে ডাইনামিক করতে চাইলে StarRating কম্পোনেন্ট ব্যবহার করতে পারেন */}
+                {product.reviewCount > 0 ? (
+                    <a href="#reviews" className={styles.reviewsCount}>({product.reviewCount} customer reviews)</a>
                 ) : (
                     <div className={styles.reviewsCount}>(No reviews yet)</div>
                 )}
@@ -96,11 +134,14 @@ export default function ProductClient({ product }: { product: Product }) {
                 />
             )}
             <QuantityAddToCart product={productForCart} />
-            <div className={styles.trustBadges}>
-                <span>✓ 100% Secure Checkout</span>
-                <span>✓ 30 Days Easy Returns</span>
-                <span>✓ 1 Year Full Warranty</span>
-                <span>✓ Fast Shipping Aus-Wide</span>
+
+            <div className={styles.producttrustfeatureswrapper}>
+              <div className={styles.trustfeaturesgrid}>
+                  <div className={styles.trustfeatureitem}>✓ 100% Secure Checkout</div>
+                  <div className={styles.trustfeatureitem}>✓ 30 Days Easy Returns</div>
+                  <div className={styles.trustfeatureitem}>✓ 1 Year Full Warranty</div>
+                  <div className={styles.trustfeatureitem}>✓ Fast Shipping Aus-Wide</div>
+               </div>
             </div>
             <div className={styles.checkoutGuarantee}>
                 <p className={styles.guaranteeText}>Guaranteed Safe Checkout</p>
@@ -108,7 +149,7 @@ export default function ProductClient({ product }: { product: Product }) {
             </div>
             </div>
         </div>
-        
+        <div className={styles.lowerSectionsWrapper}>
         {product.description && (
             <section className={styles.productInfoSection}>
             <h2 className={styles.sectionTitle}>Description</h2>
@@ -116,82 +157,103 @@ export default function ProductClient({ product }: { product: Product }) {
             </section>
         )}
 
-        {product.attributes && product.attributes.nodes.length > 0 && (
-            <section className={styles.productInfoSection}>
-            <h2 className={styles.sectionTitle}>Additional Information</h2>
-            <div className={styles.sectionContent}>
-                <table>
+        {(product.weight || (product.length && product.width && product.height) || (product.attributes && product.attributes.nodes.length > 0)) && (
+    <section className={styles.productInfoSection}>
+        <h2 className={styles.sectionTitle}>Additional Information</h2>
+        <div className={styles.sectionContent}>
+            <table className={styles.attributesTable}>
                 <tbody>
-                    {product.attributes.nodes.map((attr, index) => (
-                    <tr key={index}>
-                        <th>{attr.name}</th>
-                        <td>{attr.options.join(', ')}</td>
-                    </tr>
+                    {/* ওজন দেখানোর জন্য নতুন সারি */}
+                    {product.weight && (
+                        <tr>
+                            <th>Weight</th>
+                            <td>{product.weight} kg</td>
+                        </tr>
+                    )}
+
+                    {/* মাপ দেখানোর জন্য নতুন সারি */}
+                    {product.length && product.width && product.height && (
+                        <tr>
+                            <th>Dimensions</th>
+                            <td>{`${product.length} × ${product.width} × ${product.height} cm`}</td>
+                        </tr>
+                    )}
+
+                    {/* আপনার পুরোনো অ্যাট্রিবিউট দেখানোর কোড */}
+                    {product.attributes?.nodes.map((attr: { name: string, options: string[] }, index: number) => (
+                        <tr key={index}>
+                            <th>{attr.name}</th>
+                            <td>{attr.options.join(', ')}</td>
+                        </tr>
                     ))}
-                </tbody>
-                </table>
-            </div>
-            </section>
-        )}
+                 </tbody>
+             </table>
+          </div>
+       </section>
+       )}
         
        <section id="reviews" className={styles.productInfoSection}>
-                <div className={styles.reviewsGrid}>
-                
-                  <div className={styles.reviewsList}>
+          <h2 className={styles.sectionTitle}>Customer Reviews</h2>
+             <div className={styles.reviewsGrid}>
+
+         {/* --- কার্যকরী সমাধান: রিভিউ ফর্মটিকে উপরে নিয়ে আসা হয়েছে --- */}
+                <div className={styles.reviewFormWrapper}>
+                     <ReviewForm 
+                         productId={product.databaseId}
+                         averageRating={product.averageRating ?? 0}
+                         reviewCount={product.reviewCount ?? 0}
+                        />
+               </div>
+
+             {/* --- রিভিউ তালিকাটিকে নিচে রাখা হয়েছে --- */}
+                 <div className={styles.reviewsList}>
                     {customerImages.length > 0 && (
-                        <div className={styles.customerImagesSection}>
-                            <h3>Customer Images</h3>
-                            <div className={styles.customerImagesGrid}>
-                                {customerImages.map((imageUrl: string, index: number) => (
-                                    <div key={index} className={styles.customerImageWrapper}>
-                                        <Image src={imageUrl} alt={`Customer image ${index + 1}`} fill style={{objectFit: 'cover'}} sizes="100px" />
+                    <div className={styles.customerImagesSection}>
+                        <h3>Customer Images</h3>
+                          <div className={styles.customerImagesGrid}>
+                             {customerImages.map((imageUrl: string, index: number) => (
+                               <div key={index} className={styles.customerImageWrapper}>
+                                  <Image src={imageUrl} alt={`Customer image ${index + 1}`} fill style={{objectFit: 'cover'}} sizes="100px" />
+                              </div>    ))}
+                    </div>
+                </div>
+            )}
+            <div className={styles.reviewsListContainer}>
+                <div className={styles.reviewsListHeader}>
+                    <input type="search" placeholder="Search customer reviews" className={styles.reviewSearchInput} />
+                    <span>{`1-${product.reviews.edges.length} of ${product.reviewCount} reviews`}</span>
+                    <select className={styles.reviewSortDropdown}>
+                        <option>Most Recent</option>
+                        <option>Highest Rating</option>
+                        <option>Lowest Rating</option>
+                    </select>
+                </div>
+
+                  {product.reviewCount > 0 ? (
+                        product.reviews.edges.map((edge: ReviewEdge) => (
+                           <div key={edge.node.id} className={styles.reviewItem}>
+                                <div className={styles.reviewAuthor}>
+                                <div className={styles.authorAvatar}>{edge.node.author.node.name.substring(0, 2).toUpperCase()}</div>
+                                </div>
+                                <div className={styles.reviewDetails}>
+                                  <div className={styles.reviewHeader}>
+                                     <strong>{edge.node.author.node.name}</strong>
+                                    <FormattedDate dateString={edge.node.date} />
                                     </div>
-                                ))}
+                                {typeof edge.rating === 'number' && edge.rating > 0 && 
+                                <div className={styles.reviewRating}><StarRating rating={edge.rating} /></div>
+                                }
+                                <a href="#" className={styles.verifiedLink}>✓ Verified review</a>
+                                <div className={styles.reviewContent} dangerouslySetInnerHTML={{ __html: edge.node.content }} />
                             </div>
                         </div>
-                    )}
-                    <div className={styles.reviewsListContainer}>
-                      <div className={styles.reviewsListHeader}>
-                          <input type="search" placeholder="Search customer reviews" className={styles.reviewSearchInput} />
-                          <span>{`1-${product.reviews?.nodes?.length || 0} of ${product.reviews?.reviewCount || 0} reviews`}</span>
-                          <select className={styles.reviewSortDropdown}>
-                              <option>Most Recent</option>
-                              <option>Highest Rating</option>
-                              <option>Lowest Rating</option>
-                          </select>
-                      </div>
-
-                      {product.reviews && product.reviews.nodes.length > 0 ? (
-                          product.reviews.nodes.map((review: any) => (
-                              <div key={review.id} className={styles.reviewItem}>
-                                  <div className={styles.reviewAuthor}>
-                                      <div className={styles.authorAvatar}>{review.author.node.name.substring(0, 2).toUpperCase()}</div>
-                                  </div>
-                                  <div className={styles.reviewDetails}>
-                                      <div className={styles.reviewHeader}>
-                                        <strong>{review.author.node.name}</strong>
-                                        <span className={styles.reviewDate}>{new Date(review.date).toLocaleDateString()}</span>
-                                      </div>
-                                      {review.rating && <div className={styles.reviewRating}><StarRating rating={review.rating} /></div>}
-                                      <a href="#" className={styles.verifiedLink}>✓ Verified review</a>
-                                      <div className={styles.reviewContent} dangerouslySetInnerHTML={{ __html: review.content }} />
-                                  </div>
-                              </div>
-                          ))
+                    ))
                       ) : ( <p>There are no reviews yet.</p> )}
-                    </div>
-                  </div>
-                  
-                  <div className={styles.reviewFormWrapper}>
-                      <ReviewForm 
-                          productId={product.databaseId}
-                          averageRating={product.reviews?.averageRating ?? 0}
-                          reviewCount={product.reviews?.reviewCount ?? 0}
-                      />
-                  </div>
+                 </div>
+             </div>
 
-                </div>
-            </section>
+            </div>
+       </section>
 
         {product.related && product.related.nodes.length > 0 && (
             <div className={styles.relatedProducts}>
@@ -204,5 +266,7 @@ export default function ProductClient({ product }: { product: Product }) {
             </div>
         )}
         </div>
+        </div>
     );
+    
 }
