@@ -40,7 +40,7 @@ export default function ContactPage() {
                 </div>
             </div>
             <div className={styles.contactIntroImage}>
-                <img src="https://sharifulbuilds.com/wp-content/uploads/2025/02/1-Static-1x1-1.webp" alt="A child confidently riding a GoBike electric balance bike" />
+                <img src="https://sharifulbuilds.com/wp-content/uploads/2025/09/electric-bike-ebike-for-kids-1.webp" alt="A child confidently riding a GoBike electric balance bike" />
             </div>
         </div>
 

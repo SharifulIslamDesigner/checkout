@@ -15,11 +15,18 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
+        
         protocol: 'https',
         hostname: 'sharifulbuilds.com',
         port: '',
         pathname: '/wp-content/uploads/**', // শুধুমাত্র uploads ফোল্ডার থেকে ছবি আনার অনুমতি
       },
+       {
+         protocol: 'https',
+        hostname: 'gobike.au',
+         port: '',
+         pathname: '/wp-content/uploads/**',
+       },
     ],
   },
   // --- এই পর্যন্ত ---

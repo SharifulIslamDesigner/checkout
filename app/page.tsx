@@ -1,9 +1,10 @@
 // app/page.tsx
 "use client";
-
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import styles from './page.module.css'; // সঠিক CSS Module ফাইল ইম্পোর্ট করা হচ্ছে
+import styles from './page.module.css';
+import HomePageReviews from '../components/HomePageReviews'; // <-- আপনার নতুন কম্পোনেন্ট ইম্পোর্ট করা হয়েছে
 
 // ====================================================================
 // HeroSlider Component
@@ -210,7 +211,6 @@ const SmarterChoice = () => {
     </section>
   );
 }
-
 // ====================================================================
 // DifferenceSection Component
 // ====================================================================
@@ -341,7 +341,7 @@ const VideoReviews = () => {
         </section>
     );
 }
-
+     
 // ====================================================================
 // FaqSection Component
 // ====================================================================
@@ -433,6 +433,7 @@ export default function Home() {
       <SmarterChoice />
       <DifferenceSection />
       <CommunitySection />
+      <HomePageReviews />
       <VideoReviews />
       <FaqSection />
       <BlogSection />

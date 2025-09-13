@@ -3,7 +3,7 @@ title: "More Than a Ride: How Biking with Mates Boosts Social Skills"
 date: "2025-09-28"
 author: "GoBike Team"
 excerpt: "Riding a bike is a solo skill, but the real magic happens when kids ride together. Discover how hitting the bike path with friends helps children develop crucial social skills for life."
-cover_image: "/images/blog/Electric-Balance-Bike-Electric-bike-Balance-Bike-Bike-baby-bike-scaled-1.webp"
+cover_image: "https://sharifulbuilds.com/wp-content/uploads/2025/09/7.webp"
 tags: ["Social Skills", "Friendship", "Teamwork", "Child Psychology"]
 ---
 

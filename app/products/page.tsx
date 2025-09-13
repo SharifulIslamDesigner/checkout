@@ -59,7 +59,7 @@ async function getProductsAndCategories(
         }
       `,
       variables: { category, first, after, last, before },
-      context: { fetchOptions: { next: { revalidate: 0 } } },
+      context: { fetchOptions: { next: { revalidate: 86400 } } },
     });
     return {
         products: data.products?.nodes || [],

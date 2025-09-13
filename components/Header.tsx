@@ -36,7 +36,7 @@ export default function Header() {
             </button>
             <div className={`${styles.logo} ${styles.desktopOnly}`}>
               <Link href="/">
-                 <Image src="https://sharifulbuilds.com/wp-content/uploads/2025/06/cropped-GOBIKE-Electric-Bike-for-kids-1.webp" alt="GoBike Logo" width={150} height={40} priority className={styles.logoImage} />
+                 <Image src="https://gobike.au/wp-content/uploads/2025/06/cropped-GOBIKE-Electric-Bike-for-kids-1.webp" alt="GoBike Logo" width={150} height={40} priority className={styles.logoImage} />
               </Link>
             </div>
           </div>
@@ -44,7 +44,7 @@ export default function Header() {
           {/* --- মধ্যম অংশ: মোবাইলে লোগো, ডেস্কটপে নেভিগেশন --- */}
           <div className={`${styles.logo} ${styles.mobileOnly}`}>
             <Link href="/">
-               <Image src="https://sharifulbuilds.com/wp-content/uploads/2025/06/cropped-GOBIKE-Electric-Bike-for-kids-1.webp" alt="GoBike Logo" width={140} height={38} priority className={styles.logoImage} />
+               <Image src="https://gobike.au/wp-content/uploads/2025/06/cropped-GOBIKE-Electric-Bike-for-kids-1.webp" alt="GoBike Logo" width={140} height={38} priority className={styles.logoImage} />
             </Link>
           </div>
           <nav className={styles.desktopNavigation}>
@@ -81,6 +81,9 @@ export default function Header() {
               <IoSearch size={22} />
               <span>Search products</span>
             </button>
+            <button className={styles.closeMenuButton} onClick={() => setIsMenuOpen(false)}>
+        <IoClose size={28} />
+      </button>
           </div>
             <nav className={styles.mobileMenuLinks}>
                <Link href="/" className={pathname === '/' ? styles.activeLink : ''} onClick={closeAllOverlays}>Home</Link>

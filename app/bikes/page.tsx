@@ -57,7 +57,7 @@ async function getBikeProducts(
         }
       `,
       variables: { first, after, last, before },
-      context: { fetchOptions: { next: { revalidate: 0 } } },
+      context: { fetchOptions: { next: { revalidate: 86400 } } },
     });
     return {
       products: data.products.nodes,
@@ -97,7 +97,7 @@ export default async function BikesPage({ searchParams }: {
         </div>
         <div className={styles.heroImageContainer}>
             <Image 
-                src="https://sharifulbuilds.com/wp-content/uploads/2025/08/Gobike-kids-electric-bike-ebike-for-kids-2-scaled-1.webp" // <-- আপনার একটি আকর্ষণীয় ছবি দিন
+                src="https://sharifulbuilds.com/wp-content/uploads/2025/09/Gobike-kids-electric-bike-ebike-for-kids-scaled.webp" // <-- আপনার একটি আকর্ষণীয় ছবি দিন
                 alt="Happy child riding a GoBike electric bike"
                 width={600}
                 height={600}
@@ -121,7 +121,7 @@ export default async function BikesPage({ searchParams }: {
       <section className={styles.whyChooseUs}>
         <div className={styles.whyChooseUsImage}>
              <Image 
-                src="https://sharifulbuilds.com/wp-content/uploads/2025/08/Gobike-kids-electric-bike-ebike-for-kids-1-scaled-1.webp" // <-- আরেকটি সুন্দর ছবি দিন
+                src="https://sharifulbuilds.com/wp-content/uploads/2025/09/Gobike-kids-electric-bike-ebike-for-kids--scaled.webp" // <-- আরেকটি সুন্দর ছবি দিন
                 alt="GoBike parts and features"
                 width={500}
                 height={500}

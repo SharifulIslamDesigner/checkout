@@ -1,0 +1,235 @@
+/* HomePageReviews.module.css */
+
+/* --- মূল সেকশন --- */
+.reviewsSection { 
+    padding:0 0 3rem 0; 
+    background-color: #ffffff; 
+}
+.container { 
+    max-width: 1500px; 
+    margin: 0 auto; 
+    padding: 0 1rem; 
+}
+.sectionHeader { 
+    text-align: center; 
+    margin-bottom: 3rem; 
+    margin-top: 1rem;
+}
+.sectionTitle { 
+    font-size: 2rem; 
+    font-weight: 800; 
+    margin-bottom: 0.5rem; 
+    letter-spacing: -1px;
+}
+
+/* --- রিভিউ সারাংশ বক্স --- */
+.summaryBox {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem 3rem;
+    align-items: center;
+    padding: 2.5rem;
+    background-color: #f8f9fa;
+    border-radius: 20px;
+    margin-bottom: 4rem;
+    border: 1px solid #e7e7e7;
+}
+@media (min-width: 992px) {
+    .summaryBox { grid-template-columns: auto 1fr auto; }
+}
+
+.summaryAverage { 
+    text-align: center; 
+    padding-right: 3rem;
+    border-right: 1px solid #e0e0e0;
+}
+@media (max-width: 991px) {
+    .summaryAverage { padding-right: 0; border-right: none; padding-bottom: 2rem; border-bottom: 1px solid #e0e0e0; }
+}
+.averageRatingValue { 
+    font-size: 4rem; 
+    font-weight: 800; 
+    line-height: 1; 
+}
+.basedOnReviews { 
+    font-size: 0.9rem; 
+    color: #555; 
+    margin-top: 1rem; 
+}
+.starRating { 
+    display: flex; 
+    justify-content: center; 
+    gap: 4px; 
+    color: #000000; 
+    margin-top: 0.1rem;
+}
+
+.summaryBreakdown { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 0.75rem; 
+}
+.ratingBarRow { 
+    display: flex; 
+    align-items: center; 
+    gap: 1rem; 
+    font-size: 0.9rem; 
+    color: #555; 
+}
+.ratingBarRow span:first-child {
+    width: 50px; /* "5 star" লেখার জন্য নির্দিষ্ট জায়গা */
+}
+.ratingBar { 
+    flex-grow: 1; 
+    height: 8px; 
+    background-color: #e9ecef; 
+    border-radius: 4px; 
+    overflow: hidden; 
+}
+.ratingBar div { 
+    height: 100%; 
+    background-color: #f5b327; 
+}
+
+.addReviewWrapper { 
+    text-align: center; 
+    padding-left: 3rem;
+    border-left: 1px solid #e0e0e0;
+}
+@media (max-width: 991px) {
+    .addReviewWrapper { padding-left: 0; border-left: none; padding-top: 2rem; border-top: 1px solid #e0e0e0; }
+}
+.addReviewButton {
+    background-color: #1a1a1a;
+    color: #fff;
+    border: none;
+    padding: 0.9rem 2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+.addReviewButton:hover {
+    background-color: #333;
+}
+
+
+.reviewsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 2rem;
+}
+
+/* --- কার্যকরী সমাধান: রিভিউ কার্ডের নতুন স্টাইল --- */
+.reviewCard {
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid #e7e7e7;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.reviewCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+}
+
+.reviewCardHeader { 
+    display: flex; 
+    align-items: center; 
+    gap: 0.75rem; 
+    margin-bottom: 1rem; 
+}
+
+.authorAvatar {
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    background-color: #f0f0f0;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-weight: bold;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.authorDetails {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.authorDetails strong { 
+    font-weight: 600; 
+    font-size: 1rem;
+}
+
+.verifiedBadge { 
+    font-size: 0.8rem; 
+    color: #28a745;
+    font-weight: 500;
+}
+
+/* StarRating-কে এখন বাম দিকে অ্যালাইন করা হবে */
+.starRating { 
+    justify-content: flex-start; /* <-- পরিবর্তন এখানে */
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+}
+
+.reviewContent { 
+    color: #333; 
+    line-height: 1.6; 
+    font-size: 0.95rem; 
+    margin: 0 0 1rem 0; /* <-- মার্জিন পরিবর্তন */
+    flex-grow: 1;
+}
+.reviewContent p:last-child { 
+    margin-bottom: 0; 
+}
+
+.reviewProductInfo { 
+    display: flex; 
+    align-items: center; 
+    gap: 0.75rem; 
+    font-size: 0.9rem; 
+    color: #555; 
+    margin-top: auto; 
+    padding-top: 1rem; 
+    border-top: 1px solid #f0f0f0;
+}
+.reviewProductInfo img { 
+    border-radius: 6px; 
+}
+.reviewProductInfo a { 
+    color: #0070f3; 
+    text-decoration: none; 
+    font-weight: 500;
+}
+.reviewProductInfo a:hover { 
+    text-decoration: underline; 
+}
+/* ---------------------------------------------------- */
+
+.showMoreContainer { 
+    text-align: center; 
+    margin-top: 3rem; 
+}
+.showMoreButton {
+    background: none; 
+    border: 1px solid #ccc; 
+    padding: 0.8rem 2.5rem;
+    border-radius: 8px; 
+    cursor: pointer; 
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+.showMoreButton:hover {
+    background-color: #f0f0f0;
+    border-color: #aaa;
+}

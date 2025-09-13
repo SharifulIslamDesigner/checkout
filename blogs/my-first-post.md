@@ -3,7 +3,7 @@ title: "Why GoBike is the Perfect First E-Bike for Your Little Ripper"
 date: "2025-09-16"
 author: "The GoBike Team"
 excerpt: "When it comes to your kid's first electric bike, it's all about three things: safety, durability, and stacks of fun. Here’s the lowdown on how GoBike ticks all the boxes and comes out on top."
-cover_image: "/images/blog/Electric-Balance-Bike-Electric-bike-scaled-1.webp"
+cover_image: "https://sharifulbuilds.com/wp-content/uploads/2025/09/3-Static-1x1-1.webp"
 tags: ["Kids Electric Bike", "Aussie Kids", "GoBike Review", "Child Safety", "Outdoor Fun"]
 ---
 
