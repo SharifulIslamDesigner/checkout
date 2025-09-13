@@ -54,6 +54,7 @@ export default function Header() {
             <Link href="/about" className={pathname === '/about' ? styles.activeLink : ''}>About Us</Link>
             <Link href="/contact" className={pathname === '/contact' ? styles.activeLink : ''}>Contact</Link>
             <Link href="/faq" className={pathname === '/faq' ? styles.activeLink : ''}>FAQs</Link>
+            <Link href="/blog" className={pathname === '/blog' ? styles.activeLink : ''}>Blog</Link>
           </nav>
 
           {/* --- ডান অংশ: আইকন --- */}

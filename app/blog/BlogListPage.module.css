@@ -1,0 +1,104 @@
+/* app/blog/BlogListPage.module.css */
+
+.pageContainer {
+    max-width: 1200px;
+    margin: 3rem auto 5rem auto; /* উপরের এবং নিচের মার্জিন বাড়ানো হয়েছে */
+    padding: 0 1rem;
+}
+
+.pageHeader {
+    text-align: center;
+    margin-bottom: 2.5rem; /* শিরোনাম এবং কার্ডের মধ্যে দূরত্ব বাড়ানো হয়েছে */
+}
+
+.pageTitle {
+    font-size: 2rem; /* শিরোনাম বড় করা হয়েছে */
+    font-weight: 800;
+    margin-bottom: 0.8rem;
+    letter-spacing: -1px; /* অক্ষরগুলোর মধ্যে দূরত্ব কমানো হয়েছে */
+}
+
+.pageSubtitle {
+    font-size: 1.2rem; /* সাবটাইটেল বড় করা হয়েছে */
+    color: #555;
+    max-width: 650px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.postsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2.5rem; /* কার্ডগুলোর মধ্যে দূরত্ব বাড়ানো হয়েছে */
+}
+
+.postCard {
+    text-decoration: none;
+    color: inherit;
+    background-color: #fff; /* কার্ডের الخلفية সাদা করা হয়েছে */
+    border: 1px solid #e7e7e7; /* বর্ডার হালকা করা হয়েছে */
+    border-radius: 16px; /* কোণাগুলো আরও গোল করা হয়েছে */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* একটি সূক্ষ্ম শ্যাডো যোগ করা হয়েছে */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.postCard:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.1); /* হোভার করলে শ্যাডো আরও স্পষ্ট হবে */
+}
+
+.imageContainer {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 aspect ratio */
+    background-color: #f0f0f0;
+}
+
+.postImage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.contentContainer {
+    padding: 1.5rem 1.8rem; /* ভেতরের প্যাডিং বাড়ানো হয়েছে */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.postTitleCard {
+    font-size: 1.5rem; /* কার্ডের শিরোনাম বড় করা হয়েছে */
+    font-weight: 700; /* ওজন বাড়ানো হয়েছে */
+    margin: 0 0 0.75rem 0;
+    line-height: 1.4;
+}
+
+.postMeta {
+    font-size: 0.9rem;
+    color: #777;
+    margin-bottom: 1rem;
+}
+
+.postExcerpt {
+    flex-grow: 1;
+    margin-bottom: 1.5rem; /* আরও একটু জায়গা */
+    color: #444;
+    line-height: 1.7;
+}
+
+.readMore {
+    font-weight: 700;
+    color: #000; /* রঙ পরিবর্তন করে কালো করা হয়েছে */
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.postCard:hover .readMore {
+    color: #0070f3; /* হোভার করলে রঙ পরিবর্তন হবে */
+}

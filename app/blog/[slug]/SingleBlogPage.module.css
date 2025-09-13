@@ -1,0 +1,104 @@
+/* SingleBlogPage.module.css */
+
+.articleContainer {
+    max-width: 800px;
+    margin: 2rem auto 4rem auto;
+    padding: 0 1rem;
+    font-family: sans-serif;
+}
+
+.postHeader {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.postTitle {
+    font-size: 1.8rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    font-weight: 800;
+}
+
+.postMeta {
+    color: #555;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+}
+
+.coverImage {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin-bottom: 3rem;
+    background-color: #f0f0f0;
+}
+
+.postContent {
+    line-height: 1.8;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+/* --- Markdown থেকে আসা বিভিন্ন HTML ট্যাগের জন্য স্টাইল --- */
+
+.postContent h1,
+.postContent h2,
+.postContent h3 {
+    font-weight: 700;
+    margin-top: 2.5em;
+    margin-bottom: 1em;
+    line-height: 1.3;
+}
+
+.postContent h2 {
+    font-size: 1.8rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+}
+
+.postContent h3 {
+    font-size: 1.5rem;
+}
+
+.postContent p {
+    margin-bottom: 1.5em;
+}
+
+.postContent a {
+    color: #0070f3;
+    text-decoration: none;
+    border-bottom: 1px solid #0070f3;
+}
+
+.postContent a:hover {
+    background-color: #f0f8ff;
+}
+
+.postContent strong {
+    font-weight: 700;
+}
+
+.postContent ul,
+.postContent ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1.5em;
+}
+
+.postContent li {
+    margin-bottom: 0.75em;
+}
+
+.postContent blockquote {
+    margin-left: 0;
+    padding-left: 1.5rem;
+    border-left: 4px solid #e0e0e0;
+    color: #555;
+    font-style: italic;
+}
+
+.postContent code {
+    background-color: #f5f5f5;
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    font-family: monospace;
+}

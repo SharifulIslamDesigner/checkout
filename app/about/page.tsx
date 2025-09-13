@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import styles from './AboutPage.module.css';
+import Image from 'next/image';
 
 export default function AboutPage() {
   return (
@@ -18,13 +19,11 @@ export default function AboutPage() {
         <div className={styles['story-grid']}>
           <div>
             {/* --- মূল পরিবর্তন এখানে --- */}
-            <img 
-              src="https://gobike.au/wp-content/uploads/2025/08/gobike-scaled.webp" 
+            <Image 
+              src="/images/about/gobike-scaled.webp" width={2049} height={2560}
               alt="The founders of GoBike, two Australian dads, with their kids and their electric balance bikes." 
               className={styles['story-image']}
               loading="eager"
-              width="600"
-              height="400"
             />
           </div>
           <div className={styles['story-content']}>

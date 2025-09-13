@@ -68,7 +68,7 @@
 @media (min-width: 992px) {
   .header {
     grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+    gap: 1rem;
     text-align: left;
   }
   .heroContent { order: 1; }

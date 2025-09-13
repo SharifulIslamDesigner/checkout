@@ -1,6 +1,6 @@
 // app/contact/page.tsx
 'use client';
-
+import Image from 'next/image';
 import { useState, FormEvent } from 'react';
 import styles from './Contact.module.css';
 
@@ -40,7 +40,7 @@ export default function ContactPage() {
                 </div>
             </div>
             <div className={styles.contactIntroImage}>
-                <img src="https://sharifulbuilds.com/wp-content/uploads/2025/02/1-Static-1x1-1.webp" alt="A child confidently riding a GoBike electric balance bike" />
+                <Image src="/images/contact/kids electric bike ebike for kids electric bike.jpeg" width={3888} height={5184} alt="A child confidently riding a GoBike electric balance bike" />
             </div>
         </div>
 
