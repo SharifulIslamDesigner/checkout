@@ -1,5 +1,4 @@
 import styles from './FaqPage.module.css';
-import Image from 'next/image';
 
 // SEO এর জন্য সম্পূর্ণ JSON-LD ডেটা
 const jsonLdData = {
@@ -41,7 +40,7 @@ export default function FaqPage() {
         
         <section className={styles.ourPromiseSection}>
             <div className={styles.promiseImageWrapper}>
-               <Image src="/images/faq/Gobike kids electric bike ebike for kids 4.webp" width={2730} height={3414}
+               <img src="https://gobike.au/wp-content/uploads/2025/08/Gobike-kids-electric-bike-ebike-for-kids-4-scaled.webp" 
                      alt="A smiling Australian child with a helmet enjoying a GoBike electric bike in a park"
                      className={styles.promiseImage}
                      width="600"
