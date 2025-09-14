@@ -50,6 +50,7 @@ async function getBikeProducts(
               ... on SimpleProduct { price(format: FORMATTED) }
               ... on VariableProduct { price(format: FORMATTED) }
               averageRating
+              reviewCount
               
             }
             pageInfo { hasNextPage, hasPreviousPage, startCursor, endCursor }

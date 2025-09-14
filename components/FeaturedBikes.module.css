@@ -1,0 +1,148 @@
+/* components/FeaturedBikes.module.css */
+
+.featuredBikesSection {
+  width: 100%;
+  padding: 4rem 0;
+  background-color: #ffffff;
+}
+
+.container {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.sectionHeader {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.sectionTitle {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: #1a1a1a;
+}
+
+.sectionSubtitle {
+    font-size: 1.1rem;
+    color: #555;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.featuredGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+@media (max-width: 992px) {
+    .featuredGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 600px) {
+    .featuredGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+.featuredProductCard {
+  text-align: center;
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+  padding: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+.featuredProductCard:hover {
+  border-color: #e0e0e0;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+}
+.featuredProductCard a {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.featuredImageWrapper {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  overflow: hidden; /* Image-কে border-radius-এর ভেতরে রাখে */
+}
+.featuredImageWrapper img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1/1;
+  transition: transform 0.3s ease;
+}
+.featuredProductCard:hover .featuredImageWrapper img {
+    transform: scale(1.05);
+}
+
+
+.featuredCardContent {
+  padding: 0 0.5rem;
+  flex-grow: 1; /* নিশ্চিত করে যে এটি বাকি জায়গা নেবে */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.featuredProductName {
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0.5rem 0;
+  min-height: 3em;
+}
+
+.featuredStarRating {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    color: #000000;
+    margin: 0.75rem 0;
+}
+.featuredStarRating span {
+    font-size: 1.1rem;
+}
+.featuredReviewCount {
+    font-size: 0.9rem;
+    color: #777;
+    margin-left: 0.5rem;
+}
+
+.featuredProductPrice {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0.5rem 0 1rem 0;
+}
+
+.featuredAddToCartBtn {
+  width: 100%;
+  padding: 0.9rem;
+  margin-top: 1rem; /* লিঙ্ক এবং বাটনের মধ্যে ফাঁকা জায়গা */
+  background-color: #1a1a1a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.featuredAddToCartBtn:hover {
+  background-color: #333;
+}

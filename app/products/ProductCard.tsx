@@ -14,11 +14,14 @@ interface Product {
   image?: { sourceUrl: string };
   price?: string;
   averageRating?: number;
+  reviewCount?: number;
 }
 interface ProductCardProps {
   product: Product;
 }
-const StarRating = ({ rating }: { rating: number }) => {
+
+// --- কার্যকরী সমাধান: StarRating কম্পוננטটিকে ইন্টারফেসের বাইরে আনা হয়েছে ---
+const StarRating = ({ rating, count }: { rating: number, count: number }) => {
   const totalStars = 5;
   const fullStars = Math.floor(rating);
   const halfStar = rating % 1 !== 0;
@@ -27,12 +30,20 @@ const StarRating = ({ rating }: { rating: number }) => {
   return (
     <div className={styles.starRating}>
       {[...Array(fullStars)].map((_, i) => <span key={`full-${i}`}>★</span>)}
-      {halfStar && <span key="half">⭐</span>} {/* আপনি হাফ স্টারের জন্য অন্য আইকন ব্যবহার করতে পারেন */}
+      {halfStar && <span key="half">⭐</span>}
       {[...Array(emptyStars)].map((_, i) => <span key={`empty-${i}`}>☆</span>)}
-      {rating > 0 && <span className={styles.ratingValue}>({rating.toFixed(1)})</span>}
+      
+      {/* --- কার্যকরী সমাধান: এখানে "customer review(s)" যোগ করা হয়েছে --- */}
+      {count > 0 && (
+        <span className={styles.ratingValue}>
+          ({rating.toFixed(1)}) ({count} customer review{count > 1 ? 's' : ''})
+        </span>
+      )}
     </div>
   );
 };
+// --------------------------------------------------------------------------
+
 export default function ProductCard({ product }: ProductCardProps) {
   const [isAdding, setIsAdding] = useState(false);
   const { addToCart } = useCart();
@@ -54,8 +65,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           id: product.id,
           databaseId: product.databaseId,
           name: product.name,
-          price: product.price,
-          image: product.image?.sourceUrl,
+          // price এবং image এখন আর addToCart-এ পাঠানো হচ্ছে না, কারণ Context এটি হ্যান্ডেল করতে পারে
         },
         1 // পরিমাণ ১
       );
@@ -80,10 +90,14 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className={styles.productInfo}>
              <h3 className={styles.productName}>{product.name}</h3>
           
-          {/* --- ডাইনামিক স্টার রেটিং --- */}
-          {product.averageRating !== undefined && (
-            <StarRating rating={product.averageRating} />
+          {/* --- কার্যকরী সমাধান: শর্তটিকে সরল করা হয়েছে --- */}
+          {typeof product.averageRating === 'number' ? (
+            <StarRating rating={product.averageRating} count={product.reviewCount || 0} />
+          ) : (
+            // যদি averageRating না থাকে, তাহলে একটি ফলব্যাক দেখানো যেতে পারে
+            <div className={styles.noRating}><StarRating rating={0} count={0} /></div>
           )}
+          {/* ------------------------------------------------ */}
             
             {canDisplayPrice ? (
               <div className={styles.productPrice} dangerouslySetInnerHTML={{ __html: product.price! }} />

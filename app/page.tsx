@@ -1,6 +1,6 @@
 // app/page.tsx
 "use client";
-import Image from 'next/image';
+import FeaturedBikes from '../components/FeaturedBikes';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import styles from './page.module.css';
@@ -38,7 +38,7 @@ const HeroSlider = () => {
               <p className={styles.finalSlideSubtitle}>The Ultimate Weapon</p>
               <h2 className={styles.finalSlideTitle}>GOBIKE 20</h2>
               <p className={styles.finalSlideDescription}>The best 20-inch ebike of its kind. POWERFUL AND FUN. With a tough build, 10AH battery, and reliable performance, it's the ultimate weapon for young adventurers and teens.</p>
-              <Link href="/product/20-inch-electric-bikes-for-sale-ebike-for-kids/" className={styles.finalSlideButton}>Shop Now</Link>
+              <Link href="product/gobike-20-inch-electric-bike-for-kids-teens-ages-9-16" className={styles.finalSlideButton}>Shop Now</Link>
             </div>
           </div>
           <div className={styles.finalSplitSlide}>
@@ -47,7 +47,7 @@ const HeroSlider = () => {
                   <p className={styles.finalSlideSubtitle}>The All-Rounder</p>
                   <h2 className={styles.finalSlideTitle}>GOBIKE 16</h2>
                   <p className={styles.finalSlideDescription}>The fastest 16-inch Electric bike on the market! With 3 speed modes, hydraulic brakes, and front suspension, it's the perfect all-around childrens electric bikes for confident young riders.</p>
-                  <Link href="/product/ebike-for-sale-16-inch-gobike-ages-5-9/" className={styles.finalSlideButton}>Shop Now</Link>
+                  <Link href="product/gobike-16-inch-electric-bike-for-kids-riding-fun-for-ages-5-9" className={styles.finalSlideButton}>Shop Now</Link>
               </div>
           </div>
           <div className={styles.finalSplitSlide}>
@@ -56,7 +56,7 @@ const HeroSlider = () => {
                   <p className={styles.finalSlideSubtitle}>The Everyday GoBike Range</p>
                   <h2 className={styles.finalSlideTitle}>GOBIKE 12</h2>
                   <p className={styles.finalSlideDescription}>The perfect bike for toddlers aged 2 years and above, transitioning from a Balance Bike! Extra slow learning mode. Easy to ride. Long ride time. Adjustable seat height. Lightweight and reliable!</p>
-                  <Link href="/product/ebike-for-kids-12-inch-electric-bike-ages-2-5/" className={styles.finalSlideButton}>Shop Now</Link>
+                  <Link href="product/gobike-12-inch-ebike-for-kids-perfect-first-ride-for-ages-2-5" className={styles.finalSlideButton}>Shop Now</Link>
               </div>
           </div>
         </div>
@@ -118,9 +118,9 @@ const TrustBadges = () => {
 // ProductCollection Component
 // ====================================================================
 const products = [
-    { imgSrc: "https://gobike.au/wp-content/uploads/2025/02/Electric-Balance-Bike-Electric-bike-Balance-Bike-Bike-baby-bike-E-bike-1-1-scaled.webp", altText: "GoBike 12 Kids Electric Balance Bike with 3 speed modes", name: "GoBike 12-inch", feature: "Perfect for Ages 2-5 | Featuring a Slow Safety Mode for new riders.", link: "/product/ebike-for-kids-12-inch-electric-bike-ages-2-5/" },
-    { imgSrc: "https://gobike.au/wp-content/uploads/2025/02/Electric-Balance-Bike-Electric-bike-Balance-Bike-Bike-baby-bikes-1-scaled.webp", altText: "GoBike 16 Kids Electric Bike with 3 speed modes", name: "GoBike 16-inch", feature: "Best for Ages 5-9 | With 3-Speed Modes, Dual Hydraulic Brakes and Front Suspension.", link: "/product/ebike-for-sale-16-inch-gobike-ages-5-9/" },
-    { imgSrc: "https://gobike.au/wp-content/uploads/2025/02/Electric-Balance-Bike-Electric-bike-Balance-Bike-Bike-baby-bike-1-1-scaled.webp", altText: "GoBike 20 All-Terrain Kids Electric Bike", name: "GoBike 20-inch", feature: "Serious Bike for Ages 9-16 | A powerful and reliable bike for the bigger kids.", link: "/product/20-inch-electric-bikes-for-sale-ebike-for-kids/" }
+    { imgSrc: "https://gobike.au/wp-content/uploads/2025/02/Electric-Balance-Bike-Electric-bike-Balance-Bike-Bike-baby-bike-E-bike-1-1-scaled.webp", altText: "GoBike 12 Kids Electric Balance Bike with 3 speed modes", name: "GoBike 12-inch", feature: "Perfect for Ages 2-5 | Featuring a Slow Safety Mode for new riders.", link: "product/gobike-12-inch-ebike-for-kids-perfect-first-ride-for-ages-2-5" },
+    { imgSrc: "https://gobike.au/wp-content/uploads/2025/02/Electric-Balance-Bike-Electric-bike-Balance-Bike-Bike-baby-bikes-1-scaled.webp", altText: "GoBike 16 Kids Electric Bike with 3 speed modes", name: "GoBike 16-inch", feature: "Best for Ages 5-9 | With 3-Speed Modes, Dual Hydraulic Brakes and Front Suspension.", link: "product/gobike-16-inch-electric-bike-for-kids-riding-fun-for-ages-5-9" },
+    { imgSrc: "https://gobike.au/wp-content/uploads/2025/02/Electric-Balance-Bike-Electric-bike-Balance-Bike-Bike-baby-bike-1-1-scaled.webp", altText: "GoBike 20 All-Terrain Kids Electric Bike", name: "GoBike 20-inch", feature: "Serious Bike for Ages 9-16 | A powerful and reliable bike for the bigger kids.", link: "product/gobike-20-inch-electric-bike-for-kids-teens-ages-9-16" }
 ];
 
 const ProductCollection = () => {
@@ -144,7 +144,7 @@ const ProductCollection = () => {
           ))}
         </div>
         <div className={styles.viewAllButtonContainer}>
-          <Link href="/shop" className={styles.btnPrimary}>View All Bikes</Link>
+          <Link href="/bikes" className={styles.btnPrimary}>View All Bikes</Link>
         </div>
       </div>
     </section>
@@ -431,6 +431,7 @@ export default function Home() {
       <ProductCollection />
       <OurStory />
       <SmarterChoice />
+      <FeaturedBikes />
       <DifferenceSection />
       <CommunitySection />
       <HomePageReviews />

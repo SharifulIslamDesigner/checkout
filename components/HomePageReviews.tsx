@@ -53,7 +53,7 @@ export default function HomePageReviews() {
   useEffect(() => {
     async function fetchReviewsData() {
       try {
-        const response = await fetch('http://sharifulbuilds.com/wp-json/gobike/v1/reviews-summary');
+        const response = await fetch('//sharifulbuilds.com/wp-json/gobike/v1/reviews-summary');
         if (!response.ok) throw new Error('Failed to fetch reviews data');
         const result: ReviewsData = await response.json();
         setReviews(result.reviews);
