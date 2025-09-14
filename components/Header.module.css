@@ -65,12 +65,12 @@
 .mobileMenuLinks a, .mobileMenuFooter a, .mobileMenuLink {
   font-size: 1.2rem; font-weight: 500; color: #333; text-decoration: none;
   display: flex; align-items: center; gap: 0.75rem;
-  background: none; border: none; width: 100%; text-align: left; cursor: pointer; padding: 0 }
+  background: none; border-bottom: 1px solid; border-color: #ececec; width: 100%; text-align: left; cursor: pointer; padding: 0 }
 .mobileMenuLink a:hover, a.activeLink { color: #000; font-weight: 600; }
-.mobileMenuFooter { border-top: 1px solid #f0f0f0; padding-top: 1.5rem; margin-top: 1.5rem; }
+.mobileMenuFooter { border-top: 1px solid #f0f0f0; padding-top: 1rem; margin-top: 1.5rem; }
 .menuOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; }
 
-@media ( max-width:1000px ){
+@media ( max-width: 1000px ){
   .logoImage { height: 40px; width: 100%; }
 }
 .mobileSearchButton {
