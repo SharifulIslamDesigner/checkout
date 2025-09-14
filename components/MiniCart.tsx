@@ -31,15 +31,24 @@ export default function MiniCart({ isOpen, onClose }: MiniCartProps) {
   }, 0);
 
   // --- মূল সমাধান: ডাইনামিক চেকআউট URL তৈরি করার ফাংশন ---
- const generateCheckoutUrl = () => {
-  if (cartItems.length === 0) return '#';
-  const itemsForUrl = cartItems.map(item => ({ id: item.databaseId, quantity: item.quantity }));
-  const cartJson = JSON.stringify(itemsForUrl);
-  const encodedCart = encodeURIComponent(cartJson);
-  
-  // *** মূল সমাধান: URL এখন সরাসরি /checkout-কে নির্দেশ করছে ***
-  return `https://sharifulbuilds.com/checkout/?cart_items=${encodedCart}`;
-};  
+const generateCheckoutUrl = () => {
+    if (cartItems.length === 0) return '#';
+    
+    // কার্ট আইটেমগুলোকে শুধুমাত্র id এবং quantity সহ একটি নতুন অ্যারেতে পরিণত করা হচ্ছে
+    const itemsForUrl = cartItems.map(item => ({
+      id: item.databaseId,
+      quantity: item.quantity
+    }));
+    
+    // অ্যারেটিকে JSON স্ট্রিং-এ পরিণত করা হচ্ছে
+    const cartJson = JSON.stringify(itemsForUrl);
+    
+    // URL-এর জন্য স্ট্রিংটিকে এনকোড করা হচ্ছে
+    const encodedCart = encodeURIComponent(cartJson);
+    
+    // চূড়ান্ত URL তৈরি করা হচ্ছে
+    return `https://sharifulbuilds.com/cart/?cart_items=${encodedCart}`;
+  }; 
 
   if (!isOpen) return null;
 
@@ -89,11 +98,10 @@ export default function MiniCart({ isOpen, onClose }: MiniCartProps) {
               <Link href="/cart" className={`${styles.actionButton} ${styles.viewCart}`} onClick={onClose}>
                 View Cart
               </Link>
-                <a 
+                 <a 
                 href={generateCheckoutUrl()}
                 className={`${styles.actionButton} ${styles.checkout}`}
                 onClick={onClose}
-                rel="prefetch" // <-- শুধুমাত্র এই লাইনটি যোগ করা হয়েছে
               >
                 Checkout
               </a>

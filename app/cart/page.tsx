@@ -17,17 +17,18 @@ export default function CartPage() {
     return total + parsePrice(item.price) * item.quantity;
   }, 0);
 
-  const generateCheckoutUrl = () => {
-  if (cartItems.length === 0) return '#';
-  const itemsForUrl = cartItems.map(item => ({
-    id: item.databaseId,
-    quantity: item.quantity
-  }));
-  const cartJson = JSON.stringify(itemsForUrl);
-  const encodedCart = encodeURIComponent(cartJson);
-
-  // *** মূল সমাধান: URL এখন সরাসরি /checkout-কে নির্দেশ করছে ***
-  return `https://sharifulbuilds.com/checkout/?cart_items=${encodedCart}`;
+const generateCheckoutUrl = () => {
+    if (cartItems.length === 0) return '#';
+    
+    const itemsForUrl = cartItems.map(item => ({
+      id: item.databaseId,
+      quantity: item.quantity
+    }));
+    
+    const cartJson = JSON.stringify(itemsForUrl);
+    const encodedCart = encodeURIComponent(cartJson);
+    
+    return `https://sharifulbuilds.com/cart/?cart_items=${encodedCart}`;
   };
 
   if (cartItems.length === 0 && !loading) {
@@ -79,7 +80,6 @@ export default function CartPage() {
           <a
             href={generateCheckoutUrl()}
             className={styles.checkoutButton}
-            rel="prefetch" // <-- শুধুমাত্র এই লাইনটি যোগ করা হয়েছে
           >
             Proceed to Checkout
           </a>
