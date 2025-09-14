@@ -3,50 +3,67 @@
 import { useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import NProgress from 'nprogress';
-import 'nprogress/nprogress.css'; // ডিফল্ট স্টাইল ইম্পোর্ট করা হচ্ছে
+import 'nprogress/nprogress.css';
+
+// --- শুধুমাত্র একবার রান করার জন্য একটি Helper ---
+let nprogressStarted = false;
 
 export default function ProgressBar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    // --- কার্যকরী সমাধান: শুধুমাত্র নির্দিষ্ট পেজগুলোর জন্য nprogress চালু করুন ---
-    const dynamicRoutes = ['/bikes', '/products', '/product/', '/checkout'];
+    // পেজ লোড সম্পন্ন হলে বারটি বন্ধ করুন
+    NProgress.done();
+    nprogressStarted = false;
     
-    // URL পরিবর্তন শুরু হলে
-    const handleStart = (url: string) => {
-      const newPathname = new URL(url, window.location.origin).pathname;
-      // যদি নতুন পাথটি আমাদের ডাইনামিক রুটের তালিকার কোনো একটি দিয়ে শুরু হয়
-      if (dynamicRoutes.some(route => newPathname.startsWith(route))) {
+    // --- কার্যকরী সমাধান: গ্লোবাল ক্লিক ইভেন্ট শোনা ---
+    const handleAnchorClick = (event: MouseEvent) => {
+        try {
+            const targetUrl = (event.currentTarget as HTMLAnchorElement).href;
+            if (!targetUrl) return;
+
+            const newUrl = new URL(targetUrl);
+            const currentUrl = new URL(window.location.href);
+
+            // যদি ডোমেইন একই থাকে এবং পাথ ভিন্ন হয় (অর্থাৎ, একটি অভ্যন্তরীণ নেভিগেশন)
+            if (newUrl.origin === currentUrl.origin && newUrl.pathname !== currentUrl.pathname) {
+                const dynamicRoutes = ['/bikes', '/products', '/product/', '/checkout'];
+                if (dynamicRoutes.some(route => newUrl.pathname.startsWith(route))) {
+                    if (!nprogressStarted) {
+                        NProgress.start();
+                        nprogressStarted = true;
+                    }
+                }
+            }
+        } catch (err) {
+            // URL পার্স করতে ব্যর্থ হলে কিছু করার দরকার নেই
+        }
+    };
+    
+    // --- ব্রাউজারের back/forward বাটনের জন্য ---
+    const handlePopState = () => {
         NProgress.start();
-      }
+        nprogressStarted = true;
     };
 
-    // URL পরিবর্তন শেষ হলে
-    const handleStop = () => {
-      NProgress.done();
-    };
-    
-    // --- Next.js-এর রাউটিং ইভেন্টের সাথে লিঙ্ক করা ---
-    // এই অংশটি লিঙ্কে ক্লিক করলে handleStart কল করে
-    const originalPushState = history.pushState;
-    history.pushState = function (...args) {
-      handleStart(args[2] as string);
-      originalPushState.apply(history, args);
-    };
+    // সমস্ত a[href] ট্যাগের উপর ক্লিক ইভেন্ট যোগ করা
+    document.querySelectorAll('a[href]').forEach(anchor => {
+        anchor.addEventListener('click', handleAnchorClick);
+    });
 
-    // ব্রাউজারের back/forward বাটনের জন্য
-    window.addEventListener('popstate', handleStop);
+    window.addEventListener('popstate', handlePopState);
 
-    // handleStop ফাংশনটি এখানে সরাসরি কল করা হচ্ছে পেজ লোড সম্পন্ন হলে
-    handleStop();
-    
-    // Cleanup
+    // --- Cleanup: কম্পোনেন্ট আনমাউন্ট হলে ইভেন্টগুলো সরিয়ে দিন ---
     return () => {
-      history.pushState = originalPushState;
-      window.removeEventListener('popstate', handleStop);
+      document.querySelectorAll('a[href]').forEach(anchor => {
+        anchor.removeEventListener('click', handleAnchorClick);
+      });
+      window.removeEventListener('popstate', handlePopState);
+      NProgress.done(); // নিশ্চিত করুন যে বারটি বন্ধ হয়ে গেছে
+      nprogressStarted = false;
     };
-  }, [pathname, searchParams]);
+  }, [pathname, searchParams]); // pathname পরিবর্তন হলে useEffect আবার চলবে
 
   return null; // এই কম্পোনেন্টটি কোনো JSX রেন্ডার করে না
 }
