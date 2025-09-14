@@ -6,7 +6,7 @@ import "./globals.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { CartProvider } from "../context/CartContext"; // <-- CartProvider ইম্পোর্ট করা হয়েছে
-import ProgressBar from "../components/ProgressBar";
+import ProgressBarWrapper from "../components/ProgressBarWrapper";
 import { Toaster } from 'react-hot-toast'; 
 
 const geistSans = Geist({
@@ -36,7 +36,7 @@ export default function RootLayout({
       >
         {/* --- মূল সমাধান এখানে --- */}
         <CartProvider>
-          <ProgressBar />
+          <ProgressBarWrapper />
           <Toaster position="top-center" reverseOrder={false} /> 
           <Header />
           <main>
