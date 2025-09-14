@@ -28,7 +28,7 @@ export default function ProgressBar() {
 
             // যদি ডোমেইন একই থাকে এবং পাথ ভিন্ন হয় (অর্থাৎ, একটি অভ্যন্তরীণ নেভিগেশন)
             if (newUrl.origin === currentUrl.origin && newUrl.pathname !== currentUrl.pathname) {
-                const dynamicRoutes = ['/bikes', '/products', '/product/', '/checkout'];
+                const dynamicRoutes = ['/bikes', '/products', '/product/', '/spare-parts'];
                 if (dynamicRoutes.some(route => newUrl.pathname.startsWith(route))) {
                     if (!nprogressStarted) {
                         NProgress.start();
