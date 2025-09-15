@@ -1,5 +1,6 @@
 'use client';
-
+import { FaFacebookF, FaInstagram, FaYoutube, FaTiktok } from 'react-icons/fa';
+import Image from 'next/image';
 import { useState } from 'react';
 import Link from 'next/link';
 import styles from './Footer.module.css'; // <-- CSS মডিউল ইম্পোর্ট করা হচ্ছে
@@ -40,16 +41,36 @@ export default function Footer() {
 
       <div className={styles['final-footer-wrapper-v6']}>
           <div className={styles['final-footer-grid-v6']}>
-              <div className={`${styles['final-footer-column-v6']} ${styles['logo-column-v6']}`}><img src="https://gobike.au/wp-content/uploads/2025/06/GOBIKE-Electric-Bike-for-kids.webp" alt="GoBike Australia Logo" className={styles['final-footer-logo-v6']} /></div>
+              <div className={`${styles['final-footer-column-v6']} ${styles['logo-column-v6']}`}><Image src="https://gobike.au/wp-content/uploads/2025/06/GOBIKE-Electric-Bike-for-kids.webp" alt="GoBike Australia Logo"  width={1861} height={430} className={styles['final-footer-logo-v6']} /></div>
               <div className={`${styles['final-footer-column-v6']} ${styles['follow-column-v6']}`}>
-                  <h3>Follow Us</h3>
-                  <ul>
-                      <li><a href="https://www.facebook.com/Go-Bike-104997195659873" target="_blank" rel="noopener noreferrer"><img src="https://img.icons8.com/?size=100&id=uLWV5A9vXIPu&format=png&color=000000" alt="Facebook" className={styles['final-footer-social-icon-v6']} /><span>Facebook</span></a></li>
-                      <li><a href="https://www.instagram.com/gobikeoz/" target="_blank" rel="noopener noreferrer"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" className={styles['final-footer-social-icon-v6']} /><span>Instagram</span></a></li>
-                      <li><a href="https://www.youtube.com/@Gobike-r7b" target="_blank" rel="noopener noreferrer"><img src="https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png" alt="Youtube" className={styles['final-footer-social-icon-v6']} /><span>Youtube</span></a></li>
-                      <li><a href="https://www.tiktok.com/@gobikeau" target="_blank" rel="noopener noreferrer"><img src="https://img.icons8.com/?size=100&id=118638&format=png&color=000000" alt="TikTok" className={styles['final-footer-social-icon-v6']} /><span>TikTok</span></a></li>
-                  </ul>
-              </div>
+  <h3>Follow Us</h3>
+  <ul>
+    <li>
+      <a href="https://www.facebook.com/Go-Bike-104997195659873" target="_blank" rel="noopener noreferrer">
+        <FaFacebookF className={styles['final-footer-social-icon-v1']} />
+        <span>Facebook</span>
+      </a>
+    </li>
+    <li>
+      <a href="https://www.instagram.com/gobikeoz/" target="_blank" rel="noopener noreferrer">
+        <FaInstagram className={styles['final-footer-social-icon-v2']} />
+        <span>Instagram</span>
+      </a>
+    </li>
+    <li>
+      <a href="https://www.youtube.com/@Gobike-r7b" target="_blank" rel="noopener noreferrer">
+        <FaYoutube className={styles['final-footer-social-icon-v3']} />
+        <span>Youtube</span>
+      </a>
+    </li>
+    <li>
+      <a href="https://www.tiktok.com/@gobikeoz" target="_blank" rel="noopener noreferrer">
+        <FaTiktok className={styles['final-footer-social-icon-v4']} />
+        <span>TikTok</span>
+      </a>
+    </li>
+  </ul>
+</div>
               <div className={`${styles['final-footer-column-v6']} ${styles['quick-column-v6']}`}>
                   <h3>Quick Links</h3>
                   <ul>
@@ -101,7 +122,7 @@ export default function Footer() {
           <div className={styles['bottom-bar-container-v6']}>
               <div className={styles['copyright-text-v6']}>Copyright &copy; {new Date().getFullYear()} GoBike All Rights Reserved</div>
               <div className={styles['trust-symbols-v6']}>
-                  <img src="https://gobike.au/wp-content/uploads/2018/07/trust-symbols_b.jpg" alt="Secure Payment Methods" />
+                  <Image src="https://gobike.au/wp-content/uploads/2018/07/trust-symbols_b.jpg" width={1600} height={168} alt="Secure Payment Methods" />
               </div>
           </div>
       </div>

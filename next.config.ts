@@ -26,7 +26,12 @@ const nextConfig = {
         hostname: 'gobike.au',
          port: '',
          pathname: '/wp-content/uploads/**',
+         
        },
+       {
+        protocol: 'https',
+        hostname: 'i.ytimg.com',
+      },
     ],
   },
   // --- এই পর্যন্ত ---

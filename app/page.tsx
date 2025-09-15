@@ -35,7 +35,7 @@ const HeroSlider = () => {
 
         <div className={styles.finalSplitSliderWrapper} style={{ transform: `translateX(-${(currentSlide - 1) * 100}%)` }}>
           <div className={styles.finalSplitSlide}>
-            <div className={styles.finalSplitImageWrapper}><Image className={styles.finalSplitImage} loading="eager" src="https://gobike.au/wp-content/uploads/2025/08/Gobike-electric-bike-kids-ebike20-inch-ages-for10-16-1-1.webp"  alt="GoBike 20 Electric Bike for teens" width={1000} height={774} priority sizes="(max-width: 768px) 100vw, 50vw"/></div>
+            <div className={styles.finalSplitImageWrapper}><Image className={styles.finalSplitImage} loading="eager" src="https://gobike.au/wp-content/uploads/2025/08/Gobike-electric-bike-kids-ebike20-inch-ages-for10-16-1-1.webp"  alt="GoBike 20 Electric Bike for teens" width={1000} height={774} priority sizes="(max-width: 768px) 100vw, 50vw" fetchPriority="high" /></div>
             <div className={styles.finalSplitContent}>
               <p className={styles.finalSlideSubtitle}>The Ultimate Weapon</p>
               <h2 className={styles.finalSlideTitle}>GOBIKE 20</h2>
@@ -184,10 +184,34 @@ const OurStory = () => {
 // SmarterChoice Component
 // ====================================================================
 const choices = [
-    { image: "https://gobike.au/wp-content/uploads/2025/08/Gobike-kids-electric-bikes-electric-bike-for-kids-ebike-kids-electric-bike-Final-1.webp", label: "A child wearing a helmet, representing GoBike's commitment to safety", title: "Safety is Our Foundation", description: "From a gentle, slow-start mode for beginners to responsive, powerful brakes for confident riders, every detail is engineered to keep your child safe on their adventures." },
-    { image: "https://gobike.au/wp-content/uploads/2025/02/Electric-Balance-Bike-Electric-bike-Balance-Bike-Bike-baby-bike-E-bike-Electric-bike-E-bike-review-Electric-bike-review-Buy-e-bike-Buy-electric-bike-E-bike-price-Electric-bike-price-E-b-scaled-2.webp", label: "A tough GoBike frame, representing durability", title: "Built for Real Kids", description: "Kids play hard. We get it. That's why GoBikes are built with durable, high-quality frames and components that can handle bumps, skids, and years of relentless fun.", height: "200px" },
-    { image: "https://gobike.au/wp-content/uploads/2025/02/Electric-Balance-Bike-Electric-bike-Balance-Bike-Bike-baby-bike-E-bike-Electric-bike-E-bike-review-Electric-bike-review-Buy-e-bike-Buy-electric-bike-E-bike-price-Electric-bike-price-E-b-1-1-2.webp", label: "A GoBike battery, representing long ride times", title: "More Riding, Less Waiting", description: "Our high-efficiency batteries offer the longest run-times available, so the adventure doesn't have to stop. More time on the bike, less time plugged into the wall.", height: "200px" },
-    { image: "https://gobike.au/wp-content/uploads/2025/02/Electric-Balance-Bike-Electric-bike-Balance-Bike-scaled-1.webp", label: "The Australian flag, representing Aussie ownership", title: "Aussie Owned & Supported", description: "We're not just a store, we're a team of Aussie parents right here to help. When you need support, you'll get real advice from people who actually use and love the product.", height: "200px" }
+    { 
+      imageSrc: "https://gobike.au/wp-content/uploads/2025/08/Gobike-kids-electric-bikes-electric-bike-for-kids-ebike-kids-electric-bike-Final-1.webp", 
+      width: 1500, height: 1200, // <-- ছবির আসল মাপ (উদাহরণ)
+      label: "A child wearing a helmet, representing GoBike's commitment to safety", 
+      title: "Safety is Our Foundation", 
+      description: "From a gentle, slow-start mode for beginners to responsive, powerful brakes for confident riders, every detail is engineered to keep your child safe on their adventures." 
+    },
+    { 
+      imageSrc: "https://gobike.au/wp-content/uploads/2025/02/Electric-Balance-Bike-Electric-bike-Balance-Bike-Bike-baby-bike-E-bike-Electric-bike-E-bike-review-Electric-bike-review-Buy-e-bike-Buy-electric-bike-E-bike-price-Electric-bike-price-E-b-scaled-2.webp", 
+      width: 2560, height: 1706,
+      label: "A tough GoBike frame, representing durability", 
+      title: "Built for Real Kids", 
+      description: "Kids play hard. We get it. That's why GoBikes are built with durable, high-quality frames and components that can handle bumps, skids, and years of relentless fun."
+    },
+    { 
+      imageSrc: "https://gobike.au/wp-content/uploads/2025/02/Electric-Balance-Bike-Electric-bike-Balance-Bike-Bike-baby-bike-E-bike-Electric-bike-E-bike-review-Electric-bike-review-Buy-e-bike-Buy-electric-bike-E-bike-price-Electric-bike-price-E-b-1-1-2.webp", 
+      width: 1941, height: 1294,
+      label: "A GoBike battery, representing long ride times", 
+      title: "More Riding, Less Waiting", 
+      description: "Our high-efficiency batteries offer the longest run-times available, so the adventure doesn't have to stop. More time on the bike, less time plugged into the wall."
+    },
+    { 
+      imageSrc: "https://gobike.au/wp-content/uploads/2025/02/Electric-Balance-Bike-Electric-bike-Balance-Bike-scaled-1.webp", 
+      width: 1920, height: 1370,
+      label: "The Australian flag, representing Aussie ownership", 
+      title: "Aussie Owned & Supported", 
+      description: "We're not just a store, we're a team of Aussie parents right here to help. When you need support, you'll get real advice from people who actually use and love the product."
+    }
 ];
 
 const SmarterChoice = () => {
@@ -201,7 +225,16 @@ const SmarterChoice = () => {
         <div className={styles.smarterChoiceGrid}>
           {choices.map((choice, index) => (
             <div className={styles.choiceCard} key={index}>
-              <div className={styles.choiceCardImage} role="img" aria-label={choice.label} style={{ backgroundImage: `url('${choice.image}')`, height: choice.height ? choice.height : '260px' }}></div>
+              <div className={styles.choiceCardImageWrapper}>
+                <Image
+                  src={choice.imageSrc}
+                  alt={choice.label}
+                  width={choice.width}   // <-- ছবির আসল প্রস্থ
+                  height={choice.height} // <-- ছবির আসল উচ্চতা
+                  sizes="(max-width: 768px) 100vw, 25vw"
+                  style={{ objectFit: 'cover', width: '100%', height: '100%' }} // <-- height: 100% যোগ করা হয়েছে
+                />
+              </div>
               <div className={styles.choiceCardContent}>
                 <h3 className={styles.choiceCardTitle}>{choice.title}</h3>
                 <p className={styles.choiceCardDescription}>{choice.description}</p>
@@ -213,6 +246,7 @@ const SmarterChoice = () => {
     </section>
   );
 }
+
 // ====================================================================
 // DifferenceSection Component
 // ====================================================================
@@ -239,7 +273,7 @@ const DifferenceSection = () => {
               <thead>
                 <tr>
                   <th style={{ backgroundColor: 'transparent', borderColor: '#333' }}></th>
-                  <th style={{ borderColor: '#333' }}><img src="https://gobike.au/wp-content/uploads/2025/06/GOBIKE-Electric-Bike-for-kids-1.webp" alt="GoBike Logo" style={{ maxHeight: '40px', display: 'inline-block' }} /></th>
+                  <th style={{ borderColor: '#333' }}><Image src="https://gobike.au/wp-content/uploads/2025/06/GOBIKE-Electric-Bike-for-kids-1.webp" width={1880} height={410} alt="GoBike Logo" style={{ maxHeight: '40px', display: 'inline-block' }} /></th>
                   <th style={{ color: '#000', borderColor: '#333' }}>Others</th>
                 </tr>
               </thead>
