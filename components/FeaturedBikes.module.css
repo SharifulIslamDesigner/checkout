@@ -54,11 +54,11 @@
 
 .featuredProductCard {
   text-align: center;
-  border: 1px solid #f0f0f0;
+  border: 1px solid #e2e2e2;
   border-radius: 12px;
   padding: 1rem;
   transition: border-color 0.3s, box-shadow 0.3s;
-  background-color: #fff;
+  background-color: #f3f3f3;
   display: flex;
   flex-direction: column;
 }
@@ -92,7 +92,7 @@
 
 
 .featuredCardContent {
-  padding: 0 0.5rem;
+  padding: 0 0.4rem;
   flex-grow: 1; /* নিশ্চিত করে যে এটি বাকি জায়গা নেবে */
   display: flex;
   flex-direction: column;
@@ -100,9 +100,9 @@
 }
 
 .featuredProductName {
-  font-size: 1.1rem;
+  font-size: 1.5rem;
   font-weight: 600;
-  line-height: 1.4;
+  line-height: 1.1;
   margin: 0.5rem 0;
   min-height: 3em;
 }
@@ -120,7 +120,7 @@
 }
 .featuredReviewCount {
     font-size: 0.9rem;
-    color: #777;
+    color: #000000;
     margin-left: 0.5rem;
 }
 

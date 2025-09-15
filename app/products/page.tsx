@@ -49,10 +49,17 @@ async function getProductsAndCategories(
               name
               slug
               image { sourceUrl }
-              ... on SimpleProduct { price(format: FORMATTED) }
-              ... on VariableProduct { price(format: FORMATTED) }
-              averageRating
-              reviewCount 
+              ... on SimpleProduct { 
+                price(format: FORMATTED)
+                regularPrice(format: FORMATTED)
+                salePrice(format: FORMATTED)
+              }
+              ... on VariableProduct { 
+                price(format: FORMATTED)
+                regularPrice(format: FORMATTED)
+                salePrice(format: FORMATTED)
+              }
+                onSale
             }
             pageInfo { hasNextPage, hasPreviousPage, startCursor, endCursor }
           }

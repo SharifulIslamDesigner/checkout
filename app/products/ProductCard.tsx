@@ -13,6 +13,9 @@ interface Product {
   slug: string;
   image?: { sourceUrl: string };
   price?: string;
+  onSale: boolean;
+  regularPrice?: string;
+  salePrice?: string;
   averageRating?: number;
   reviewCount?: number;
 }
@@ -47,6 +50,16 @@ const StarRating = ({ rating, count }: { rating: number, count: number }) => {
 export default function ProductCard({ product }: ProductCardProps) {
   const [isAdding, setIsAdding] = useState(false);
   const { addToCart } = useCart();
+  const parsePrice = (priceStr?: string): number => {
+    if (!priceStr) return 0;
+    return parseFloat(priceStr.replace(/[^0-9.]/g, ''));
+  };
+
+  const regularPriceNum = parsePrice(product.regularPrice);
+  const salePriceNum = parsePrice(product.salePrice);
+  const discountPercent = regularPriceNum > 0 && salePriceNum < regularPriceNum 
+      ? Math.round(((regularPriceNum - salePriceNum) / salePriceNum) * 100) 
+      : 0;
 
   const handleAddToCart = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -81,6 +94,9 @@ export default function ProductCard({ product }: ProductCardProps) {
   return (
     <Link href={`/product/${product.slug}`} className={styles.productCard}>
         <div className={styles.productImageContainer}>
+          {product.onSale && discountPercent > 0 && (
+                <div className={styles.discountBadge}>-{discountPercent}%</div>
+            )}
             {product.image?.sourceUrl ? ( 
               <img src={product.image.sourceUrl} alt={product.name} className={styles.productImage} /> 
             ) : ( 
@@ -97,13 +113,18 @@ export default function ProductCard({ product }: ProductCardProps) {
             // যদি averageRating না থাকে, তাহলে একটি ফলব্যাক দেখানো যেতে পারে
             <div className={styles.noRating}><StarRating rating={0} count={0} /></div>
           )}
-          {/* ------------------------------------------------ */}
             
-            {canDisplayPrice ? (
-              <div className={styles.productPrice} dangerouslySetInnerHTML={{ __html: product.price! }} />
-            ) : (
-              <div className={styles.productPrice}>Price not available</div>
-            )}
+            <div className={styles.priceContainer}>
+                {product.onSale && product.salePrice ? (
+                    <>
+                        <span className={styles.regularPriceStriked} dangerouslySetInnerHTML={{ __html: product.regularPrice || '' }} />
+                        <span className={styles.salePrice} dangerouslySetInnerHTML={{ __html: product.salePrice }} />
+                    </>
+                ) : (
+                    <div className={styles.productPrice} dangerouslySetInnerHTML={{ __html: product.price || 'Price not available' }} />
+                )}
+            </div>
+            {/* -------------------------------------------- */}
 
             <button 
               className={styles.addToCartBtn} 

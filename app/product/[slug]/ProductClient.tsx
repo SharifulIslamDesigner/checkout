@@ -29,6 +29,9 @@ interface Product {
   image?: ImageNode;
   galleryImages: { nodes: ImageNode[]; };
   price?: string;
+  onSale: boolean;
+  regularPrice?: string;
+  salePrice?: string;
   attributes: { nodes: Attribute[]; };
   averageRating: number;
   reviewCount: number;
@@ -78,6 +81,16 @@ const FormattedDate = ({ dateString }: { dateString: string }) => {
 
 export default function ProductClient({ product }: { product: Product }) {
     const [mainImage, setMainImage] = useState<string | undefined>(product.image?.sourceUrl);
+    const parsePrice = (priceStr?: string): number => {
+        if (!priceStr) return 0;
+        return parseFloat(priceStr.replace(/[^0-9.]/g, ''));
+    };
+
+    const regularPriceNum = parsePrice(product.regularPrice);
+    const salePriceNum = parsePrice(product.salePrice);
+    const discountPercent = regularPriceNum > 0 && salePriceNum < regularPriceNum 
+        ? Math.round(((regularPriceNum - salePriceNum) / regularPriceNum) * 100) 
+        : 0;
     
     if (!product) return null;
 
@@ -123,9 +136,17 @@ export default function ProductClient({ product }: { product: Product }) {
             </div>
             <div className={styles.priceWrapper}>
                 <img src="https://gobike.au/wp-content/uploads/2025/08/hot-deal.svg" alt="Hot Deal" className={styles.dealBadge} />
-                {product.price && (
-                <div className={styles.productPrice} dangerouslySetInnerHTML={{ __html: product.price }} />
-                )}
+                {product.onSale && product.salePrice ? (
+        <div className={styles.salePriceContainer}>
+            <span className={styles.regularPriceStriked} dangerouslySetInnerHTML={{ __html: product.regularPrice || '' }} />
+            <span className={styles.salePrice} dangerouslySetInnerHTML={{ __html: product.salePrice }} />
+            {discountPercent > 0 && (
+                <span className={styles.discountBadge}>-{discountPercent}%</span>
+            )}
+        </div>
+    ) : (
+        <div className={styles.productPrice} dangerouslySetInnerHTML={{ __html: product.price || '' }} />
+    )}
             </div>
             {product.shortDescription && (
                 <div 

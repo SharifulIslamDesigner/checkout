@@ -117,13 +117,13 @@
 
 .reviewsGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 2rem;
 }
 
 /* --- কার্যকরী সমাধান: রিভিউ কার্ডের নতুন স্টাইল --- */
 .reviewCard {
-    background-color: #fff;
+    background-color: #f1f1f1;
     border-radius: 16px;
     padding: 1.5rem;
     border: 1px solid #e7e7e7;
@@ -139,8 +139,7 @@
 
 .reviewCardHeader { 
     display: flex; 
-    align-items: center; 
-    gap: 0.75rem; 
+    align-items: center;  
     margin-bottom: 1rem; 
 }
 
@@ -160,18 +159,18 @@
 .authorDetails {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
 .authorDetails strong { 
     font-weight: 600; 
-    font-size: 1rem;
+    font-size: 1.5rem;
 }
 
 .verifiedBadge { 
-    font-size: 0.8rem; 
-    color: #28a745;
-    font-weight: 500;
+    font-size: 1rem; 
+    color: #01b31e;
+    font-weight: 800;
 }
 
 /* StarRating-কে এখন বাম দিকে অ্যালাইন করা হবে */

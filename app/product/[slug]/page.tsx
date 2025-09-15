@@ -60,6 +60,9 @@ const GET_PRODUCT_QUERY = gql`
       galleryImages { nodes { sourceUrl } }
       ... on SimpleProduct {
         price(format: FORMATTED)
+        regularPrice(format: FORMATTED)
+        salePrice(format: FORMATTED)
+        onSale
         attributes { nodes { name options } }
         weight
         length
@@ -68,6 +71,9 @@ const GET_PRODUCT_QUERY = gql`
       }
       ... on VariableProduct {
         price(format: FORMATTED)
+        regularPrice(format: FORMATTED)
+        salePrice(format: FORMATTED)
+        onSale
         attributes { nodes { name options } }
         weight
         length
@@ -110,7 +116,7 @@ async function getProductData(slug: string) {
             variables: { slug: slug },
             context: {
                 fetchOptions: {
-                    next: { revalidate: 3600 },
+                    next: { revalidate: 0 },
                 },
             },
         });

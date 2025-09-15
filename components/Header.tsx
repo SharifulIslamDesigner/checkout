@@ -60,14 +60,14 @@ export default function Header() {
 
           {/* --- ডান অংশ: আইকন --- */}
           <div className={styles.actionIcons}>
-            <button className={styles.iconButtons} onClick={() => setIsSearchOpen(true)}>
+            <button className={styles.iconButtons} onClick={() => setIsSearchOpen(true)} aria-label="search bar">
               <IoSearch size={22} />
               <span>Search products</span>
             </button>
             <a href="https://sharifulbuilds.com/my-account/" className={`${styles.iconButton} ${styles.desktopOnly}`}>
               <IoPersonOutline size={24} />
             </a>
-            <button className={styles.cartIcon} onClick={openMiniCart}>
+            <button className={styles.cartIcon} onClick={openMiniCart} aria-label="MiniCart" >
               <span>🛒</span>
               {totalItems > 0 && <span className={styles.cartCount}>{totalItems}</span>}
             </button>
@@ -78,11 +78,11 @@ export default function Header() {
       {/* --- মোবাইল মেনু প্যানেল --- */}
       <div className={`${styles.mobileMenu} ${isMenuOpen ? styles.menuOpen : ''}`}>
           <div className={styles.mobileMenuHeader}>
-             <button className={styles.mobileSearchButton} onClick={() => setIsSearchOpen(true) }>
+             <button className={styles.mobileSearchButton} onClick={() => setIsSearchOpen(true) } aria-label="SearchBar">
               <IoSearch size={22} />
               <span>Search products</span>
             </button>
-            <button className={styles.closeMenuButton} onClick={() => setIsMenuOpen(false)}>
+            <button className={styles.closeMenuButton} onClick={() => setIsMenuOpen(false)} aria-label="Close Menu">
         <IoClose size={28} />
       </button>
           </div>
@@ -97,15 +97,15 @@ export default function Header() {
                <Link href="/blog" className={pathname === '/blog' ? styles.activeLink : ''} onClick={closeAllOverlays}>Blog</Link>
             </nav>
           <div className={styles.mobileMenuFooter}>
-            <a href="https://sharifulbuilds.com/my-account/" className={styles.mobileMenuLink}>
+            <a href="https://sharifulbuilds.com/my-account/" className={styles.mobileMenuLink} aria-label="My account">
                 <IoPersonOutline />
                 <span>My Account</span>
             </a>
           </div>
       </div>
-      {isMenuOpen && <div className={styles.menuOverlay} onClick={() => setIsMenuOpen(false)}></div>}
+      {isMenuOpen && <div className={styles.menuOverlay} onClick={() => setIsMenuOpen(false)} aria-label="Close"></div>}
       
-      {isSearchOpen && <SearchOverlay onClose={() => setIsSearchOpen(false)} />}
+      {isSearchOpen && <SearchOverlay onClose={() => setIsSearchOpen(false)} aria-label="Close searchber"/>}
       <MiniCart isOpen={isMiniCartOpen} onClose={closeMiniCart} />
     </>
   );

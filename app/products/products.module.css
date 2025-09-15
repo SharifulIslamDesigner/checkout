@@ -79,27 +79,21 @@
   flex-grow: 1;
 }
 .productName {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   font-weight: 600;
   margin: 0 0 0.75rem 0;
-  line-height: 1.4;
-  min-height: 50px; /* দুটি লাইনের জন্য জায়গা */
+  line-height: 1;
 }
 .productRating {
   margin-bottom: 1rem;
   color: #f59e0b; /* Amber color for stars */
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 .ratingCount {
-  color: #6b7280;
+  color: #0a0a0a;
   margin-left: 0.25rem;
 }
-.productPrice {
-  font-size: 1.75rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  margin-top: auto;
-}
+
 .addToCartBtn {
   width: 100%;
   padding: 0.3rem 1rem;
@@ -124,3 +118,53 @@
 
 /* --- Pagination & Filters --- */
 /* (আপনার বিদ্যমান PaginationControls এবং ProductFilters-এর স্টাইল এখানে অপরিবর্তিত থাকবে) */
+
+/* app/products/products.module.css */
+
+/* ... (আপনার পুরোনো সব CSS অপরিবর্তিত রাখুন) ... */
+
+.productImageContainer {
+    position: relative; /* Discount Badge-এর জন্য এটি জরুরি */
+    /* ... */
+}
+
+/* --- Sale Price-এর জন্য নতুন স্টাইল --- */
+.priceContainer {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    height: 2.25rem; /* একটি নির্দিষ্ট উচ্চতা দেওয়া হয়েছে */
+}
+
+.regularPriceStriked {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #000000;
+    text-decoration: line-through;
+}
+
+.salePrice {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ff0000;
+}
+.productPrice { /* পুরোনো ক্লাসের জন্য স্টাইল, যা sale-এ নেই */
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* --- Discount Badge-এর জন্য নতুন স্টাইল --- */
+.discountBadge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #ff0000;
+    color: #fff;
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    z-index: 1;
+}
