@@ -50,7 +50,7 @@
 
 /* --- মোবাইল মেনু --- */
 .mobileMenu {
-  position: fixed; top: 0; left: 0; width: 350px; height: 97vh;
+  position: fixed; top: 0; left: 0; width: 350px; height: 96vh;
   background-color: white; z-index: 1001;
   transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;

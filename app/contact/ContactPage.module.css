@@ -1,0 +1,169 @@
+/* app/contact/ContactPage.module.css */
+
+.gobikeContactPageWrapper {
+    padding: 2rem 0;
+}
+
+.contactContainer {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* === Top Section: Intro === */
+.contactIntroGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    margin-bottom: 4rem;
+}
+@media (max-width: 768px) {
+    .contactIntroGrid {
+        grid-template-columns: 1fr;
+    }
+    .contactIntroImage {
+        order: 1; /* মোবাইলে ছবি উপরে যাবে */
+    }
+}
+
+.contactIntroText h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+}
+.contactIntroText p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #4a5568;
+    margin-bottom: 1.5rem;
+}
+.contactIntroText a {
+    color: #007bff;
+    font-weight: 500;
+    text-decoration: none;
+}
+.contactIntroText a:hover {
+    text-decoration: underline;
+}
+
+.contactSocialLinks {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.contactSocialLinks a {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #fff;
+    text-decoration: none;
+}
+.socialFacebook {
+    background-color: #1877F2;
+}
+.socialInstagram {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+.contactInfoBox {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    border-left: 4px solid #007bff;
+}
+
+.contactIntroImage {
+    text-align: center;
+}
+
+
+/* === Middle Section: Contact Form === */
+.gobikeFormContainer {
+    background-color: #f8f9fa;
+    padding: 3rem;
+    border-radius: 16px;
+    border: 1px solid #e7e7e7;
+    margin-bottom: 4rem;
+}
+.gobikeFormContainer h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin: 0 0 2rem 0;
+}
+.gobikeFormContainer form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+@media (min-width: 600px) {
+    .gobikeFormContainer form {
+        grid-template-columns: 1fr 1fr;
+    }
+    .gobikeFormContainer form textarea {
+        grid-column: 1 / -1; /* Textarea পুরো জায়গা নেবে */
+    }
+    .gobikeFormContainer form button {
+        grid-column: 1 / -1; /* Button পুরো জায়গা নেবে */
+    }
+}
+
+.gobikeFormContainer input,
+.gobikeFormContainer textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+.gobikeFormContainer button {
+    background-color: #1a1a1a;
+    color: #fff;
+    border: none;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+}
+
+
+/* === Bottom Section: Consumer Rights === */
+.consumerRightsSection {
+    background-color: #000;
+    color: #fff;
+    padding: 3rem;
+    border-radius: 16px;
+    text-align: center;
+}
+.consumerRightsContent svg {
+    margin-bottom: 1rem;
+    stroke: #007bff; /* SVG-এর রঙ পরিবর্তন করা হয়েছে */
+}
+.consumerRightsContent h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+.consumerRightsContent p {
+    max-width: 700px;
+    margin: 0 auto 1.5rem auto;
+    line-height: 1.7;
+    color: #ccc;
+}
+.consumerRightsContent p a {
+    color: #fff;
+    font-weight: bold;
+}
+.consumerRightsButton {
+    display: inline-block;
+    background-color: #fff;
+    color: #000;
+    padding: 0.8rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+}

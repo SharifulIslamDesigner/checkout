@@ -1,24 +1,56 @@
-// app/contact/page.tsx
 'use client';
 
-import { useState, FormEvent } from 'react';
-import styles from './Contact.module.css';
+import { useState, FormEvent, ChangeEvent } from 'react';
+import styles from './ContactPage.module.css'; // <-- নিশ্চিত করুন এই CSS ফাইলটি আছে
+import toast from 'react-hot-toast';
+import Image from 'next/image'; // <-- Image কম্পোনেন্ট ইম্পোর্ট করা হয়েছে
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
-  const [formStatus, setFormStatus] = useState<{ status: 'success' | 'error' | ''; message: string }>({ status: '', message: '' });
+  // --- কার্যকরী সমাধান: State Management-কে একটি অবজেক্টে রাখা হয়েছে ---
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: '',
+  });
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  // ইনপুট পরিবর্তনের জন্য একটি ফাংশন
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  // ফর্ম সাবমিট করার জন্য ফাংশন
   const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    // এখানে আপনার ফর্ম পাঠানোর জন্য API রুট তৈরি করতে হবে।
-    // আপাতত, আমরা একটি ডেমো ফলাফল দেখাব।
-    console.log("Form Data Submitted:", formData);
-    setFormStatus({ status: 'success', message: "Thanks for your message! We'll get back to you shortly." });
-    setFormData({ name: '', email: '', phone: '', message: '' }); // ফর্ম রিসেট
+    setStatus('loading');
+    toast.loading('Sending your message...');
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+      toast.dismiss();
+
+      if (response.ok) {
+        setStatus('success');
+        toast.success(result.message || 'Message sent successfully!');
+        // ফর্ম রিসেট করা হচ্ছে
+        setFormData({ name: '', email: '', phone: '', message: '' });
+      } else {
+        throw new Error(result.message || 'An unknown error occurred.');
+      }
+    } catch (error: any) {
+      setStatus('error');
+      toast.error(error.message || 'Failed to send the message. Please try again.');
+    }
   };
 
   return (
@@ -36,11 +68,19 @@ export default function ContactPage() {
                 </div>
                 <div className={styles.contactInfoBox}>
                     <p><strong>Warehouse Location:</strong> CAMDEN SOUTH NSW. Please note, pickup is available by request only.</p>
-                    <p><strong>NSW – ON TWO WHEELS GLEDSWOOD HILLS – CAMDEN CYCLES – ENGADINE CYCLES AND SCOOTERS – SINGLETON BIKE SHOPn:</strong><br /> VIC – TBC in 2026.<br />QLD – TBC in 2026</p>
+                    <p><strong>Retailer Locations:</strong><br /> NSW – ON TWO WHEELS GLEDSWOOD HILLS – CAMDEN CYCLES – ENGADINE CYCLES AND SCOOTERS – SINGLETON BIKE SHOP<br /> VIC – TBC in 2026.<br />QLD – TBC in 2026</p>
                 </div>
             </div>
             <div className={styles.contactIntroImage}>
-                <img src="https://sharifulbuilds.com/wp-content/uploads/2025/09/electric-bike-ebike-for-kids-1.webp" alt="A child confidently riding a GoBike electric balance bike" />
+                {/* --- কার্যকরী সমাধান: Image কম্পোনেন্ট ব্যবহার করা হয়েছে --- */}
+                <Image 
+                    src="https://sharifulbuilds.com/wp-content/uploads/2025/02/1-Static-1x1-1.webp" 
+                    alt="A child confidently riding a GoBike electric balance bike"
+                    width={500} // ছবির আসল প্রস্থ দিন
+                    height={500} // ছবির আসল উচ্চতা দিন
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    style={{ width: '100%', height: 'auto', borderRadius: '12px' }}
+                />
             </div>
         </div>
 
@@ -52,13 +92,11 @@ export default function ContactPage() {
                 <input type="email" name="email" placeholder="Your Email *" value={formData.email} onChange={handleInputChange} required />
                 <input type="tel" name="phone" placeholder="Your Phone" value={formData.phone} onChange={handleInputChange} />
                 <textarea name="message" placeholder="Your Message *" value={formData.message} onChange={handleInputChange} required></textarea>
-                <button type="submit">Send Message</button>
+                <button type="submit" disabled={status === 'loading'}>
+                  {status === 'loading' ? 'Sending...' : 'Send Message'}
+                </button>
             </form>
-            {formStatus.message && (
-                <div className={`${styles.formMessage} ${formStatus.status === 'success' ? styles.formSuccess : styles.formError}`}>
-                    {formStatus.message}
-                </div>
-            )}
+            {/* react-hot-toast এখন বার্তা দেখানোর কাজ করবে, তাই এই অংশটির আর প্রয়োজন নেই */}
         </div>
 
         {/* Bottom Section: Consumer Rights */}

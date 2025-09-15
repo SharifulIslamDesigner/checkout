@@ -1,10 +1,12 @@
 // app/page.tsx
 "use client";
+import Image from 'next/image';
 import FeaturedBikes from '../components/FeaturedBikes';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import styles from './page.module.css';
-import HomePageReviews from '../components/HomePageReviews'; // <-- আপনার নতুন কম্পোনেন্ট ইম্পোর্ট করা হয়েছে
+import HomePageReviews from '../components/HomePageReviews'; 
+// <-- আপনার নতুন কম্পোনেন্ট ইম্পোর্ট করা হয়েছে
 
 // ====================================================================
 // HeroSlider Component
@@ -33,7 +35,7 @@ const HeroSlider = () => {
 
         <div className={styles.finalSplitSliderWrapper} style={{ transform: `translateX(-${(currentSlide - 1) * 100}%)` }}>
           <div className={styles.finalSplitSlide}>
-            <div className={styles.finalSplitImageWrapper}><img className={styles.finalSplitImage} loading="eager" src="https://gobike.au/wp-content/uploads/2025/08/Gobike-electric-bike-kids-ebike20-inch-ages-for10-16-1-1.webp" alt="GoBike 20 Electric Bike for teens" /></div>
+            <div className={styles.finalSplitImageWrapper}><Image className={styles.finalSplitImage} loading="eager" src="https://gobike.au/wp-content/uploads/2025/08/Gobike-electric-bike-kids-ebike20-inch-ages-for10-16-1-1.webp"  alt="GoBike 20 Electric Bike for teens" width={1000} height={774} priority sizes="(max-width: 768px) 100vw, 50vw"/></div>
             <div className={styles.finalSplitContent}>
               <p className={styles.finalSlideSubtitle}>The Ultimate Weapon</p>
               <h2 className={styles.finalSlideTitle}>GOBIKE 20</h2>
@@ -42,7 +44,7 @@ const HeroSlider = () => {
             </div>
           </div>
           <div className={styles.finalSplitSlide}>
-              <div className={styles.finalSplitImageWrapper}><img className={styles.finalSplitImage} loading="lazy" src="https://gobike.au/wp-content/uploads/2025/08/Gobike-electric-bike-kids-ebike20-inch-ages-for10-16-2.webp" alt="GoBike 16 Electric Bike for kids" /></div>
+              <div className={styles.finalSplitImageWrapper}><Image className={styles.finalSplitImage} loading="lazy" src="https://gobike.au/wp-content/uploads/2025/08/Gobike-electric-bike-kids-ebike20-inch-ages-for10-16-2.webp" alt="GoBike 16 Electric Bike for kids" width={1000} height={849} sizes="(max-width: 768px) 100vw, 50vw" /></div>
               <div className={styles.finalSplitContent}>
                   <p className={styles.finalSlideSubtitle}>The All-Rounder</p>
                   <h2 className={styles.finalSlideTitle}>GOBIKE 16</h2>
@@ -51,7 +53,7 @@ const HeroSlider = () => {
               </div>
           </div>
           <div className={styles.finalSplitSlide}>
-              <div className={styles.finalSplitImageWrapper}><img className={styles.finalSplitImage} loading="lazy" src="https://gobike.au/wp-content/uploads/2025/08/Gobike-electric-bike-kids-ebike12-inch-ages-for-2-5-1.webp" alt="GoBike 12 Electric Bike for toddlers" /></div>
+              <div className={styles.finalSplitImageWrapper}><Image className={styles.finalSplitImage} loading="lazy" src="https://gobike.au/wp-content/uploads/2025/08/Gobike-electric-bike-kids-ebike12-inch-ages-for-2-5-1.webp" alt="GoBike 12 Electric Bike for toddlers" width={1000} height={803} sizes="(max-width: 768px) 100vw, 50vw"/></div>
               <div className={styles.finalSplitContent}>
                   <p className={styles.finalSlideSubtitle}>The Everyday GoBike Range</p>
                   <h2 className={styles.finalSlideTitle}>GOBIKE 12</h2>
@@ -132,7 +134,7 @@ const ProductCollection = () => {
           {products.map((product, index) => (
             <Link href={product.link} className={styles.productCard} key={index}>
               <div className={styles.productImageContainer}>
-                <img loading="lazy" src={product.imgSrc} alt={product.altText} />
+                <Image loading="lazy" src={product.imgSrc} alt={product.altText} width={2560} height={1850} sizes="(max-width: 768px) 100vw, 33vw"/>
               </div>
               <div className={styles.productInfo}>
                 <h3 className={styles.productName}>{product.name}</h3>
@@ -160,7 +162,7 @@ const OurStory = () => {
       <div className={styles.container1500}>
         <div className={styles.originStoryGrid}>
           <div className={styles.originStoryImage}>
-            <img loading="lazy" src="https://gobike.au/wp-content/uploads/2025/08/gobike-scaled-1.webp" alt="Two Australian dads with their kids and electric balance bikes, representing the founders of GoBike" />
+            <Image loading="lazy" src="https://gobike.au/wp-content/uploads/2025/08/gobike-scaled-1.webp" alt="Two Australian dads with their kids and electric balance bikes, representing the founders of GoBike" width={2049} height={2560} sizes="(max-width: 768px) 100vw, 50vw" />
           </div>
           <div className={styles.originStoryText}>
             <p className={styles.storyTagline}>Our Story</p>
@@ -267,7 +269,7 @@ const CommunitySection = () => {
       <div style={{ maxWidth: '1450px', margin: '0 auto' }}>
         <div className={styles.finalCommunityGrid}>
           <div className={styles.communityImage}>
-            <img loading="lazy" src="https://gobike.au/wp-content/uploads/2025/08/electric-bike-ebike-for-kids-1.webp" alt="A diverse group of happy kids and families, representing the GoBike community" />
+            <Image loading="lazy" src="https://gobike.au/wp-content/uploads/2025/08/electric-bike-ebike-for-kids-1.webp" alt="A diverse group of happy kids and families, representing the GoBike community" width={2199} height={2560} sizes="(max-width: 768px) 100vw, 50vw" />
           </div>
           <div className={styles.finalCommunityText}>
             <h2 className={styles.communityTitle}>More Than a Bike - It's The GoBike Family</h2>
@@ -384,9 +386,9 @@ const FaqSection = () => {
 // BlogSection Component
 // ====================================================================
 const blogPosts = [
-    { link: "/blog/is-a-kids-electric-bike-worth-it-the-ultimate-2025-aussie-parents-guide/", imageSrc: "https://gobike.au/wp-content/uploads/2025/08/Gobike-kids-electric-bike-ebike-for-kids-2-scaled-1.webp", altText: "A child standing with a GoBike 14, representing the future of fun for kids electric balance bikes", badge: "Buyer's Guide", title: "Electric Bikes: The Future of Fun for Aussie Kids?", excerpt: "Is an electric balance bike the right choice for your child? We break down the benefits, from safety features to building confidence." },
-    { link: "/blog/gobike-electric-balance-bike-revolutionizing-kids-outdoor-fun/", imageSrc: "https://gobike.au/wp-content/uploads/2025/08/Gobike-kids-electric-bike-ebike-for-kids-1-scaled-1.webp", altText: "A young child having outdoor fun on a GoBike electric balance bike, revolutionizing their playtime", badge: "Tips & Tricks", title: "Revolutionizing Kid's Outdoor Fun: The GoBike Guide", excerpt: "Discover how a GoBike can transform your child's outdoor playtime, encouraging adventure and developing crucial motor skills." },
-    { link: "/blog/a-fun-and-eco-friendly-ride-for-the-whole-family/", imageSrc: "https://gobike.au/wp-content/uploads/2025/08/Gobike-kids-electric-bike-ebike-for-kids-5-scaled-1.webp", altText: "A child giving a thumbs up on a GoBike, an eco-friendly ride for all ages", badge: "Lifestyle", title: "A Fun and Eco-Friendly Ride for the Whole Family", excerpt: "Learn why electric bikes are a fantastic, eco-friendly way for kids and teens to stay active and explore their world." }
+    { link: "/blog/gobike-maintenance-tips", imageSrc: "https://gobike.au/wp-content/uploads/2025/08/Gobike-kids-electric-bike-ebike-for-kids-2-scaled-1.webp", altText: "A child standing with a GoBike 14, representing the future of fun for kids electric balance bikes", badge: "Buyer's Guide", title: "Electric Bikes: The Future of Fun for Aussie Kids?", excerpt: "Is an electric balance bike the right choice for your child? We break down the benefits, from safety features to building confidence." },
+    { link: "/blog", imageSrc: "https://gobike.au/wp-content/uploads/2025/08/Gobike-kids-electric-bike-ebike-for-kids-1-scaled-1.webp", altText: "A young child having outdoor fun on a GoBike electric balance bike, revolutionizing their playtime", badge: "Tips & Tricks", title: "Revolutionizing Kid's Outdoor Fun: The GoBike Guide", excerpt: "Discover how a GoBike can transform your child's outdoor playtime, encouraging adventure and developing crucial motor skills." },
+    { link: "/blog", imageSrc: "https://gobike.au/wp-content/uploads/2025/08/Gobike-kids-electric-bike-ebike-for-kids-5-scaled-1.webp", altText: "A child giving a thumbs up on a GoBike, an eco-friendly ride for all ages", badge: "Lifestyle", title: "A Fun and Eco-Friendly Ride for the Whole Family", excerpt: "Learn why electric bikes are a fantastic, eco-friendly way for kids and teens to stay active and explore their world." }
 ];
 
 const BlogSection = () => {
