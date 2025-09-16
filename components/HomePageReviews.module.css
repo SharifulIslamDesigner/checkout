@@ -45,6 +45,10 @@
 }
 @media (max-width: 991px) {
     .summaryAverage { padding-right: 0; border-right: none; padding-bottom: 2rem; border-bottom: 1px solid #e0e0e0; }
+    .starRating { 
+    margin-left: 6rem;
+}
+
 }
 .averageRatingValue { 
     font-size: 4rem; 
@@ -98,6 +102,7 @@
 }
 @media (max-width: 991px) {
     .addReviewWrapper { padding-left: 0; border-left: none; padding-top: 2rem; border-top: 1px solid #e0e0e0; }
+    
 }
 .addReviewButton {
     background-color: #1a1a1a;
@@ -169,7 +174,7 @@
 
 .verifiedBadge { 
     font-size: 1rem; 
-    color: #01b31e;
+    color: #00ccff;
     font-weight: 800;
 }
 
@@ -181,7 +186,7 @@
 }
 
 .reviewContent { 
-    color: #333; 
+    color: #000000; 
     line-height: 1.6; 
     font-size: 0.95rem; 
     margin: 0 0 1rem 0; /* <-- মার্জিন পরিবর্তন */
@@ -205,9 +210,11 @@
     border-radius: 6px; 
 }
 .reviewProductInfo a { 
-    color: #0070f3; 
+    color: #000000; 
     text-decoration: none; 
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 1rem;
+
 }
 .reviewProductInfo a:hover { 
     text-decoration: underline; 

@@ -505,15 +505,42 @@ export default function Home() {
     <main>
       <HeroSlider />
       <TrustBadges />
+       <div className={styles.sectionDividerWrapper}>
+        <hr className={styles.sectionDivider} />
+      </div>
       <ProductCollection />
+       <div className={styles.sectionDividerWrapper}>
+        <hr className={styles.sectionDivider} />
+      </div>
       <OurStory />
+       <div className={styles.sectionDividerWrapper}>
+        <hr className={styles.sectionDivider} />
+      </div>
       <SmarterChoice />
+       <div className={styles.sectionDividerWrapper}>
+        <hr className={styles.sectionDivider} />
+      </div>
       <FeaturedBikes />
+       <div className={styles.sectionDividerWrapper}>
+        <hr className={styles.sectionDivider} />
+      </div>
       <DifferenceSection />
       <CommunitySection />
+       <div className={styles.sectionDividerWrapper}>
+        <hr className={styles.sectionDivider} />
+      </div>
       <HomePageReviews />
+       <div className={styles.sectionDividerWrapper}>
+        <hr className={styles.sectionDivider} />
+      </div>
       <VideoReviews />
+       <div className={styles.sectionDividerWrapper}>
+        <hr className={styles.sectionDivider} />
+      </div>
       <FaqSection />
+       <div className={styles.sectionDividerWrapper}>
+        <hr className={styles.sectionDivider} />
+      </div>
       <BlogSection />
     </main>
   );

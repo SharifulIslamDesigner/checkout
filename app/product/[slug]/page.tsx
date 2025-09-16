@@ -116,7 +116,7 @@ async function getProductData(slug: string) {
             variables: { slug: slug },
             context: {
                 fetchOptions: {
-                    next: { revalidate: 0 },
+                    next: { revalidate: 7200 },
                 },
             },
         });

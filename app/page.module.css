@@ -806,3 +806,14 @@
     line-height: 1.6;
     color: #444;
 }
+.sectionDividerWrapper {
+    max-width: 1500px; /* আপনার container1500-এর সাথে মিলিয়ে প্রস্থ দিন */
+    margin: 0 auto; /* মাঝখানে আনার জন্য */
+    padding: 0 1rem; /* দুই পাশে প্যাডিং */
+}
+
+.sectionDivider {
+    border: none; /* ডিফল্ট বর্ডার তুলে দেওয়া হচ্ছে */
+    border-top: 1px solid #e0e0e0; /* একটি ১ পিক্সেল চওড়া, হালকা ধূসর রঙের লাইন */
+    margin: 1rem 0 0 0; /* উপরে এবং নিচে ফাঁকা জায়গা তৈরি করে */
+}

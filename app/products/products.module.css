@@ -144,7 +144,11 @@
     color: #000000;
     text-decoration: line-through;
 }
-
+.priceWrapper{
+  font-size: 1.5rem;
+    font-weight: 700;
+    color: #ff0000;
+}
 .salePrice {
     font-size: 1.5rem;
     font-weight: 700;

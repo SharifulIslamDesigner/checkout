@@ -13,17 +13,15 @@ interface Product {
   slug: string;
   image?: { sourceUrl: string };
   price?: string;
+  averageRating?: number;
+  reviewCount?: number;
   onSale: boolean;
   regularPrice?: string;
   salePrice?: string;
-  averageRating?: number;
-  reviewCount?: number;
 }
 interface ProductCardProps {
   product: Product;
 }
-
-// --- কার্যকরী সমাধান: StarRating কম্পוננטটিকে ইন্টারফেসের বাইরে আনা হয়েছে ---
 const StarRating = ({ rating, count }: { rating: number, count: number }) => {
   const totalStars = 5;
   const fullStars = Math.floor(rating);
@@ -50,6 +48,8 @@ const StarRating = ({ rating, count }: { rating: number, count: number }) => {
 export default function ProductCard({ product }: ProductCardProps) {
   const [isAdding, setIsAdding] = useState(false);
   const { addToCart } = useCart();
+  
+  // --- কার্যকরী সমাধান: ডিসকাউন্ট শতাংশ গণনা ---
   const parsePrice = (priceStr?: string): number => {
     if (!priceStr) return 0;
     return parseFloat(priceStr.replace(/[^0-9.]/g, ''));
@@ -94,7 +94,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   return (
     <Link href={`/product/${product.slug}`} className={styles.productCard}>
         <div className={styles.productImageContainer}>
-          {product.onSale && discountPercent > 0 && (
+            {product.onSale && discountPercent > 0 && (
                 <div className={styles.discountBadge}>-{discountPercent}%</div>
             )}
             {product.image?.sourceUrl ? ( 
@@ -105,15 +105,15 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
         <div className={styles.productInfo}>
              <h3 className={styles.productName}>{product.name}</h3>
-          
-          {/* --- কার্যকরী সমাধান: শর্তটিকে সরল করা হয়েছে --- */}
-          {typeof product.averageRating === 'number' ? (
-            <StarRating rating={product.averageRating} count={product.reviewCount || 0} />
-          ) : (
-            // যদি averageRating না থাকে, তাহলে একটি ফলব্যাক দেখানো যেতে পারে
-            <div className={styles.noRating}><StarRating rating={0} count={0} /></div>
-          )}
-            
+
+            {/* --- কার্যকরী সমাধান: স্টার রেটিং-এর কোডটি এখানে ফিরিয়ে আনা হয়েছে --- */}
+            {typeof product.averageRating === 'number' ? (
+                <StarRating rating={product.averageRating} count={product.reviewCount || 0} />
+            ) : (
+                <div className={styles.noRating}></div> // ফলব্যাক
+            )}
+            {/* ----------------------------------------------------------------------- */}
+
             <div className={styles.priceContainer}>
                 {product.onSale && product.salePrice ? (
                     <>
@@ -124,8 +124,6 @@ export default function ProductCard({ product }: ProductCardProps) {
                     <div className={styles.productPrice} dangerouslySetInnerHTML={{ __html: product.price || 'Price not available' }} />
                 )}
             </div>
-            {/* -------------------------------------------- */}
-
             <button 
               className={styles.addToCartBtn} 
               onClick={handleAddToCart}
