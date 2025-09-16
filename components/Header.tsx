@@ -31,7 +31,7 @@ export default function Header() {
           
           {/* --- বাম অংশ: ডেস্কটপে লোগো, মোবাইলে হ্যামবার্গার --- */}
           <div className={styles.leftSection}>
-            <button onClick={() => setIsMenuOpen(true)} className={`${styles.iconButton} ${styles.hamburger}`}>
+            <button onClick={() => setIsMenuOpen(true)} className={`${styles.iconButton} ${styles.hamburger}`}aria-label="Menu">
                 <IoMenu size={28} />
             </button>
             <div className={`${styles.logo} ${styles.desktopOnly}`}>
@@ -64,7 +64,7 @@ export default function Header() {
               <IoSearch size={22} />
               <span>Search products</span>
             </button>
-            <a href="https://sharifulbuilds.com/my-account/" className={`${styles.iconButton} ${styles.desktopOnly}`}>
+            <a href="https://sharifulbuilds.com/my-account/" className={`${styles.iconButton} ${styles.desktopOnly}`}aria-label="My account link">
               <IoPersonOutline size={24} />
             </a>
             <button className={styles.cartIcon} onClick={openMiniCart} aria-label="MiniCart" >

@@ -132,17 +132,65 @@
 
 .featuredAddToCartBtn {
   width: 100%;
-  padding: 0.9rem;
+  padding: 0.5rem;
   margin-top: 1rem; /* লিঙ্ক এবং বাটনের মধ্যে ফাঁকা জায়গা */
   background-color: #1a1a1a;
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 50px;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 1.5rem;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 .featuredAddToCartBtn:hover {
   background-color: #333;
+}
+/* components/FeaturedBikes.module.css */
+
+/* ... (আপনার পুরোনো সব CSS অপরিবর্তিত রাখুন) ... */
+
+.featuredImageWrapper {
+    position: relative; /* Discount Badge-এর জন্য এটি জরুরি */
+    /* ... */
+}
+
+/* --- Sale Price-এর জন্য নতুন স্টাইল --- */
+.featuredPriceContainer {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin: 0.5rem 0 1rem 0;
+    height: 2.25rem;
+}
+.featuredRegularPriceStriked {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #070707;
+    text-decoration: line-through;
+}
+.featuredSalePrice {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ff0000;
+}
+.featuredProductPrice { /* পুরোনো ক্লাসের স্টাইল */
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0.5rem 0 1rem 0;
+}
+
+/* --- Discount Badge-এর জন্য নতুন স্টাইল --- */
+.featuredDiscountBadge {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-color: #fc0505;
+    color: #fff;
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    z-index: 1;
 }

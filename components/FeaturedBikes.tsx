@@ -18,6 +18,9 @@ interface Product {
   price?: string;
   averageRating?: number;
   reviewCount?: number;
+  onSale: boolean;
+  regularPrice?: string;
+  salePrice?: string;
 }
 
 // --- GraphQL কোয়েরি ---
@@ -30,10 +33,19 @@ const GET_FEATURED_BIKES_QUERY = gql`
         name
         slug
         image { sourceUrl }
-        ... on SimpleProduct { price(format: FORMATTED) }
-        ... on VariableProduct { price(format: FORMATTED) }
         averageRating
         reviewCount
+        onSale
+        ... on SimpleProduct { 
+          price(format: FORMATTED)
+          regularPrice(format: FORMATTED)
+          salePrice(format: FORMATTED)
+        }
+        ... on VariableProduct { 
+          price(format: FORMATTED)
+          regularPrice(format: FORMATTED)
+          salePrice(format: FORMATTED)
+        }
       }
     }
   }
@@ -44,8 +56,6 @@ const StarRating = ({ rating, count }: { rating: number, count: number }) => {
     const totalStars = 5;
     const fullStars = Math.floor(rating);
     const emptyStars = totalStars - fullStars;
-    
-    // rating 0 হলে halfStar false হবে
     const halfStar = rating > 0 && rating % 1 !== 0;
 
     return (
@@ -87,7 +97,6 @@ const AddToCartButton = ({ product }: { product: Product }) => {
         </button>
     );
 }
-
 
 // --- মূল কম্পোনেন্ট ---
 export default function FeaturedBikes() {
@@ -135,41 +144,62 @@ export default function FeaturedBikes() {
           </p>
         </div>
         <div className={styles.featuredGrid}>
-          {products.map((product) => (
-            <div key={product.id} className={styles.featuredProductCard}>
-              <Link href={`/product/${product.slug}`}>
-                <div className={styles.featuredImageWrapper}>
-                  {product.image?.sourceUrl && (
-                    <Image
-                      src={product.image.sourceUrl}
-                      alt={product.name}
-                      width={500}
-                      height={500}
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                      style={{ objectFit: 'contain' }}
-                    />
-                  )}
-                </div>
-                <div className={styles.featuredCardContent}>
-                  <h3 className={styles.featuredProductName}>{product.name}</h3>
-                  
-                  {/* --- কার্যকরী সমাধান: ProductCard-এর মতোই একই শর্ত এবং prop পাসিং --- */}
-                  {typeof product.averageRating === 'number' ? (
-                    <StarRating rating={product.averageRating} count={product.reviewCount || 0} />
-                  ) : (
-                    // ফলব্যাক হিসেবে খালি স্টার দেখানো হচ্ছে
-                    <div className={styles.featuredStarRating}>
-                        {[...Array(5)].map((_, i) => <span key={`empty-${i}`}>☆</span>)}
+          {products.map((product) => {
+            const parsePrice = (priceStr?: string): number => {
+                if (!priceStr) return 0;
+                return parseFloat(priceStr.replace(/[^0-9.]/g, ''));
+            };
+            const regularPriceNum = parsePrice(product.regularPrice);
+            const salePriceNum = parsePrice(product.salePrice);
+            const discountPercent = regularPriceNum > 0 && salePriceNum < regularPriceNum 
+                ? Math.round(((regularPriceNum - salePriceNum) / regularPriceNum) * 100)
+                : 0;
+            
+            return (
+                <div key={product.id} className={styles.featuredProductCard}>
+                  <Link href={`/product/${product.slug}`}>
+                    <div className={styles.featuredImageWrapper}>
+                      {product.onSale && discountPercent > 0 && (
+                          <div className={styles.featuredDiscountBadge}>-{discountPercent}%</div>
+                      )}
+                      {product.image?.sourceUrl && (
+                        <Image
+                          src={product.image.sourceUrl}
+                          alt={product.name}
+                          width={500}
+                          height={500}
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          style={{ objectFit: 'contain' }}
+                        />
+                      )}
                     </div>
-                  )}
-                  {/* ------------------------------------------------------------------------- */}
+                    <div className={styles.featuredCardContent}>
+                      <h3 className={styles.featuredProductName}>{product.name}</h3>
+                      
+                      {typeof product.averageRating === 'number' ? (
+                        <StarRating rating={product.averageRating} count={product.reviewCount || 0} />
+                      ) : (
+                        <div className={styles.featuredStarRating}>
+                            {[...Array(5)].map((_, i) => <span key={`empty-${i}`}>☆</span>)}
+                        </div>
+                      )}
 
-                  <div className={styles.featuredProductPrice} dangerouslySetInnerHTML={{ __html: product.price || '' }} />
+                      <div className={styles.featuredPriceContainer}>
+                          {product.onSale && product.salePrice ? (
+                              <>
+                                  <span className={styles.featuredRegularPriceStriked} dangerouslySetInnerHTML={{ __html: product.regularPrice || '' }} />
+                                  <span className={styles.featuredSalePrice} dangerouslySetInnerHTML={{ __html: product.salePrice }} />
+                              </>
+                          ) : (
+                              <div className={styles.featuredProductPrice} dangerouslySetInnerHTML={{ __html: product.price || '' }} />
+                          )}
+                      </div>
+                    </div>
+                  </Link>
+                  <AddToCartButton product={product} />
                 </div>
-              </Link>
-              <AddToCartButton product={product} />
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
