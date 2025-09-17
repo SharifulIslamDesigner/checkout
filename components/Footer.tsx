@@ -8,13 +8,40 @@ import styles from './Footer.module.css'; // <-- CSS মডিউল ইম্�
 export default function Footer() {
   const [email, setEmail] = useState('');
   const [feedbackMessage, setFeedbackMessage] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle'); // <-- নতুন স্টেট
 
   const handleSubscription = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Subscribing with email:", email);
-    setFeedbackMessage("Thank you for subscribing!");
-    setEmail('');
-    setTimeout(() => setFeedbackMessage(''), 5000);
+    setStatus('loading');
+    setFeedbackMessage('Subscribing...');
+
+    try {
+        const response = await fetch('/api/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email })
+        });
+        
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.message || 'An error occurred.');
+        }
+
+        setStatus('success');
+        setFeedbackMessage(result.message);
+        setEmail('');
+
+    } catch (error: any) {
+        setStatus('error');
+        setFeedbackMessage(error.message || 'Failed to subscribe. Please try again.');
+    } finally {
+        // মেসেজটি ৫ সেকেন্ড পর মুছে যাবে
+        setTimeout(() => {
+            setFeedbackMessage('');
+            setStatus('idle');
+        }, 5000);
+    }
   };
 
   return (
@@ -34,7 +61,7 @@ export default function Footer() {
                           <span>Sign Up</span>
                       </button>
                   </form>
-                  {feedbackMessage && <p className={`${styles['subscription-feedback-v6']} ${styles['feedback-success-v6']}`}>{feedbackMessage}</p>}
+                  {feedbackMessage && <p className={`${styles['subscription-feedback-v6']} ${status === 'success' ? styles['feedback-success-v6'] : styles['feedback-error-v6']}`}>{feedbackMessage}</p>}
               </div>
           </div>
       </div>

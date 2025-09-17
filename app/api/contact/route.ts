@@ -7,7 +7,7 @@ export async function POST(request: Request) {
     const { name, email, phone, message } = body;
 
     // আপনার Hostinger-এর ইমেইল এবং পাসওয়ার্ড
-    const user = 'guy.r.abbott@gobikezone.com';
+    const user = 'gobike@devshariful.com';
     const pass = '24816326412890Sh@';
     const toEmail = 'gobike@gobike.au';
 
