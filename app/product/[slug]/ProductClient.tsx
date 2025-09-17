@@ -6,6 +6,8 @@ import Image from 'next/image';
 import QuantityAddToCart from '../../../components/QuantityAddToCart';
 import ReviewForm from './ReviewForm';
 import ProductCard from '../../products/ProductCard';
+import { gtmViewItem } from '../../../lib/gtm';
+import { klaviyoTrackViewedProduct } from '../../../lib/klaviyo';
 
 // --- ইন্টারফেসগুলো নতুন ডেটা স্ট্রাকচার অনুযায়ী আপডেট করা হয়েছে ---
 interface ImageNode { sourceUrl: string; }
@@ -91,7 +93,30 @@ export default function ProductClient({ product }: { product: Product }) {
     const discountPercent = regularPriceNum > 0 && salePriceNum < regularPriceNum 
         ? Math.round(((regularPriceNum - salePriceNum) / regularPriceNum) * 100) 
         : 0;
-    
+    useEffect(() => {
+        if (product) {
+            const priceString = product.salePrice || product.price || '0';
+            const priceNum = parseFloat(priceString.replace(/[^0-9.]/g, ''));
+            
+            gtmViewItem({
+                item_name: product.name,
+                item_id: product.databaseId,
+                price: priceNum,
+                quantity: 1
+            });
+            klaviyoTrackViewedProduct({
+                ProductID: product.databaseId,
+                ProductName: product.name,
+                Quantity: 1,
+                ItemPrice: priceNum,
+                RowTotal: priceNum,
+                ProductURL: `${window.location.origin}/product/${product.slug}`,
+                ImageURL: product.image?.sourceUrl || '',
+            });
+        }
+    }, [product]);
+           
+        
     if (!product) return null;
 
     const productForCart = {

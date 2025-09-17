@@ -62,6 +62,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       : 0;
 
   const handleAddToCart = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    'use client';
     e.preventDefault();
     e.stopPropagation();
 
@@ -91,47 +92,51 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const canDisplayPrice = product.price && typeof product.price === 'string';
 
-  return (
-    <Link href={`/product/${product.slug}`} className={styles.productCard}>
-        <div className={styles.productImageContainer}>
-            {product.onSale && discountPercent > 0 && (
-                <div className={styles.discountBadge}>-{discountPercent}%</div>
-            )}
-            {product.image?.sourceUrl ? ( 
-              <img src={product.image.sourceUrl} alt={product.name} className={styles.productImage} /> 
-            ) : ( 
-              <div className={styles.placeholderImage} /> 
-            )}
-        </div>
-        <div className={styles.productInfo}>
-             <h3 className={styles.productName}>{product.name}</h3>
-
-            {/* --- কার্যকরী সমাধান: স্টার রেটিং-এর কোডটি এখানে ফিরিয়ে আনা হয়েছে --- */}
-            {typeof product.averageRating === 'number' ? (
-                <StarRating rating={product.averageRating} count={product.reviewCount || 0} />
-            ) : (
-                <div className={styles.noRating}></div> // ফলব্যাক
-            )}
-            {/* ----------------------------------------------------------------------- */}
-
-            <div className={styles.priceContainer}>
-                {product.onSale && product.salePrice ? (
-                    <>
-                        <span className={styles.regularPriceStriked} dangerouslySetInnerHTML={{ __html: product.regularPrice || '' }} />
-                        <span className={styles.salePrice} dangerouslySetInnerHTML={{ __html: product.salePrice }} />
-                    </>
-                ) : (
-                    <div className={styles.productPrice} dangerouslySetInnerHTML={{ __html: product.price || 'Price not available' }} />
+   return (
+    // --- কার্যকরী সমাধান: মূল কন্টেইনার এখন একটি div, Link নয় ---
+    <div className={styles.productCard}>
+        <Link href={`/product/${product.slug}`} className={styles.productLinkWrapper}>
+            <div className={styles.productImageContainer}>
+                {product.onSale && discountPercent > 0 && (
+                    <div className={styles.discountBadge}>-{discountPercent}%</div>
+                )}
+                {product.image?.sourceUrl ? ( 
+                  <img src={product.image.sourceUrl} alt={product.name} className={styles.productImage} /> 
+                ) : ( 
+                  <div className={styles.placeholderImage} /> 
                 )}
             </div>
-            <button 
-              className={styles.addToCartBtn} 
-              onClick={handleAddToCart}
-              disabled={isAdding} 
-            >
-              {isAdding ? 'Adding...' : 'Add to Cart'}
-            </button>
-        </div>
-    </Link>
+            <div className={styles.productInfo}>
+                 <h3 className={styles.productName}>{product.name}</h3>
+
+                {typeof product.averageRating === 'number' ? (
+                    <StarRating rating={product.averageRating} count={product.reviewCount || 0} />
+                ) : (
+                    <div className={styles.noRating}></div>
+                )}
+
+                <div className={styles.priceContainer}>
+                    {product.onSale && product.salePrice ? (
+                        <>
+                            <span className={styles.regularPriceStriked} dangerouslySetInnerHTML={{ __html: product.regularPrice || '' }} />
+                            <span className={styles.salePrice} dangerouslySetInnerHTML={{ __html: product.salePrice }} />
+                        </>
+                    ) : (
+                        <div className={styles.productPrice} dangerouslySetInnerHTML={{ __html: product.price || 'Price not available' }} />
+                    )}
+                </div>
+            </div>
+        </Link>
+        
+        {/* --- কার্যকরী সমাধান: বাটনটিকে Link-এর বাইরে আনা হয়েছে --- */}
+        <button 
+          className={styles.addToCartBtn} 
+          onClick={handleAddToCart}
+          disabled={isAdding} 
+        >
+          {isAdding ? 'Adding...' : 'Add to Cart'}
+        </button>
+        {/* ----------------------------------------------------------- */}
+    </div>
   );
 }
