@@ -100,8 +100,19 @@ const GET_PRODUCT_QUERY = gql`
           name
           slug
           image { sourceUrl }
-          ... on SimpleProduct { price(format: FORMATTED) }
-          ... on VariableProduct { price(format: FORMATTED) }
+          onSale
+      averageRating
+      reviewCount
+      ... on SimpleProduct { 
+        price(format: FORMATTED)
+        regularPrice(format: FORMATTED)
+        salePrice(format: FORMATTED)
+      }
+      ... on VariableProduct { 
+        price(format: FORMATTED)
+        regularPrice(format: FORMATTED)
+        salePrice(format: FORMATTED)
+      }
         }
       }
     }

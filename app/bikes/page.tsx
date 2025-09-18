@@ -103,7 +103,6 @@ export default async function BikesPage({ searchParams }: {
           <p className={styles.heroSubtitle}>
             Give your child the gift of adventure! Our electric balance bikes are engineered for safety, built for fun, and designed to create lifelong memories.
           </p>
-          <Link href="#bike-collection" className={styles.heroButton}>Explore The Collection</Link>
         </div>
         <div className={styles.heroImageContainer}>
             <Image 

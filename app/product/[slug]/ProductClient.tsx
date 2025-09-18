@@ -87,6 +87,8 @@ export default function ProductClient({ product }: { product: Product }) {
         if (!priceStr) return 0;
         return parseFloat(priceStr.replace(/[^0-9.]/g, ''));
     };
+    const INITIAL_REVIEWS_TO_SHOW = 5;
+    const [visibleReviews, setVisibleReviews] = useState(INITIAL_REVIEWS_TO_SHOW);
 
     const regularPriceNum = parsePrice(product.regularPrice);
     const salePriceNum = parsePrice(product.salePrice);
@@ -118,6 +120,8 @@ export default function ProductClient({ product }: { product: Product }) {
            
         
     if (!product) return null;
+    const allReviews = product.reviews?.edges || [];
+    const hasMoreReviews = allReviews.length > visibleReviews;
 
     const productForCart = {
         id: product.id,
@@ -132,6 +136,7 @@ export default function ProductClient({ product }: { product: Product }) {
     const customerImages = product.reviews?.edges
         ?.map((edge: ReviewEdge) => edge.node.author.node.avatar?.url)
         .filter(Boolean) || [];
+
         
     return (
         <div className={styles.container}>
@@ -239,67 +244,81 @@ export default function ProductClient({ product }: { product: Product }) {
        )}
         
        <section id="reviews" className={styles.productInfoSection}>
-          <h2 className={styles.sectionTitle}>Customer Reviews</h2>
-             <div className={styles.reviewsGrid}>
+    <h2 className={styles.sectionTitle}>Customer Reviews</h2>
+        <div className={styles.reviewsGrid}>
 
-         {/* --- কার্যকরী সমাধান: রিভিউ ফর্মটিকে উপরে নিয়ে আসা হয়েছে --- */}
-                <div className={styles.reviewFormWrapper}>
-                     <ReviewForm 
-                         productId={product.databaseId}
-                         averageRating={product.averageRating ?? 0}
-                         reviewCount={product.reviewCount ?? 0}
-                        />
-               </div>
+            {/* --- রিভিউ ফর্ম (অপরিবর্তিত) --- */}
+            <div className={styles.reviewFormWrapper}>
+                    <ReviewForm 
+                        productId={product.databaseId}
+                        averageRating={product.averageRating ?? 0}
+                        reviewCount={product.reviewCount ?? 0}
+                    />
+            </div>
 
-             {/* --- রিভিউ তালিকাটিকে নিচে রাখা হয়েছে --- */}
-                 <div className={styles.reviewsList}>
-                    {customerImages.length > 0 && (
-                    <div className={styles.customerImagesSection}>
-                        <h3>Customer Images</h3>
-                          <div className={styles.customerImagesGrid}>
-                             {customerImages.map((imageUrl: string, index: number) => (
-                               <div key={index} className={styles.customerImageWrapper}>
-                                  <Image src={imageUrl} alt={`Customer image ${index + 1}`} fill style={{objectFit: 'cover'}} sizes="100px" />
-                              </div>    ))}
+            {/* --- রিভিউ তালিকা (এখানে পরিবর্তন করা হয়েছে) --- */}
+            <div className={styles.reviewsList}>
+                {customerImages.length > 0 && (
+                <div className={styles.customerImagesSection}>
+                    <h3>Customer Images</h3>
+                        <div className={styles.customerImagesGrid}>
+                            {customerImages.map((imageUrl: string, index: number) => (
+                            <div key={index} className={styles.customerImageWrapper}>
+                                <Image src={imageUrl} alt={`Customer image ${index + 1}`} fill style={{objectFit: 'cover'}} sizes="100px" />
+                            </div>    ))}
+                </div>
+            </div>
+        )}
+        <div className={styles.reviewsListContainer}>
+            <div className={styles.reviewsListHeader}>
+                <input type="search" placeholder="Search customer reviews" className={styles.reviewSearchInput} />
+                {/* --- কার্যকরী সমাধান: এখানে `visibleReviews` ব্যবহার করা হয়েছে --- */}
+                <span>{`1-${Math.min(visibleReviews, allReviews.length)} of ${allReviews.length} reviews`}</span>
+                <select className={styles.reviewSortDropdown}>
+                    <option>Most Recent</option>
+                    <option>Highest Rating</option>
+                    <option>Lowest Rating</option>
+                </select>
+            </div>
+
+                {allReviews.length > 0 ? (
+                    // --- কার্যকরী সমাধান: শুধুমাত্র `visibleReviews` পর্যন্ত দেখানো হচ্ছে ---
+                    allReviews.slice(0, visibleReviews).map((edge: ReviewEdge) => (
+                        <div key={edge.node.id} className={styles.reviewItem}>
+                            <div className={styles.reviewAuthor}>
+                                <div className={styles.authorAvatar}>{edge.node.author.node.name.substring(0, 2).toUpperCase()}</div>
+                            </div>
+                            <div className={styles.reviewDetails}>
+                                <div className={styles.reviewHeader}>
+                                    <strong>{edge.node.author.node.name}</strong>
+                                <FormattedDate dateString={edge.node.date} />
+                                </div>
+                            {typeof edge.rating === 'number' && edge.rating > 0 && 
+                            <div className={styles.reviewRating}><StarRating rating={edge.rating} /></div>
+                            }
+                            <a href="#" className={styles.verifiedLink}>✓ Verified review</a>
+                            <div className={styles.reviewContent} dangerouslySetInnerHTML={{ __html: edge.node.content }} />
+                        </div>
                     </div>
+                ))
+                ) : ( <p>There are no reviews yet.</p> )}
+            
+            {/* --- কার্যকরী সমাধান: "See More" বাটন যোগ করা হয়েছে --- */}
+            {hasMoreReviews && (
+                <div className={styles.showMoreContainer}>
+                    <button 
+                        className={styles.showMoreButton} 
+                        onClick={() => setVisibleReviews(allReviews.length)}
+                    >
+                        Show All {allReviews.length} Reviews
+                    </button>
                 </div>
             )}
-            <div className={styles.reviewsListContainer}>
-                <div className={styles.reviewsListHeader}>
-                    <input type="search" placeholder="Search customer reviews" className={styles.reviewSearchInput} />
-                    <span>{`1-${product.reviews.edges.length} of ${product.reviewCount} reviews`}</span>
-                    <select className={styles.reviewSortDropdown}>
-                        <option>Most Recent</option>
-                        <option>Highest Rating</option>
-                        <option>Lowest Rating</option>
-                    </select>
-                </div>
-
-                  {product.reviewCount > 0 ? (
-                        product.reviews.edges.map((edge: ReviewEdge) => (
-                           <div key={edge.node.id} className={styles.reviewItem}>
-                                <div className={styles.reviewAuthor}>
-                                <div className={styles.authorAvatar}>{edge.node.author.node.name.substring(0, 2).toUpperCase()}</div>
-                                </div>
-                                <div className={styles.reviewDetails}>
-                                  <div className={styles.reviewHeader}>
-                                     <strong>{edge.node.author.node.name}</strong>
-                                    <FormattedDate dateString={edge.node.date} />
-                                    </div>
-                                {typeof edge.rating === 'number' && edge.rating > 0 && 
-                                <div className={styles.reviewRating}><StarRating rating={edge.rating} /></div>
-                                }
-                                <a href="#" className={styles.verifiedLink}>✓ Verified review</a>
-                                <div className={styles.reviewContent} dangerouslySetInnerHTML={{ __html: edge.node.content }} />
-                            </div>
-                        </div>
-                    ))
-                      ) : ( <p>There are no reviews yet.</p> )}
-                 </div>
-             </div>
-
+            {/* ---------------------------------------------------- */}
             </div>
-       </section>
+        </div>
+    </div>
+</section>
 
         {product.related && product.related.nodes.length > 0 && (
             <div className={styles.relatedProducts}>

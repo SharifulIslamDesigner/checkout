@@ -102,7 +102,6 @@ export default async function BikesPage({ searchParams }: {
           <p className={styles.heroSubtitle}>
             Keep the adventure going! Find all the genuine replacement parts and cool accessories you need to maintain and customize your GoBike.
           </p>
-          <Link href="#spare-parts-collection" className={styles.heroButton}>Explore Parts</Link>
         </div>
         <div className={styles.heroImageContainer}>
             <Image 

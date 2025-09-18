@@ -32,7 +32,7 @@ export default function Header() {
           {/* --- বাম অংশ: ডেস্কটপে লোগো, মোবাইলে হ্যামবার্গার --- */}
           <div className={styles.leftSection}>
             <button onClick={() => setIsMenuOpen(true)} className={`${styles.iconButton} ${styles.hamburger}`}aria-label="Menu">
-                <IoMenu size={28} />
+                <IoMenu size={35} />
             </button>
             <div className={`${styles.logo} ${styles.desktopOnly}`}>
               <Link href="/">
@@ -61,11 +61,11 @@ export default function Header() {
           {/* --- ডান অংশ: আইকন --- */}
           <div className={styles.actionIcons}>
             <button className={styles.iconButtons} onClick={() => setIsSearchOpen(true)} aria-label="search bar">
-              <IoSearch size={22} />
+              <IoSearch size={25} />
               <span>Search products</span>
             </button>
             <a href="https://sharifulbuilds.com/my-account/" className={`${styles.iconButton} ${styles.desktopOnly}`}aria-label="My account link">
-              <IoPersonOutline size={24} />
+              <IoPersonOutline size={25} />
             </a>
             <button className={styles.cartIcon} onClick={openMiniCart} aria-label="MiniCart" >
               <span>🛒</span>
