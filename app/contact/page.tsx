@@ -4,6 +4,7 @@ import { useState, FormEvent, ChangeEvent } from 'react';
 import styles from './ContactPage.module.css'; // <-- নিশ্চিত করুন এই CSS ফাইলটি আছে
 import toast from 'react-hot-toast';
 import Image from 'next/image'; // <-- Image কম্পোনেন্ট ইম্পোর্ট করা হয়েছে
+import Breadcrumbs from '../../components/Breadcrumbs';
 
 export default function ContactPage() {
   // --- কার্যকরী সমাধান: State Management-কে একটি অবজেক্টে রাখা হয়েছে ---
@@ -47,13 +48,19 @@ export default function ContactPage() {
       } else {
         throw new Error(result.message || 'An unknown error occurred.');
       }
-    } catch (error: any) {
-      setStatus('error');
-      toast.error(error.message || 'Failed to send the message. Please try again.');
+    } catch (error: unknown) { // <-- সমাধান: টাইপ unknown করা হয়েছে
+    toast.dismiss();
+    let errorMessage = 'An error occurred.';
+    if (error instanceof Error) { // <-- সমাধান: error-এর ধরন পরীক্ষা করা হচ্ছে
+        errorMessage = error.message;
+    }
+    toast.error(errorMessage);
     }
   };
 
   return (
+    <div>
+          <Breadcrumbs />
     <div className={styles.gobikeContactPageWrapper}>
       <div className={styles.contactContainer}>
         {/* Top Section: Intro */}
@@ -74,7 +81,7 @@ export default function ContactPage() {
             <div className={styles.contactIntroImage}>
                 {/* --- কার্যকরী সমাধান: Image কম্পোনেন্ট ব্যবহার করা হয়েছে --- */}
                 <Image 
-                    src="https://sharifulbuilds.com/wp-content/uploads/2025/02/1-Static-1x1-1.webp" 
+                    src="https://gobikes.au/wp-content/uploads/2025/02/1-Static-1x1-1.webp" 
                     alt="A child confidently riding a GoBike electric balance bike"
                     width={500} // ছবির আসল প্রস্থ দিন
                     height={500} // ছবির আসল উচ্চতা দিন
@@ -110,6 +117,7 @@ export default function ContactPage() {
             </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

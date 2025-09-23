@@ -1,4 +1,6 @@
 import styles from './FaqPage.module.css';
+import Breadcrumbs from '../../components/Breadcrumbs';
+import Image from 'next/image';
 
 // SEO এর জন্য সম্পূর্ণ JSON-LD ডেটা
 const jsonLdData = {
@@ -30,9 +32,10 @@ const jsonLdData = {
 
 export default function FaqPage() {
   return (
+    <div>
+          <Breadcrumbs />
     <>
       <div className={styles.faqPageContainer}>
-        
         <header className={styles.faqPageHeader}>
             <h1 className={styles.faqPageMainTitle}>GoBike FAQ | Australia&apos;s Top Questions Answered</h1>
             <p className={styles.faqPageIntro}>Welcome to the GoBike Help Centre! Here you&apos;ll find clear answers to all your questions about our <strong>kids electric bikes</strong>—from safety and sizing to battery life and delivery across Australia.</p>
@@ -40,11 +43,10 @@ export default function FaqPage() {
         
         <section className={styles.ourPromiseSection}>
             <div className={styles.promiseImageWrapper}>
-               <img src="https://gobike.au/wp-content/uploads/2025/08/Gobike-kids-electric-bike-ebike-for-kids-4-scaled.webp" 
+               <Image src="https://gobike.au/wp-content/uploads/2025/08/Gobike-kids-electric-bike-ebike-for-kids-4-scaled.webp" 
                      alt="A smiling Australian child with a helmet enjoying a GoBike electric bike in a park"
                      className={styles.promiseImage}
-                     width="600"
-                     height="400"
+                     width={2049} height={2560} sizes="(max-width: 768px) 100vw, 50vw"
                 />
             </div>
             <div className={styles.promiseContentWrapper}>
@@ -186,5 +188,6 @@ export default function FaqPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }}
       />
     </>
+  </div>
   );
 }

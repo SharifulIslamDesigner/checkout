@@ -1,10 +1,13 @@
 import Link from 'next/link';
 import styles from './AboutPage.module.css';
+import Breadcrumbs from '../../components/Breadcrumbs';
+import Image from 'next/image';
 
 export default function AboutPage() {
   return (
+    <div>
+      <Breadcrumbs />
     <div className={styles['about-us-page-wrapper']}>
-
       {/* Section 1: Main Header */}
       <div className={styles['section-container']}>
         <h1>Our Story: More Than Just a kids eBike</h1>
@@ -18,13 +21,12 @@ export default function AboutPage() {
         <div className={styles['story-grid']}>
           <div>
             {/* --- মূল পরিবর্তন এখানে --- */}
-            <img 
+            <Image 
               src="https://gobike.au/wp-content/uploads/2025/08/gobike-scaled.webp" 
               alt="The founders of GoBike, two Australian dads, with their kids and their electric balance bikes." 
               className={styles['story-image']}
               loading="eager"
-              width="600"
-              height="400"
+              width={2049} height={2560} sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
           <div className={styles['story-content']}>
@@ -101,5 +103,6 @@ export default function AboutPage() {
       </div>
 
     </div>
+   </div>
   );
 }

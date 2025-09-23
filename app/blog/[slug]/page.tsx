@@ -5,6 +5,7 @@ import matter from 'gray-matter';
 import ReactMarkdown from 'react-markdown';
 import Image from 'next/image';
 import styles from './SingleBlogPage.module.css'; // <-- নতুন CSS ফাইল ইম্পোর্ট করা হয়েছে
+import Breadcrumbs from '../../../components/Breadcrumbs';
 
 export async function generateStaticParams() {
   const files = fs.readdirSync(path.join('blogs'));
@@ -25,8 +26,11 @@ export default function SingleBlogPage({ params }: { params: { slug: string } })
   const { frontmatter, content } = getPostContent(params.slug);
 
   return (
+    <div>
+      <Breadcrumbs />
     <article className={styles.articleContainer}>
       <header className={styles.postHeader}>
+        
         <h1 className={styles.postTitle}>{frontmatter.title}</h1>
         <p className={styles.postMeta}>By {frontmatter.author} on {frontmatter.date}</p>
       </header>
@@ -47,5 +51,6 @@ export default function SingleBlogPage({ params }: { params: { slug: string } })
         <ReactMarkdown>{content}</ReactMarkdown>
       </div>
     </article>
+    </div>
   );
 }

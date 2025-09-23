@@ -14,6 +14,7 @@ interface PageInfo {
 
 interface PaginationControlsProps {
   pageInfo: PageInfo;
+  basePath: string;
 }
 
 export default function PaginationControls({ pageInfo }: PaginationControlsProps) {

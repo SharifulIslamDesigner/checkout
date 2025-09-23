@@ -1,16 +1,15 @@
 /* app/cart/CartPage.module.css */
 .container {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 2rem;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 1rem 0 2rem 2rem;
 }
-
 .title {
   text-align: center;
   margin-bottom: 2rem;
   font-size: 2.5rem;
+  font-weight: 600;
 }
-
 .continueShopping {
   display: block;
   width: fit-content;
@@ -21,20 +20,17 @@
   text-decoration: none;
   border-radius: 5px;
 }
-
 .cartLayout {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 2rem;
   align-items: flex-start; /* summary কে উপরে রাখার জন্য */
 }
-
 .cartItems {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: .5rem;
 }
-
 .cartItem {
   display: grid;
   grid-template-columns: 100px 1fr auto;
@@ -44,43 +40,36 @@
   padding: 1rem;
   border-radius: 8px;
 }
-
 .itemImage {
   width: 100px;
   height: 100px;
   object-fit: cover;
   border-radius: 4px;
 }
-
 .itemDetails {
   display: flex;
   flex-direction: column;
 }
-
 .itemName {
   font-size: 1.2rem;
   margin: 0;
   font-weight: 600; /* নামটিকে একটু বোল্ড করা হলো */
 }
-
 .itemPrice {
   margin: 0.5rem 0;
   font-weight: bold;
 }
-
 .quantityControl {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
-
 .quantityControl button {
   padding: 0.2rem 0.6rem;
   border: 1px solid #ccc;
   background-color: #f0f0f0;
   cursor: pointer;
 }
-
 .removeButton {
   background: none;
   border: 1px solid #ff4d4d;
@@ -89,7 +78,6 @@
   border-radius: 5px;
   cursor: pointer;
 }
-
 .cartSummary {
   border: 1px solid #eaeaea;
   padding: 1.5rem;
@@ -98,7 +86,6 @@
   position: sticky; /* স্ক্রল করলেও যেন সামারি দেখা যায় */
   top: 100px; /* আপনার হেডারের উচ্চতার উপর নির্ভর করে */
 }
-
 .cartSummary h2 {
   margin-top: 0;
   margin-bottom: 0.5rem;
@@ -117,8 +104,8 @@
   display: block; /* Link কে বাটন হিসেবে দেখানোর জন্য */
   text-align: center;
   width: 100%;
-  padding: 1rem;
-  font-size: 1.1rem;
+  padding: .5rem;
+  font-size: 1.5rem;
   background-color: #030303;
   color: white;
   text-decoration: none; /* Link এর আন্ডারলাইন সরানোর জন্য */
@@ -127,7 +114,9 @@
   cursor: pointer;
   font-weight: bold;
 }
-
+.checkoutButton :hover{
+  background-color: #ccc;
+}
 /* --- রেসপন্সিভ ডিজাইনের জন্য নতুন কোড --- */
 
 @media (max-width: 900px) {
@@ -200,12 +189,13 @@
 
   .itemActions {
     position: absolute;
-    top: 0; /* উপরে ডান দিকে */
-    right: 0;
+    top: 3.5rem; /* উপরে ডান দিকে */
+    right: .5rem;
   }
   
   .removeButton {
     padding: 0.3rem 0.6rem;
     font-size: 0.8rem;
+    align-items: center;
   }
 }

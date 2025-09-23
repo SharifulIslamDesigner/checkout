@@ -1,11 +1,12 @@
 "use client";
-
+import Breadcrumbs from '../../components/Breadcrumbs';
 import { useCart } from '../../context/CartContext';
 import Link from 'next/link';
 import styles from './CartPage.module.css';
 import CartCrossSell from '../../components/CartCrossSell';
 import { gtmViewCart, gtmBeginCheckout } from '../../lib/gtm';
 import { useEffect } from 'react'; // <-- useEffect ইম্পোর্ট করা হয়েছে
+import Image from 'next/image';
 
 // --- কার্যকরী সমাধান: একটি নতুন ক্লায়েন্ট কম্পוננט তৈরি করা হয়েছে ---
 function CheckoutButton() {
@@ -19,7 +20,7 @@ function CheckoutButton() {
         }));
         const cartJson = JSON.stringify(itemsForUrl);
         const encodedCart = encodeURIComponent(cartJson);
-        return `https://sharifulbuilds.com/cart/?cart_items=${encodedCart}`;
+        return `https://gobikes.au/cart/?cart_items=${encodedCart}`;
     };
 
     const handleCheckout = () => {
@@ -81,6 +82,8 @@ export default function CartPage() {
   // ---------------------------------------------
 
   return (
+    <>
+      <Breadcrumbs pageTitle="Shopping Cart" />
     <div className={styles.container}>
       {cartItems.length === 0 && !loading ? (
         <div className={styles.emptyCartContainer}>
@@ -99,7 +102,7 @@ export default function CartPage() {
             <div className={styles.cartItems}>
               {cartItems.map(item => (
                 <div key={item.key} className={styles.cartItem}>
-                  {item.image ? ( <img src={item.image} alt={item.name} className={styles.itemImage} /> ) : ( <div className={styles.placeholderImage} /> )}
+                  {item.image ? ( <Image src={item.image} alt={item.name} className={styles.itemImage} width={100} height={100}/> ) : ( <div className={styles.placeholderImage} /> )}
                   <div className={styles.itemInfo}>
                     <h2 className={styles.itemName}>{item.name}</h2>
                     <div className={styles.itemMeta}>
@@ -135,5 +138,6 @@ export default function CartPage() {
 
       <CartCrossSell />
     </div>
+    </>
   );
 }

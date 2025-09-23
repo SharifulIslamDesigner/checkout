@@ -29,8 +29,14 @@ export async function POST(request: NextRequest) {
             throw new Error(`Failed to submit review. WordPress responded with status ${response.status}`);
         }
 
-    } catch (error: any) {
-        console.error("API Route Error in /api/submit-review:", error);
-        return NextResponse.json({ success: false, message: error.message || 'An internal server error occurred.' }, { status: 500 });
+    } catch (error: unknown) { // <-- সমাধান: টাইপ unknown করা হয়েছে
+  
+  let errorMessage = 'An unexpected error occurred.';
+  if (error instanceof Error) { // <-- সমাধান: error-এর ধরন পরীক্ষা করা হচ্ছে
+      errorMessage = error.message;
+  }
+  
+  console.error("API Route /api/submit reviwe :", errorMessage);
+  return NextResponse.json({ message: errorMessage }, { status: 500 });
     }
 }

@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import styles from './RegisterPage.module.css';
+import Breadcrumbs from '../../components/Breadcrumbs';
 
 export default function RegisterPage() {
   const [username, setUsername] = useState('');
@@ -63,6 +64,7 @@ export default function RegisterPage() {
 
   return (
     <div className={styles.container}>
+      <Breadcrumbs />
       <div className={styles.formWrapper}>
         <h1>Create an Account</h1>
         <form onSubmit={handleRegister}>

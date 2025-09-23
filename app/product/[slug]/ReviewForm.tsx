@@ -43,9 +43,6 @@ export default function ReviewForm({ productId, averageRating, reviewCount }: Re
     if (rating === 0) { toast.error("Please select a star rating."); return; }
     setIsSubmitting(true);
     toast.loading('Submitting your review...');
-
-
-    const endpoint = 'https://sharifulbuilds.com/wp-comments-post.php';
     const formData = new FormData();
     formData.append('author', author);
     formData.append('email', email);
@@ -71,9 +68,13 @@ export default function ReviewForm({ productId, averageRating, reviewCount }: Re
       } else {
         throw new Error(result.message || 'Failed to submit review.');
       }
-    } catch (error: any) {
-      toast.dismiss();
-      toast.error(error.message || 'An error occurred.');
+    } catch (error: unknown) { // <-- সমাধান: টাইপ unknown করা হয়েছে
+    toast.dismiss();
+    let errorMessage = 'An error occurred.';
+    if (error instanceof Error) { // <-- সমাধান: error-এর ধরন পরীক্ষা করা হচ্ছে
+        errorMessage = error.message;
+    }
+    toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }

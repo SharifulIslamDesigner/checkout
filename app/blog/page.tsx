@@ -5,6 +5,7 @@ import matter from 'gray-matter';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './BlogListPage.module.css'; // <-- নতুন CSS ফাইল ইম্পোর্ট করা হয়েছে
+import Breadcrumbs from '../../components/Breadcrumbs';
 
 export default function BlogPage() {
   const blogDir = 'blogs';
@@ -23,12 +24,14 @@ export default function BlogPage() {
   }).sort((a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime());
 
   return (
+    <div>
+          <Breadcrumbs />
     <div className={styles.pageContainer}>
       <header className={styles.pageHeader}>
         {/* --- কার্যকরী সমাধান: নতুন SEO-বান্ধব শিরোনাম --- */}
         <h1 className={styles.pageTitle}>GoBike Kids E-Bike Blog</h1>
         <p className={styles.pageSubtitle}>
-          Expert tips, safety guides, and inspiring stories for your little rider's next big adventure.
+          Expert tips, safety guides, and inspiring stories for your little riders next big adventure.
         </p>
       </header>
       
@@ -63,4 +66,6 @@ export default function BlogPage() {
         </div>
       </main>
     </div>
+    </div>
   );
+}

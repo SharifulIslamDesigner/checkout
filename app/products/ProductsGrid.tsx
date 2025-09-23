@@ -12,6 +12,11 @@ interface Product {
   slug: string;
   image?: { sourceUrl: string };
   price?: string;
+  onSale: boolean;
+  salePrice?: string;
+  regularPrice?: string;
+  averageRating?: number;
+  reviewCount?: number;
 }
 
 // ProductsGrid কম্পוננטের props-এর ধরন

@@ -1,8 +1,8 @@
 /* SingleBlogPage.module.css */
 
 .articleContainer {
-    max-width: 800px;
-    margin: 2rem auto 4rem auto;
+    max-width: 1000px;
+    margin: 0 auto 4rem auto;
     padding: 0 1rem;
     font-family: sans-serif;
 }

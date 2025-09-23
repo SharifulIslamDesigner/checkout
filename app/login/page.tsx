@@ -57,9 +57,13 @@ const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
         console.log("User Data:", user);
       }
 
-    } catch (err: any) {
-      toast.dismiss();
-      toast.error(err.message || 'Login failed. Please check your credentials.');
+    } catch (error: unknown) { // <-- সমাধান: টাইপ unknown করা হয়েছে
+    toast.dismiss();
+    let errorMessage = 'An error occurred.';
+    if (error instanceof Error) { // <-- সমাধান: error-এর ধরন পরীক্ষা করা হচ্ছে
+        errorMessage = error.message;
+    }
+    toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

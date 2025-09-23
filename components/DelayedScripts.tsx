@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 
 const GTM_ID = 'GTM-MBDS8NJQ';
 const KLAVIYO_API_KEY = 'VbbJYB';
-const DELAY_IN_MILLISECONDS = 6000; // ১৫ সেকেন্ড
+const DELAY_IN_MILLISECONDS = 7000; // ১৫ সেকেন্ড
 
 export default function DelayedScripts() {
   

@@ -7,7 +7,10 @@ import client from '../lib/apolloClient';
 import { gtmAddToCart, gtmRemoveFromCart } from '../lib/gtm';
 import { klaviyoTrackAddedToCart } from '../lib/klaviyo';
 
-// --- GraphQL কোয়েরি এবং মিউটেশন (অপরিবর্তিত) ---
+// ====================================================================
+// GraphQL কোয়েরি এবং মিউটেশন
+// ====================================================================
+
 const ADD_TO_CART_MUTATION = gql`
   mutation AddToCart($productId: Int!, $quantity: Int!) {
     addToCart(input: { productId: $productId, quantity: $quantity }) {
@@ -61,12 +64,39 @@ const CLEAR_CART_MUTATION = gql`
     }
 `;
 
-// --- ইন্টারফেস (slug যোগ করা হয়েছে) ---
+// ====================================================================
+// TypeScript ইন্টারফেস এবং টাইপ (সম্পূর্ণ এবং সঠিক)
+// ====================================================================
+
+interface CartItemProductNode {
+  databaseId: number;
+  id: string;
+  name: string;
+  slug: string;
+  image: { sourceUrl: string; altText: string; } | null;
+  price: string;
+}
+
+interface FetchedCartItem {
+  key: string;
+  quantity: number;
+  total: string;
+  product: { node: CartItemProductNode; }
+}
+
+interface GetCartQueryData {
+  cart: { contents: { nodes: FetchedCartItem[]; } | null; } | null;
+}
+
+interface AddToCartMutationData {
+  addToCart: { cartItem: { product: { node: CartItemProductNode; } } }
+}
+
 interface CartItem {
   id: string;
   databaseId: number;
   name: string;
-  slug: string; // <-- slug যোগ করা হয়েছে
+  slug: string;
   price: string;
   image?: string;
   quantity: number;
@@ -74,26 +104,31 @@ interface CartItem {
   total?: string;
 }
 
-interface FetchedCartItem {
-    key: string;
-    quantity: number;
-    total: string;
-    product: {
-        node: {
-            databaseId: number;
-            id: string;
-            name: string;
-            slug: string;
-            image: { sourceUrl: string; altText: string; };
-            price: string;
-        }
-    }
+// সমাধান: addToCart-এর itemToAdd প্যারামিটারের জন্য একটি সুনির্দিষ্ট টাইপ
+interface ItemToAdd {
+    id: string;
+    databaseId: number;
+    name: string;
+    price?: string | null;
+    image?: string | null;
+    slug: string;
+}
+
+// সমাধান: Klaviyo আইটেমের জন্য একটি সুনির্দিষ্ট টাইপ
+interface KlaviyoItem {
+    ProductID: number;
+    ProductName: string;
+    Quantity: number;
+    ItemPrice: number;
+    RowTotal: number;
+    ProductURL: string;
+    ImageURL: string;
 }
 
 interface CartContextType {
   cartItems: CartItem[];
   loading: boolean;
-  addToCart: (item: any, quantity: number) => Promise<void>; // <-- item-এর টাইপ any করা হয়েছে সরলতার জন্য
+  addToCart: (item: ItemToAdd, quantity: number) => Promise<void>;
   updateQuantity: (key: string, newQuantity: number) => Promise<void>;
   removeFromCart: (key: string) => Promise<void>;
   clearCart: () => Promise<void>;
@@ -101,6 +136,10 @@ interface CartContextType {
   openMiniCart: () => void;
   closeMiniCart: () => void;
 }
+
+// ====================================================================
+// Context এবং Provider
+// ====================================================================
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
@@ -112,9 +151,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const fetchInitialCart = useCallback(async () => {
     setLoading(true);
     try {
-        const { data } = await client.query({ query: GET_CART, fetchPolicy: 'network-only' });
-        if (data.cart?.contents?.nodes) {
-            const fetchedItems = data.cart.contents.nodes.map((item: FetchedCartItem) => ({
+        const { data } = await client.query<GetCartQueryData>({ query: GET_CART, fetchPolicy: 'network-only' });
+        if (data?.cart?.contents?.nodes) {
+            const fetchedItems = data.cart.contents.nodes.map((item: FetchedCartItem): CartItem => ({
                 id: item.product.node.id,
                 databaseId: item.product.node.databaseId,
                 name: item.product.node.name,
@@ -135,16 +174,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
     fetchInitialCart();
   }, [fetchInitialCart]);
 
-
   const openMiniCart = () => setIsMiniCartOpen(true);
   const closeMiniCart = () => setIsMiniCartOpen(false);
 
-  const addToCart = async (itemToAdd: any, quantity: number) => {
+  const addToCart = async (itemToAdd: ItemToAdd, quantity: number) => {
     setLoading(true);
     toast.loading("Adding to cart...");
 
     try {
-      const { data } = await client.mutate({
+      const { data } = await client.mutate<AddToCartMutationData>({
         mutation: ADD_TO_CART_MUTATION,
         variables: { 
           productId: itemToAdd.databaseId, 
@@ -155,7 +193,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const priceString = itemToAdd.price || data?.addToCart?.cartItem?.product?.node?.price || '0';
       const priceNum = parseFloat(priceString.replace(/[^0-9.]/g, ''));
 
-      // GTM ইভেন্ট
       gtmAddToCart({
           item_name: itemToAdd.name,
           item_id: itemToAdd.databaseId,
@@ -164,44 +201,45 @@ export function CartProvider({ children }: { children: ReactNode }) {
       });
       
       await fetchInitialCart();
-
-      // fetchInitialCart সম্পন্ন হওয়ার পর Klaviyo ইভেন্ট পাঠানো হচ্ছে
-      // যাতে আমাদের কাছে সম্পূর্ণ এবং আপ-টু-ডেট কার্টের তথ্য থাকে
       
-      const updatedCartState = await client.query({ query: GET_CART, fetchPolicy: 'network-only' });
-      const updatedCartItems = updatedCartState.data.cart.contents.nodes;
+      const { data: updatedCartState } = await client.query<GetCartQueryData>({ query: GET_CART, fetchPolicy: 'network-only' });
+      
+      if (updatedCartState?.cart?.contents?.nodes) {
+        const updatedCartItems = updatedCartState.cart.contents.nodes;
 
-      const klaviyoItems = updatedCartItems.map((item: FetchedCartItem) => {
-          const itemPrice = parseFloat(item.product.node.price.replace(/[^0-9.]/g, ''));
-          return {
-            ProductID: item.product.node.databaseId,
-            ProductName: item.product.node.name,
-            Quantity: item.quantity,
-            ItemPrice: itemPrice,
-            RowTotal: itemPrice * item.quantity,
-            ProductURL: `${window.location.origin}/product/${item.product.node.slug}`,
-            ImageURL: item.product.node.image?.sourceUrl || ''
-          };
-      });
+        const klaviyoItems: KlaviyoItem[] = updatedCartItems.map((item: FetchedCartItem) => {
+            const itemPrice = parseFloat(item.product.node.price.replace(/[^0-9.]/g, ''));
+            return {
+              ProductID: item.product.node.databaseId,
+              ProductName: item.product.node.name,
+              Quantity: item.quantity,
+              ItemPrice: itemPrice,
+              RowTotal: itemPrice * item.quantity,
+              ProductURL: `${window.location.origin}/product/${item.product.node.slug}`,
+              ImageURL: item.product.node.image?.sourceUrl || ''
+            };
+        });
 
-      const addedKlaviyoItem = klaviyoItems.find((item: any) => item.ProductID === itemToAdd.databaseId);
+        const addedKlaviyoItem = klaviyoItems.find(item => item.ProductID === itemToAdd.databaseId);
 
-      if (addedKlaviyoItem) {
-          klaviyoTrackAddedToCart({
-              total_price: klaviyoItems.reduce((acc: number, item: any) => acc + item.RowTotal, 0),
-              item_count: klaviyoItems.reduce((acc: number, item: any) => acc + item.Quantity, 0),
-              items: klaviyoItems,
-              added_item: addedKlaviyoItem
-          });
+        if (addedKlaviyoItem) {
+            klaviyoTrackAddedToCart({
+                total_price: klaviyoItems.reduce((acc, item) => acc + item.RowTotal, 0),
+                item_count: klaviyoItems.reduce((acc, item) => acc + item.Quantity, 0),
+                items: klaviyoItems,
+                added_item: addedKlaviyoItem
+            });
+        }
       }
 
       toast.dismiss();
       toast.success(`"${itemToAdd.name}" updated in cart`);
       openMiniCart();
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.dismiss();
-      toast.error(error.message || "Could not add item to cart.");
+      const errorMessage = error instanceof Error ? error.message : "Could not add item to cart.";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -217,14 +255,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
         await client.mutate({
             mutation: UPDATE_CART_ITEM_QUANTITIES_MUTATION,
-            variables: { items: [{ key: key, quantity: newQuantity }] },
-            refetchQueries: [{ query: GET_CART }]
+            variables: { items: [{ key, quantity: newQuantity }] },
         });
+        await fetchInitialCart();
         toast.dismiss();
         toast.success("Cart updated!");
-    } catch (error: any) {
+    } catch (error: unknown) {
         toast.dismiss();
-        toast.error(error.message || "Could not update quantity.");
+        const errorMessage = error instanceof Error ? error.message : "Could not update quantity.";
+        toast.error(errorMessage);
     } finally {
         setLoading(false);
     }
@@ -249,11 +288,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
           quantity: itemToRemove.quantity
       });
       
-      toast.error(`"${itemToRemove.name}" removed from cart.`);
       await fetchInitialCart();
+      toast.error(`"${itemToRemove.name}" removed from cart.`);
 
-    } catch (error: any) { 
-      toast.error(error.message || "Could not remove item.");
+    } catch (error: unknown) { 
+      const errorMessage = error instanceof Error ? error.message : "Could not remove item.";
+      toast.error(errorMessage);
     } finally { 
       setLoading(false); 
     }
@@ -266,15 +306,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
       await client.mutate({ mutation: CLEAR_CART_MUTATION });
       setCartItems([]);
       toast.success("Cart has been cleared.");
-    } catch (error: any) {
-      toast.error(error.message || "Could not clear the cart.");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Could not clear the cart.";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
+  const value = { cartItems, loading, addToCart, updateQuantity, removeFromCart, clearCart, isMiniCartOpen, openMiniCart, closeMiniCart };
+
   return (
-    <CartContext.Provider value={{ cartItems, loading, addToCart, updateQuantity, removeFromCart, clearCart, isMiniCartOpen, openMiniCart, closeMiniCart }}>
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   );

@@ -1,0 +1,69 @@
+/* components/Breadcrumbs.module.css */
+
+.breadcrumbNav {
+    max-width: 1600px;
+    margin: .5rem auto 1rem auto;
+    padding: 0 5px;
+    font-family: sans-serif;
+}
+
+.breadcrumbList {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 1.2rem;
+    color: #000000;
+}
+@media (max-width: 992px) {
+    .breadcrumbList{
+        font-size: .9rem;
+    }
+}
+.breadcrumbItem {
+    display: flex;
+    align-items: center;
+}
+
+.separator {
+    margin: 0 0.2rem;
+    color: #555555;
+}
+
+.breadcrumbLink {
+    color: #000000;
+    text-decoration: none;
+    transition: color 0.2s;
+    font-weight: 600;
+}
+
+.breadcrumbLink:hover {
+    color: #000000;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.currentPage {
+    font-weight: 500;
+    color: #1a1a1a;
+}
+@media (max-width: 900px) {
+    .currentPage{
+        font-size: 0.75rem;
+    }
+    
+}
+@media (max-width: 600px) {
+  .breadcrumbList {
+    /* টেক্সট যদি কন্টেইনারের বাইরে চলে যায়, তাহলে সেটিকে হাইড করে দেয় */
+    overflow: hidden;
+    text-overflow: ellipsis; /* শেষে "..." চিহ্ন দেখায় */
+    white-space: nowrap; /* টেক্সটকে এক লাইনে রাখে */
+  }
+
+  .currentPage, .breadcrumbLink {
+    /* এটি নিশ্চিত করে যে প্রতিটি আইটেমও বাইরে যাবে না */
+    white-space: nowrap;
+  }
+}

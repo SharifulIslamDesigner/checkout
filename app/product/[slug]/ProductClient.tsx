@@ -25,6 +25,7 @@ interface RelatedProduct { id: string; databaseId: number; name: string; slug: s
 interface Product {
   id: string;
   databaseId: number;
+  slug: string;
   name: string;
   description: string;
   shortDescription?: string;
@@ -41,9 +42,21 @@ interface Product {
     edges: ReviewEdge[];
   };
   related: { nodes: RelatedProduct[]; };
+  weight?: number;
+  length?: number;
+  width?: number;
+  height?: number;
 }
 // ----------------------------------------------------------------------
-
+interface RelatedProduct {
+  id: string;
+  databaseId: number;
+  name: string;
+  slug: string;
+  image?: ImageNode;
+  price?: string;
+  onSale: boolean; // <-- এই লাইনটি যোগ করুন
+}
 
 // StarRating কম্পোনেন্ট (টাইপিং ভুল সংশোধন করা হয়েছে)
 const StarRating = ({ rating }: { rating: number }) => {
@@ -142,11 +155,11 @@ export default function ProductClient({ product }: { product: Product }) {
         <div className={styles.container}>
         <div className={styles.productLayout}>
             <div className={styles.galleryContainer}>
-                {mainImage && <img src={mainImage} alt={product.name} className={styles.mainImage} />}
+                {mainImage && <Image src={mainImage} alt={product.name} width={1000} height={1000} className={styles.mainImage} />}
                 {allImages.length > 1 && (
                     <div className={styles.thumbnailGrid}>
                     {allImages.map((img, index) => (
-                        <img key={index} src={img.sourceUrl} alt={`${product.name} thumbnail ${index + 1}`}
+                        <Image key={index} src={img.sourceUrl} width={800} height={800} alt={`${product.name} thumbnail ${index + 1}`}
                         className={`${styles.thumbnail} ${mainImage === img.sourceUrl ? styles.activeThumbnail : ''}`}
                         onClick={() => setMainImage(img.sourceUrl)} />
                     ))}
@@ -165,7 +178,7 @@ export default function ProductClient({ product }: { product: Product }) {
                 )}
             </div>
             <div className={styles.priceWrapper}>
-                <img src="https://gobike.au/wp-content/uploads/2025/08/hot-deal.svg" alt="Hot Deal" className={styles.dealBadge} />
+                <Image src="https://gobike.au/wp-content/uploads/2025/08/hot-deal.svg" width={50} height={50} alt="Hot Deal" className={styles.dealBadge} />
                 {product.onSale && product.salePrice ? (
         <div className={styles.salePriceContainer}>
             <span className={styles.regularPriceStriked} dangerouslySetInnerHTML={{ __html: product.regularPrice || '' }} />
@@ -196,7 +209,7 @@ export default function ProductClient({ product }: { product: Product }) {
             </div>
             <div className={styles.checkoutGuarantee}>
                 <p className={styles.guaranteeText}>Guaranteed Safe Checkout</p>
-                <img src="https://themedemo.commercegurus.com/shoptimizer-demodata/wp-content/uploads/sites/53/2018/07/trust-symbols_a.jpg" alt="Payment Methods" className={styles.paymentLogos} />
+                <Image src="https://gobikes.au/wp-content/uploads/2018/07/trust-symbols_b-1.jpg" width={1600} height={160} alt="Payment Methods" className={styles.paymentLogos} />
             </div>
             </div>
         </div>
@@ -262,10 +275,13 @@ export default function ProductClient({ product }: { product: Product }) {
                 <div className={styles.customerImagesSection}>
                     <h3>Customer Images</h3>
                         <div className={styles.customerImagesGrid}>
-                            {customerImages.map((imageUrl: string, index: number) => (
-                            <div key={index} className={styles.customerImageWrapper}>
-                                <Image src={imageUrl} alt={`Customer image ${index + 1}`} fill style={{objectFit: 'cover'}} sizes="100px" />
-                            </div>    ))}
+                           {customerImages.map((imageUrl, index) => (
+                            imageUrl && ( // <-- সমাধান: এখানে একটি চেক যোগ করা হয়েছে
+                             <div key={index} className={styles.customerImageWrapper}>
+                                 <Image src={imageUrl} alt={`Customer image ${index + 1}`} fill style={{objectFit: 'cover'}} sizes="100px" />
+                            </div>
+                        )
+                    ))}
                 </div>
             </div>
         )}

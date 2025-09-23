@@ -3,11 +3,13 @@
 
 import Link from 'next/link';
 import styles from './Terms.module.css';
+import Breadcrumbs from '../../components/Breadcrumbs'; 
 
 export default function TermsAndConditionsPage() {
   return (
-    <div className={styles.termsPageWrapper}>
-
+    <div>
+          <Breadcrumbs />
+    <div className={styles.termsPageWrapper}> 
       <div className={styles.termsHeader}>
         <h1>Terms and Conditions</h1>
         <p>Welcome to GoBike.au! These terms outline the rules for using our website and purchasing our <strong>kids electric bikes</strong>. By engaging with our services, you agree to these conditions.</p>
@@ -57,6 +59,7 @@ export default function TermsAndConditionsPage() {
         <p>For any questions regarding these terms, your order, or choosing the right <strong>ebike for kids</strong>, please visit our <Link href="/contact">Contact Us page</Link> or email us directly at <a href="mailto:gobike@gobike.au">gobike@gobike.au</a>. Our expert team is ready to help! For quick answers, you can also visit our <Link href="/faq">FAQs</Link> page.</p>
       </div>
       
+    </div>
     </div>
   );
 }

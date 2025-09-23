@@ -2,7 +2,7 @@
 
 .pageContainer {
     max-width: 1200px;
-    margin: 3rem auto 5rem auto; /* উপরের এবং নিচের মার্জিন বাড়ানো হয়েছে */
+    margin: 0 auto 5rem auto; /* উপরের এবং নিচের মার্জিন বাড়ানো হয়েছে */
     padding: 0 1rem;
 }
 

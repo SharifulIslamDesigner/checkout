@@ -6,7 +6,7 @@ export const { getClient } = registerApolloClient(() => {
   return new ApolloClient({
     cache: new InMemoryCache(),
     link: new HttpLink({
-      uri: "https://sharifulbuilds.com/graphql",
+      uri: "https://gobikes.au/graphql",
     }),
   });
 });

@@ -109,8 +109,14 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ message: 'Thank you for subscribing!' });
 
-  } catch (error: any) {
-    console.error("API Route /api/subscribe Error:", error.message);
-    return NextResponse.json({ message: error.message || 'An unexpected error occurred.' }, { status: 500 });
+  } catch (error: unknown) { // <-- সমাধান: টাইপ unknown করা হয়েছে
+  
+  let errorMessage = 'An unexpected error occurred.';
+  if (error instanceof Error) { // <-- সমাধান: error-এর ধরন পরীক্ষা করা হচ্ছে
+      errorMessage = error.message;
+  }
+  
+  console.error("API Route /api/subscribe Error:", errorMessage);
+  return NextResponse.json({ message: errorMessage }, { status: 500 });
   }
 }

@@ -3,7 +3,7 @@ title: "Safety First! The Essential Gear Every Young Rider Needs"
 date: "2025-09-25"
 author: "GoBike Safety Team"
 excerpt: "A helmet is just the beginning. We break down the essential safety gear that will protect your little one from head to toe, ensuring every ride is a safe ride."
-cover_image: "https://sharifulbuilds.com/wp-content/uploads/2025/09/1-Static-1x1-1.webp"
+cover_image: "https://gobikes.au/wp-content/uploads/2025/02/7-1.webp"
 tags: ["Safety Gear", "Helmet Guide", "Kids Safety", "Protective Gear"]
 ---
 

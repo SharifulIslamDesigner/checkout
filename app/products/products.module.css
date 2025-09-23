@@ -2,7 +2,7 @@
 .pageContainer {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 0 2rem 0 0;
 }
 .header {
     text-align: center;
@@ -19,20 +19,26 @@
     max-width: 600px;
     margin: 0 auto;
 }
-.mainContent {
+.pageWrapper {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+.grid { /* <-- কার্যকরী সমাধান */
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
 }
-@media (min-width: 992px) {
-    .mainContent {
-        grid-template-columns: 280px 1fr; /* সাইডবার এবং গ্রিডের জন্য কলাম */
+
+@media (max-width: 992px) {
+    .grid { /* <-- পরিবর্তন এখানেও */
+        grid-template-columns: repeat(2, 1fr);
     }
 }
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2rem;
+@media (max-width: 600px) {
+    .grid { /* <-- পরিবর্তন এখানেও */
+        grid-template-columns: 1fr;
+    }
 }
 
 /* === Product Card Styles (মূল পরিবর্তন এখানে) === */

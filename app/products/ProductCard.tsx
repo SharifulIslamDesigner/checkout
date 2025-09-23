@@ -1,5 +1,5 @@
 'use client';
-
+import Image from 'next/image';
 import { useState } from 'react';
 import Link from 'next/link';
 import styles from './products.module.css';
@@ -74,25 +74,22 @@ export default function ProductCard({ product }: ProductCardProps) {
     setIsAdding(true);
     
     try {
-      await addToCart(
-        {
-          id: product.id,
-          databaseId: product.databaseId,
-          name: product.name,
-          // price এবং image এখন আর addToCart-এ পাঠানো হচ্ছে না, কারণ Context এটি হ্যান্ডেল করতে পারে
-        },
-        1 // পরিমাণ ১
-      );
+        await addToCart({
+            id: product.id,
+            databaseId: product.databaseId,
+            name: product.name,
+            price: product.price,
+            image: product.image?.sourceUrl,
+            slug: product.slug,
+        }, 1);
     } catch (error) {
-      console.error("Error adding item from ProductCard", error);
+        console.error("Error adding item from ProductCard", error);
     } finally {
-      setIsAdding(false);
+        setIsAdding(false);
     }
   };
 
-  const canDisplayPrice = product.price && typeof product.price === 'string';
-
-   return (
+  return (
     // --- কার্যকরী সমাধান: মূল কন্টেইনার এখন একটি div, Link নয় ---
     <div className={styles.productCard}>
         <Link href={`/product/${product.slug}`} className={styles.productLinkWrapper}>
@@ -101,7 +98,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                     <div className={styles.discountBadge}>-{discountPercent}%</div>
                 )}
                 {product.image?.sourceUrl ? ( 
-                  <img src={product.image.sourceUrl} alt={product.name} className={styles.productImage} /> 
+                  <Image src={product.image.sourceUrl} width={1000} height={1000} alt={product.name} className={styles.productImage} /> 
                 ) : ( 
                   <div className={styles.placeholderImage} /> 
                 )}

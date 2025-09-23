@@ -28,6 +28,13 @@ const nextConfig = {
          pathname: '/wp-content/uploads/**',
          
        },
+        {
+         protocol: 'https',
+        hostname: 'gobikes.au',
+         port: '',
+         pathname: '/wp-content/uploads/**',
+         
+       },
        {
         protocol: 'https',
         hostname: 'i.ytimg.com',

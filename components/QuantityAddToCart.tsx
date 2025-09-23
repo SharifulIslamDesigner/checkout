@@ -2,22 +2,22 @@
 
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
-import styles from './QuantityAddToCart.module.css'; // <-- নতুন CSS ফাইল ইম্পোর্ট করুন
+import styles from './QuantityAddToCart.module.css';
 
-interface ProductForCart {
-  id: string;
-  databaseId: number;
-  name: string;
-  price?: string;
-  image?: string;
-}
+// ... (ProductForCart ইন্টারফেস অপরিবর্তিত)
 
 export default function QuantityAddToCart({ product }: { product: ProductForCart }) {
   const [quantity, setQuantity] = useState(1);
-  const { addToCart, loading } = useCart();
+  const { addToCart, loading: isCartLoading } = useCart(); // <-- গ্লোবাল লোডিং-এর নাম পরিবর্তন করা হয়েছে
+  
+  // --- কার্যকরী সমাধান: একটি লোকাল লোডিং স্টেট তৈরি করা ---
+  const [isAdding, setIsAdding] = useState(false);
+  // ----------------------------------------------------
 
-  const handleAddToCart = () => {
-    addToCart(product, quantity);
+  const handleAddToCart = async () => {
+    setIsAdding(true); // <-- শুধুমাত্র লোকাল স্টেট পরিবর্তন করুন
+    await addToCart(product, quantity);
+    setIsAdding(false); // <-- শুধুমাত্র লোকাল স্টেট পরিবর্তন করুন
   };
 
   return (
@@ -25,14 +25,14 @@ export default function QuantityAddToCart({ product }: { product: ProductForCart
       <div className={styles.quantitySelector}>
         <button 
           onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
-          disabled={loading}
+          disabled={isAdding || isCartLoading} // <-- দুটি লোডিং অবস্থাই চেক করুন
         >
           -
         </button>
         <span>{quantity}</span>
         <button 
           onClick={() => setQuantity(prev => prev + 1)}
-          disabled={loading}
+          disabled={isAdding || isCartLoading}
         >
           +
         </button>
@@ -40,9 +40,9 @@ export default function QuantityAddToCart({ product }: { product: ProductForCart
       <button 
         className={styles.addToCartButton}
         onClick={handleAddToCart}
-        disabled={loading}
+        disabled={isAdding || isCartLoading} // <-- দুটি লোডিং অবস্থাই চেক করুন
       >
-        {loading ? 'Adding...' : 'Add to Cart'}
+        {isAdding ? 'Adding...' : 'Add to Cart'}
       </button>
     </div>
   );

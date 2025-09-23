@@ -1,12 +1,14 @@
 'use client'; // <-- ক্লায়েন্ট কম্পোনেন্ট হিসেবে চিহ্নিত
 
 import styles from './Privacy.module.css'; // <-- CSS মডিউল ইম্পোর্ট করা হচ্ছে
+import Breadcrumbs from '../../components/Breadcrumbs';
 
 export default function PrivacyPolicyPage() {
   return (
     // *** মূল সমাধান: সব className এখন {styles....} ব্যবহার করছে ***
+    <div>
+          <Breadcrumbs />
     <div className={styles.privacyPolicyContent}>
-
         <h1>Privacy Policy for GoBike.au</h1>
         <p className={styles.lastUpdated}>Last Updated: 12 August 2025</p>
         
@@ -49,7 +51,7 @@ export default function PrivacyPolicyPage() {
         <p>To exercise these rights, please contact us using the details below. For more information on your privacy rights, you may visit the official website of the <a href="https://www.oaic.gov.au/" target="_blank" rel="noopener noreferrer">Office of the Australian Information Commissioner (OAIC)</a>.</p>
 
         <h2>5. Contact Us</h2>
-        <p>If you have any questions about this Privacy Policy or how we handle your data, please don't hesitate to reach out. Our friendly Aussie team is always here to help.</p>
+        <p>If you have any questions about this Privacy Policy or how we handle your data, please do not hesitate to reach out. Our friendly Aussie team is always here to help.</p>
         <ul>
           <li><strong>Business Name:</strong> GoBike.au</li>
           <li><strong>Email:</strong> <a href="mailto:gobike@gobike.au">gobike@gobike.au</a></li>
@@ -58,8 +60,9 @@ export default function PrivacyPolicyPage() {
         
         <div className={styles.contactBox}>
           <h2>Have Questions?</h2>
-          <p>Your trust is important to us. If you have any questions at all about your privacy, please <a href="https://sharifulbuilds.com/contact-us-ebike-expertin-australia-kids-electric-bike/">contact our friendly Aussie team</a>. For quick answers, you can also visit our <a href="https://sharifulbuilds.com/faq-page-kids-ebike-in-australia/">FAQs</a> page or explore the latest product range on our  <a href="https://sharifulbuilds.com/products/bikes/">Shop page</a>.</p>
+          <p>Your trust is important to us. If you have any questions at all about your privacy, please <a href="https://gobike.au/contact-us-ebike-expertin-australia-kids-electric-bike/">contact our friendly Aussie team</a>. For quick answers, you can also visit our <a href="https://sharifulbuilds.com/faq-page-kids-ebike-in-australia/">FAQs</a> page or explore the latest product range on our  <a href="https://sharifulbuilds.com/products/bikes/">Shop page</a>.</p>
         </div>
+    </div>
     </div>
   );
 }

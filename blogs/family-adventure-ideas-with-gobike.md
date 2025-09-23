@@ -3,7 +3,7 @@ title: "Weekend Adventures: Fun Family Outings with Your GoBike"
 date: "2025-09-22"
 author: "GoBike Team"
 excerpt: "Looking for ways to spend quality time with the family outdoors? A GoBike opens up a world of possibilities. Here are some of our favourite ideas for a weekend family adventure."
-cover_image: "https://sharifulbuilds.com/wp-content/uploads/2025/09/7.webp"
+cover_image: "https://gobikes.au/wp-content/uploads/2025/02/5-Static-1x1-1-1.webp"
 tags: ["Family Fun", "Weekend Ideas", "Outdoor Activities", "GoBike Adventures"]
 ---
 
