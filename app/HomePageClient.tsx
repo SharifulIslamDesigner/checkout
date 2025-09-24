@@ -43,7 +43,7 @@ const HeroSlider = () => {
             </div>
           </div>
           <div className={styles.finalSplitSlide}>
-              <div className={styles.finalSplitImageWrapper}><Image className={styles.finalSplitImage} loading="lazy" src="https://gobikes.au/wp-content/uploads/2025/08/Gobike-electric-bike-kids-ebike20-inch-ages-for10-16-2.webp" alt="GoBike 16 Electric Bike for kids" width={1000} height={849} sizes="(max-width: 768px) 100vw, 50vw" /></div>
+              <div className={styles.finalSplitImageWrapper}><Image className={styles.finalSplitImage} loading="eager" src="https://gobikes.au/wp-content/uploads/2025/08/Gobike-electric-bike-kids-ebike20-inch-ages-for10-16-2.webp" alt="GoBike 16 Electric Bike for kids" width={1000} height={849} sizes="(max-width: 768px) 100vw, 50vw" /></div>
               <div className={styles.finalSplitContent}>
                   <p className={styles.finalSlideSubtitle}>The All-Rounder</p>
                   <h2 className={styles.finalSlideTitle}>GOBIKE 16</h2>

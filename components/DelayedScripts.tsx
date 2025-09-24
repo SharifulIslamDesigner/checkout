@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 
 const GTM_ID = 'GTM-MBDS8NJQ';
 const KLAVIYO_API_KEY = 'VbbJYB';
-const FALLBACK_DELAY_IN_MILLISECONDS = 7000; // ৭ সেকেন্ড
+const FALLBACK_DELAY_IN_MILLISECONDS = 10000; // ৭ সেকেন্ড
 
 export default function DelayedScripts() {
   
@@ -42,7 +42,7 @@ export default function DelayedScripts() {
 
     // --- ব্যবহারকারীর কার্যকলাপের জন্য ইভেন্ট লিসেনার যোগ করা হচ্ছে ---
     const userInteractionListener = () => {
-      loadScripts();
+      setTimeout(loadScripts, 5000); 
       // একবার লোড হয়ে গেলে টাইমার এবং লিসেনার—দুটোই পরিষ্কার করা হচ্ছে
       clearTimeout(fallbackTimer);
       window.removeEventListener('scroll', userInteractionListener);
