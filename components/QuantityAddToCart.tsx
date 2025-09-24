@@ -4,46 +4,63 @@ import { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import styles from './QuantityAddToCart.module.css';
 
-// ... (ProductForCart ইন্টারফেস অপরিবর্তিত)
+// --- ProductForCart interface ---
+interface ProductForCart {
+    id: string;
+    databaseId: number;
+    name: string;
+    price?: string | null;
+    image?: string | null;
+    slug: string;
+}
 
 export default function QuantityAddToCart({ product }: { product: ProductForCart }) {
   const [quantity, setQuantity] = useState(1);
-  const { addToCart, loading: isCartLoading } = useCart(); // <-- গ্লোবাল লোডিং-এর নাম পরিবর্তন করা হয়েছে
-  
-  // --- কার্যকরী সমাধান: একটি লোকাল লোডিং স্টেট তৈরি করা ---
+  const { addToCart, loading: isCartLoading } = useCart();
   const [isAdding, setIsAdding] = useState(false);
-  // ----------------------------------------------------
 
   const handleAddToCart = async () => {
-    setIsAdding(true); // <-- শুধুমাত্র লোকাল স্টেট পরিবর্তন করুন
+    setIsAdding(true);
     await addToCart(product, quantity);
-    setIsAdding(false); // <-- শুধুমাত্র লোকাল স্টেট পরিবর্তন করুন
+    setIsAdding(false);
+  };
+
+  const handleQuantityChange = (amount: number) => {
+    setQuantity(prev => Math.max(1, prev + amount));
   };
 
   return (
+    // --- সমাধান: JSX স্ট্রাকচারটি আপনার CSS-এর সাথে মেলানো হয়েছে ---
     <div className={styles.quantityAndCartWrapper}>
-      <div className={styles.quantitySelector}>
+        
+        {/* --- পরিমাণ (+/-) অংশ --- */}
+        <div className={styles.quantitySelector}>
+            <button 
+                onClick={() => handleQuantityChange(-1)} 
+                disabled={isCartLoading || isAdding || quantity <= 1}
+                aria-label="Decrease quantity"
+            >
+                -
+            </button>
+            <span>{quantity}</span>
+            <button 
+                onClick={() => handleQuantityChange(1)} 
+                disabled={isCartLoading || isAdding}
+                aria-label="Increase quantity"
+            >
+                +
+            </button>
+        </div>
+        
+        {/* --- মূল "Add to Cart" বাটন --- */}
         <button 
-          onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
-          disabled={isAdding || isCartLoading} // <-- দুটি লোডিং অবস্থাই চেক করুন
+            className={styles.addToCartButton}
+            onClick={handleAddToCart}
+            disabled={isCartLoading || isAdding}
         >
-          -
+            {isAdding ? 'Adding...' : 'Add to Cart'}
         </button>
-        <span>{quantity}</span>
-        <button 
-          onClick={() => setQuantity(prev => prev + 1)}
-          disabled={isAdding || isCartLoading}
-        >
-          +
-        </button>
-      </div>
-      <button 
-        className={styles.addToCartButton}
-        onClick={handleAddToCart}
-        disabled={isAdding || isCartLoading} // <-- দুটি লোডিং অবস্থাই চেক করুন
-      >
-        {isAdding ? 'Adding...' : 'Add to Cart'}
-      </button>
+
     </div>
   );
 }
