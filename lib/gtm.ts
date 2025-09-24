@@ -1,7 +1,7 @@
 // --- টাইপ ডেফিনিশন ---
 // এটি নিশ্চিত করে যে window অবজেক্টের উপর dataLayer থাকলেও TypeScript কোনো এরর দেবে না
 type WindowWithDataLayer = Window & {
-  dataLayer: Record<string, any>[];
+  dataLayer: Record<string, unknown>[];
 };
 
 // window অবজেক্টটিকে নতুন টাইপ দিয়ে ঘোষণা করা হচ্ছে

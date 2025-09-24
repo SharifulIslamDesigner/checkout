@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './SearchOverlay.module.css';
 import { IoClose } from 'react-icons/io5';
+import Image from 'next/image';
 
 // সার্চ রেজাল্টের একটি আইটেমের গঠন
 interface SearchResult {
@@ -46,7 +47,7 @@ export default function SearchOverlay({ onClose }: { onClose: () => void }) {
         }
       `;
 
-      fetch("https://sharifulbuilds.com/graphql", {
+      fetch("https://gobikes.au/graphql", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -93,7 +94,7 @@ export default function SearchOverlay({ onClose }: { onClose: () => void }) {
               {results.map(product => (
                 <li key={product.id}>
                   <Link href={`/product/${product.slug}`} onClick={onClose}>
-                    <img src={product.image?.sourceUrl || '/placeholder.png'} alt={product.name} />
+                    <Image src={product.image?.sourceUrl || '/placeholder.png'} alt={product.name} width={50} height={50}  />
                     <span>{product.name}</span>
                   </Link>
                 </li>
@@ -101,7 +102,7 @@ export default function SearchOverlay({ onClose }: { onClose: () => void }) {
             </ul>
           )}
           {!loading && results.length === 0 && searchTerm.length >= 3 && (
-            <p>No products found for "{searchTerm}"</p>
+            <p>No products found for “{searchTerm}”</p>
           )}
         </div>
       </div>

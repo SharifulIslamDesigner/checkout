@@ -9,8 +9,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'Email is required.' }, { status: 400 });
     }
 
-    const KLAVIYO_PRIVATE_API_KEY = process.env.KLAVIYO_PRIVATE_API_KEY;
-    const KLAVIYO_LIST_ID = process.env.KLAVIYO_LIST_ID;
+    const KLAVIYO_PRIVATE_API_KEY = 'pk_94cb62e1b307a28d1b684c5c8b75f28748';
+    const KLAVIYO_LIST_ID = 'S5Sg2y';
     
     if (!KLAVIYO_PRIVATE_API_KEY || !KLAVIYO_LIST_ID) {
       console.error("Klaviyo API Key or List ID is not set.");

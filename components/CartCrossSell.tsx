@@ -20,11 +20,15 @@ interface Product {
   regularPrice?: string;
   salePrice?: string;
 }
-
+interface QueryData {
+  products: {
+    nodes: Product[];
+  } | null;
+}
 // --- GraphQL কোয়েরি (অপরিবর্তিত) ---
 const GET_CROSS_SELL_PRODUCTS_QUERY = gql`
   query GetCrossSellProducts {
-    products(where: { categoryIn: ["spare-parts"] }, first: 6) {
+    products(where: { categoryIn: ["spare-parts"] }, first: 4) {
       nodes {
         id
         databaseId
@@ -50,10 +54,10 @@ export default function CartCrossSell() {
   useEffect(() => {
     async function getCrossSellProducts() {
       try {
-        const { data } = await client.query({
+        const { data } = await client.query<QueryData>({
           query: GET_CROSS_SELL_PRODUCTS_QUERY,
         });
-        setProducts(data.products.nodes);
+        setProducts(data?.products?.nodes || []);
       } catch (error) {
         console.error("Error fetching cross-sell products:", error);
       } finally {

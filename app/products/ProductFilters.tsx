@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState,useRef, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import styles from './filters.module.css';
 import { IoChevronDown } from 'react-icons/io5';

@@ -1,6 +1,6 @@
 /* app/cart/CartPage.module.css */
 .container {
-  max-width: 1500px;
+  max-width: 1300px;
   margin: 0 auto;
   padding: 1rem 0 2rem 2rem;
 }
@@ -23,8 +23,9 @@
 .cartLayout {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 2rem;
-  align-items: flex-start; /* summary কে উপরে রাখার জন্য */
+  gap: .8rem;
+  align-items: flex-start;
+  padding-bottom: 3rem; /* summary কে উপরে রাখার জন্য */
 }
 .cartItems {
   display: flex;
@@ -37,7 +38,7 @@
   gap: 1.5rem;
   align-items: center;
   border: 1px solid #eaeaea;
-  padding: 1rem;
+  padding: .5rem;
   border-radius: 8px;
 }
 .itemImage {
@@ -57,7 +58,7 @@
 }
 .itemPrice {
   margin: 0.5rem 0;
-  font-weight: bold;
+  font-weight: 700;
 }
 .quantityControl {
   display: flex;
@@ -89,7 +90,7 @@
 .cartSummary h2 {
   margin-top: 0;
   margin-bottom: 0.5rem;
-  font-size: 20px;
+  font-size: 1.5rem;
   font-weight: 700;
 }
 
@@ -97,7 +98,8 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 2rem;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
+  font-weight: 600;
 }
 
 .checkoutButton {
@@ -105,12 +107,12 @@
   text-align: center;
   width: 100%;
   padding: .5rem;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   background-color: #030303;
   color: white;
   text-decoration: none; /* Link এর আন্ডারলাইন সরানোর জন্য */
   border: none;
-  border-radius: 5px;
+  border-radius: 50px;
   cursor: pointer;
   font-weight: bold;
 }
@@ -128,7 +130,6 @@
   .cartSummary {
     /* এক কলাম হলে সামারি নিচে চলে আসবে */
      /* সামারিকে উপরে দেখানোর জন্য */
-    margin-bottom: 2rem;
     position: static; /* sticky পজিশন বন্ধ করা হলো */
   }
 }

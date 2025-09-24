@@ -12,7 +12,7 @@ type KlaviyoItem = {
 };
 
 type WindowWithKlaviyo = Window & {
-  _learnq: any[];
+  _learnq: unknown[];
 };
 declare const window: WindowWithKlaviyo;
 

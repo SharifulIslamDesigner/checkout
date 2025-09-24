@@ -2,28 +2,34 @@
 
 import { useState, useEffect } from 'react';
 import { gql } from '@apollo/client';
-import client from '../lib/apolloClient';
+import client from '../lib/apolloClient'; // ক্লায়েন্ট কম্পোনেন্টের জন্য এটিই সঠিক
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './FeaturedBikes.module.css';
 import { useCart } from '../context/CartContext';
 
-// --- টাইপ ইন্টারফেস ---
+// --- টাইপ ইন্টারফেস (সম্পূর্ণ এবং সঠিক) ---
 interface Product {
   id: string;
   databaseId: number;
   name: string;
   slug: string;
-  image?: { sourceUrl: string };
-  price?: string;
-  averageRating?: number;
-  reviewCount?: number;
+  image?: { sourceUrl: string } | null;
+  price?: string | null;
+  averageRating?: number | null;
+  reviewCount?: number | null;
   onSale: boolean;
-  regularPrice?: string;
-  salePrice?: string;
+  regularPrice?: string | null;
+  salePrice?: string | null;
 }
 
-// --- GraphQL কোয়েরি ---
+interface QueryData {
+  products: {
+    nodes: Product[];
+  } | null;
+}
+
+// --- GraphQL কোয়েরি (অপরিবর্তিত) ---
 const GET_FEATURED_BIKES_QUERY = gql`
   query GetFeaturedBikes {
     products(where: { category: "bikes" }, first: 3) {
@@ -55,14 +61,14 @@ const GET_FEATURED_BIKES_QUERY = gql`
 const StarRating = ({ rating, count }: { rating: number, count: number }) => {
     const totalStars = 5;
     const fullStars = Math.floor(rating);
-    const emptyStars = totalStars - fullStars;
-    const halfStar = rating > 0 && rating % 1 !== 0;
+    const halfStar = rating % 1 !== 0;
+    const emptyStars = totalStars - fullStars - (halfStar ? 1 : 0);
 
     return (
         <div className={styles.featuredStarRating}>
             {[...Array(fullStars)].map((_, i) => <span key={`full-${i}`}>★</span>)}
             {halfStar && <span key="half">⭐</span>}
-            {[...Array(emptyStars - (halfStar ? 1 : 0))].map((_, i) => <span key={`empty-${i}`}>☆</span>)}
+            {[...Array(emptyStars)].map((_, i) => <span key={`empty-${i}`}>☆</span>)}
             
             {count > 0 && (
               <span className={styles.featuredReviewCount}>
@@ -81,14 +87,22 @@ const AddToCartButton = ({ product }: { product: Product }) => {
     const handleAddToCart = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         e.stopPropagation();
-
         setIsAdding(true);
-        await addToCart({
-            id: product.id,
-            databaseId: product.databaseId,
-            name: product.name,
-        }, 1);
-        setIsAdding(false);
+        try {
+            // --- সমাধান: addToCart-কে এখন সম্পূর্ণ ডেটা পাঠানো হচ্ছে ---
+            await addToCart({
+                id: product.id,
+                databaseId: product.databaseId,
+                name: product.name,
+                slug: product.slug,
+                price: product.price,
+                image: product.image?.sourceUrl
+            }, 1);
+        } catch (error) {
+            console.error("Error from AddToCartButton:", error);
+        } finally {
+            setIsAdding(false);
+        }
     };
 
     return (
@@ -106,10 +120,13 @@ export default function FeaturedBikes() {
   useEffect(() => {
     async function getFeaturedBikes() {
       try {
-        const { data } = await client.query({
+        const { data } = await client.query<QueryData>({
           query: GET_FEATURED_BIKES_QUERY,
         });
-        setProducts(data.products.nodes);
+        
+        if (data?.products?.nodes) {
+            setProducts(data.products.nodes);
+        }
       } catch (error) {
         console.error("Error fetching featured bikes:", error);
       } finally {
@@ -145,13 +162,13 @@ export default function FeaturedBikes() {
         </div>
         <div className={styles.featuredGrid}>
           {products.map((product) => {
-            const parsePrice = (priceStr?: string): number => {
+            const parsePrice = (priceStr?: string | null): number => {
                 if (!priceStr) return 0;
                 return parseFloat(priceStr.replace(/[^0-9.]/g, ''));
             };
             const regularPriceNum = parsePrice(product.regularPrice);
             const salePriceNum = parsePrice(product.salePrice);
-            const discountPercent = regularPriceNum > 0 && salePriceNum < regularPriceNum 
+            const discountPercent = regularPriceNum > 0 && salePriceNum > 0 && salePriceNum < regularPriceNum 
                 ? Math.round(((regularPriceNum - salePriceNum) / regularPriceNum) * 100)
                 : 0;
             

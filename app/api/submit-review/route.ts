@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
         const formData = await request.formData();
         
         // WordPress-এর ডিফল্ট কমেন্ট সাবমিশন এন্ডপয়েন্ট
-        const endpoint = 'https://sharifulbuilds.com/wp-comments-post.php';
+        const endpoint = 'https://gobikes.au/wp-comments-post.php';
 
         // সার্ভার-সাইড থেকে WordPress-এ রিকোয়েস্ট পাঠানো হচ্ছে
         const response = await fetch(endpoint, {

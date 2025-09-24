@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useCart } from '../context/CartContext';
 import styles from './MiniCart.module.css';
 import { IoClose } from 'react-icons/io5';
+import Image from 'next/image';
 
 interface MiniCartProps {
   isOpen: boolean;
@@ -47,7 +48,7 @@ const generateCheckoutUrl = () => {
     const encodedCart = encodeURIComponent(cartJson);
     
     // চূড়ান্ত URL তৈরি করা হচ্ছে
-    return `https://sharifulbuilds.com/cart/?cart_items=${encodedCart}`;
+    return `https://gobikes.au/cart/?cart_items=${encodedCart}`;
   }; 
 
   if (!isOpen) return null;
@@ -69,7 +70,7 @@ const generateCheckoutUrl = () => {
           ) : (
             cartItems.map(item => (
               <div key={item.key} className={styles.cartItem}>
-                {item.image ? (<img src={item.image} alt={item.name} className={styles.itemImage} />) : (<div className={styles.placeholderImage}/>)}
+                {item.image ? (<Image src={item.image} alt={item.name} className={styles.itemImage} width={100} height={100} />) : (<div className={styles.placeholderImage}/>)}
                 <div className={styles.itemDetails}>
                   <p className={styles.itemName}>{item.name}</p>
                   <div className={styles.quantityControl}>

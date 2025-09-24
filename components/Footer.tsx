@@ -32,9 +32,14 @@ export default function Footer() {
         setFeedbackMessage(result.message);
         setEmail('');
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         setStatus('error');
-        setFeedbackMessage(error.message || 'Failed to subscribe. Please try again.');
+        let errorMessage = 'Failed to subscribe. Please try again.';
+    if (error instanceof Error) {
+        errorMessage = error.message;
+    }
+    setFeedbackMessage(errorMessage);
+    
     } finally {
         // মেসেজটি ৫ সেকেন্ড পর মুছে যাবে
         setTimeout(() => {
@@ -68,7 +73,7 @@ export default function Footer() {
 
       <div className={styles['final-footer-wrapper-v6']}>
           <div className={styles['final-footer-grid-v6']}>
-              <div className={`${styles['final-footer-column-v6']} ${styles['logo-column-v6']}`}><Image src="https://gobike.au/wp-content/uploads/2025/06/GOBIKE-Electric-Bike-for-kids.webp" alt="GoBike Australia Logo"  width={1861} height={430} className={styles['final-footer-logo-v6']} /></div>
+              <div className={`${styles['final-footer-column-v6']} ${styles['logo-column-v6']}`}><Image src="https://gobikes.au/wp-content/uploads/2025/06/GOBIKE-Electric-Bike-for-kids.webp" alt="GoBike Australia Logo"  width={1861} height={430} className={styles['final-footer-logo-v6']} /></div>
               <div className={`${styles['final-footer-column-v6']} ${styles['follow-column-v6']}`}>
   <h3>Follow Us</h3>
   <ul>
@@ -105,13 +110,13 @@ export default function Footer() {
                       <li><Link href="/bikes">Bikes</Link></li>
                       <li><Link href="/products">Spare Parts</Link></li>
                       <li><Link href="/about">About</Link></li>
-                      <li><a href="https://gobike.au/category/blog/" target="_blank" rel="noopener noreferrer">Blog</a></li>
+                      <li><Link href="/blog" >Blog</Link></li>
                   </ul>
               </div>
               <div className={`${styles['final-footer-column-v6']} ${styles['customers-column-v6']}`}>
                   <h3>Customers</h3>
                   <ul>
-                      <li><a href="https://sharifulbuilds.com/my-account/">Log In/Register</a></li>
+                      <li><a href="https://gobikes.au/my-account/">Log In/Register</a></li>
                       <li><Link href="/contact">Contact Us</Link></li>
                       <li><Link href="/faq">FAQs</Link></li>
                       <li><Link href="/terms-and-conditions">Terms & Condition</Link></li>
@@ -149,7 +154,7 @@ export default function Footer() {
           <div className={styles['bottom-bar-container-v6']}>
               <div className={styles['copyright-text-v6']}>Copyright &copy; {new Date().getFullYear()} GoBike All Rights Reserved</div>
               <div className={styles['trust-symbols-v6']}>
-                  <Image src="https://gobike.au/wp-content/uploads/2018/07/trust-symbols_b.jpg" width={1600} height={168} alt="Secure Payment Methods" />
+                  <Image src="https://gobikes.au/wp-content/uploads/2018/07/trust-symbols_b.jpg" width={1600} height={168} alt="Secure Payment Methods" />
               </div>
           </div>
       </div>
