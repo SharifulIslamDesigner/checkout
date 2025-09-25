@@ -80,57 +80,110 @@
     text-align: center;
 }
 
-
 /* === Middle Section: Contact Form === */
 .gobikeFormContainer {
-    background-color: #f8f9fa;
-    padding: 3rem;
-    border-radius: 16px;
+    max-width: 800px; /* ফর্মের সর্বোচ্চ প্রস্থ সেট করা হলো */
+    margin: 4rem auto; /* উপরে-নিচে এবং মাঝখানে আনার জন্য */
+    background-color: #ffffff;
+    padding: 1rem;
+    border-radius: 12px;
     border: 1px solid #e7e7e7;
-    margin-bottom: 4rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* একটি হালকা ছায়া */
 }
+
 .gobikeFormContainer h2 {
     text-align: center;
     font-size: 2rem;
+    font-weight: 700;
     margin: 0 0 2rem 0;
+    color: #1a1a1a;
 }
+
+/* --- সমাধান: CSS Grid দিয়ে লেআউট তৈরি করা হয়েছে --- */
 .gobikeFormContainer form {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    grid-template-columns: 1fr; /* মোবাইল স্ক্রিনের জন্য ডিফল্ট */
+    gap: 1.5rem; /* ফিল্ডগুলোর মধ্যে ফাঁকা জায়গা */
 }
+
+/* ডেস্কটপ স্ক্রিনের জন্য দুটি কলাম */
 @media (min-width: 600px) {
     .gobikeFormContainer form {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr; /* দুটি সমান কলাম */
     }
-    .gobikeFormContainer form textarea {
-        grid-column: 1 / -1; /* Textarea পুরো জায়গা নেবে */
-    }
-    .gobikeFormContainer form button {
-        grid-column: 1 / -1; /* Button পুরো জায়গা নেবে */
-    }
+}
+
+/* --- সমাধান: ফর্মের বিভিন্ন অংশের জন্য নতুন ক্লাস --- */
+.formGroup {
+    display: flex;
+    flex-direction: column;
+}
+
+.formGroupFull {
+    grid-column: 1 / -1; /* এই ক্লাসটি দুটি কলামের সম্পূর্ণ জায়গা নেবে */
 }
 
 .gobikeFormContainer input,
 .gobikeFormContainer textarea {
     width: 100%;
     padding: 1rem;
-    border: 1px solid #ccc;
+    border: 1px solid #dcdcdc;
     border-radius: 8px;
     font-size: 1rem;
+    background-color: #f9f9f9;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
+
+.gobikeFormContainer input:focus,
+.gobikeFormContainer textarea:focus {
+    outline: none;
+    border-color: #000;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.gobikeFormContainer textarea {
+    resize: vertical; /* ব্যবহারকারী যেন শুধু লম্বালম্বিভাবে রিসাইজ করতে পারে */
+}
+
 .gobikeFormContainer button {
     background-color: #1a1a1a;
     color: #fff;
     border: none;
     padding: 1rem;
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 600;
     border-radius: 8px;
     cursor: pointer;
     width: 100%;
+    transition: background-color 0.2s;
 }
 
+.gobikeFormContainer button:hover:not(:disabled) {
+    background-color: #333;
+}
+
+.gobikeFormContainer button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* --- ফিডব্যাক মেসেজের জন্য স্টাইল --- */
+.successMessage, .errorMessage {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.successMessage {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.errorMessage {
+    background-color: #f8d7da;
+    color: #721c24;
+}
 
 /* === Bottom Section: Consumer Rights === */
 .consumerRightsSection {

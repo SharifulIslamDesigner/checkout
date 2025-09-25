@@ -93,17 +93,28 @@ export default function ContactPage() {
 
         {/* Middle Section: Contact Form */}
         <div className={styles.gobikeFormContainer}>
-            <h2>Send Us a Message</h2>
+          <h2>Send Us a Message</h2>
             <form onSubmit={handleFormSubmit}>
-                <input type="text" name="name" placeholder="Your Name *" value={formData.name} onChange={handleInputChange} required />
-                <input type="email" name="email" placeholder="Your Email *" value={formData.email} onChange={handleInputChange} required />
-                <input type="tel" name="phone" placeholder="Your Phone" value={formData.phone} onChange={handleInputChange} />
-                <textarea name="message" placeholder="Your Message *" value={formData.message} onChange={handleInputChange} required></textarea>
+              <div className={styles.formGroup}>
+                <input type="text" id="name" name="name" placeholder="Your Name *" value={formData.name} onChange={handleInputChange} required />
+              </div>
+              <div className={styles.formGroup}>
+                <input type="email" id="email" name="email" placeholder="Your Email *" value={formData.email} onChange={handleInputChange} required />
+              </div>
+              <div className={styles.formGroupFull}>
+                <input type="tel" id="phone" name="phone" placeholder="Your Phone" value={formData.phone} onChange={handleInputChange} />
+              </div>
+              <div className={styles.formGroupFull}>
+                <textarea id="message" name="message" placeholder="Your Message *" value={formData.message} onChange={handleInputChange} required rows={5}></textarea>
+              </div>
+              <div className={styles.formGroupFull}>
                 <button type="submit" disabled={status === 'loading'}>
                   {status === 'loading' ? 'Sending...' : 'Send Message'}
                 </button>
-            </form>
-            {/* react-hot-toast এখন বার্তা দেখানোর কাজ করবে, তাই এই অংশটির আর প্রয়োজন নেই */}
+             </div>
+           </form>
+         {status === 'success' && <p className={styles.successMessage}>Thank you for your message!</p>}
+         {status === 'error' && <p className={styles.errorMessage}>Something went wrong. Please try again.</p>}
         </div>
 
         {/* Bottom Section: Consumer Rights */}
@@ -115,7 +126,7 @@ export default function ContactPage() {
                 <p>You have the right to a repair, replacement, or refund for a major failure and compensation for any other reasonably foreseeable loss or damage.</p>
                 <a href="https://www.accc.gov.au/" target="_blank" rel="noopener noreferrer" className={styles.consumerRightsButton}>Learn More at ACCC Website</a>
             </div>
-        </div>
+         </div>
       </div>
     </div>
     </div>
