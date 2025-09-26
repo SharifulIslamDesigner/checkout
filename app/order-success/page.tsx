@@ -1,26 +1,69 @@
-"use client"; // <-- এই পেজটি ক্লায়েন্ট কম্পোনেন্ট হওয়া জরুরি
+"use client";
 
 import { useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useCart } from '../../context/CartContext';
 import Link from 'next/link';
-import styles from './OrderSuccessPage.module.css'; // <-- আমরা একটি নতুন CSS ফাইল তৈরি করব
+import styles from './OrderSuccessPage.module.css';
+
+// --- GTM-এর জন্য টাইপ ডেফিনিশন ---
+interface GTMItem {
+  item_id: number;
+  item_name: string;
+  price: number;
+  quantity: number;
+}
+interface PurchaseData {
+  transaction_id: string;
+  value: number;
+  currency: string;
+  items: GTMItem[];
+}
+// --- সমাধান: window অবজেক্টের জন্য একটি কাস্টম টাইপ তৈরি করা হচ্ছে ---
+interface WindowWithDataLayer extends Window {
+    dataLayer?: unknown[];
+}
 
 export default function OrderSuccessPage() {
   const { clearCart } = useCart();
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    // URL-এ ?clear_cart=true আছে কিনা তা পরীক্ষা করা হচ্ছে
     const shouldClearCart = searchParams.get('clear_cart');
+    const orderDataParam = searchParams.get('order_data');
 
+    if (orderDataParam) {
+      try {
+        const decodedData = decodeURIComponent(orderDataParam);
+        const purchaseData: PurchaseData = JSON.parse(decodedData);
+        
+        // --- সমাধান: window-কে কাস্টম টাইপ হিসেবে ব্যবহার করা হচ্ছে ---
+        const safeWindow = window as WindowWithDataLayer;
+        safeWindow.dataLayer = safeWindow.dataLayer || [];
+        safeWindow.dataLayer.push({
+          event: 'purchase',
+          ecommerce: {
+            transaction_id: purchaseData.transaction_id,
+            value: purchaseData.value,
+            currency: purchaseData.currency,
+            items: purchaseData.items,
+          }
+        });
+
+        console.log("Purchase event sent to GTM:", purchaseData);
+
+      } catch (error) {
+        console.error("Failed to parse order data for GTM:", error);
+      }
+    }
+    
     if (shouldClearCart === 'true') {
       console.log("Order success signal received, clearing cart...");
       clearCart();
+      window.history.replaceState(null, '', window.location.pathname);
     }
     
-    // এই ইফেক্টটি শুধু একবারই রান হওয়া উচিত
-  }, []); // <-- খালি dependency array
+  }, [searchParams, clearCart]);
 
   return (
     <div className={styles.container}>
