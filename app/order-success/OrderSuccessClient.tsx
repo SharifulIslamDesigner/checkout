@@ -28,16 +28,20 @@ export default function OrderSuccessClient() {
   const { clearCart } = useCart();
   const searchParams = useSearchParams();
 
+  // useEffect হুকটি কম্পোনেন্ট মাউন্ট হওয়ার পর একবার রান হবে
   useEffect(() => {
-    const shouldClearCart = searchParams.get('clear_cart');
+    
+    // URL থেকে প্যারামিটারগুলো পড়া হচ্ছে
     const orderDataParam = searchParams.get('order_data');
+    const shouldClearCart = searchParams.get('clear_cart');
 
-    // GTM purchase ইভেন্ট পাঠানো হচ্ছে
+    // --- ধাপ ১: GTM Purchase ইভেন্ট পাঠানো ---
     if (orderDataParam) {
       try {
         const decodedData = decodeURIComponent(orderDataParam);
         const purchaseData: PurchaseData = JSON.parse(decodedData);
         
+        // dataLayer-কে ইনিশিয়ালাইজ করা এবং purchase ইভেন্ট পুশ করা
         const safeWindow = window as WindowWithDataLayer;
         safeWindow.dataLayer = safeWindow.dataLayer || [];
         safeWindow.dataLayer.push({
@@ -53,19 +57,24 @@ export default function OrderSuccessClient() {
         console.log("Purchase event sent to GTM:", purchaseData);
 
       } catch (error) {
-        console.error("Failed to parse order data for GTM:", error);
+        console.error("Failed to parse or send GTM purchase data:", error);
       }
     }
     
-    // কার্ট খালি করা হচ্ছে
+    // --- ধাপ ২: কার্ট খালি করা ---
     if (shouldClearCart === 'true') {
       console.log("Order success signal received, clearing cart...");
       clearCart();
-      // URL থেকে প্যারামিটারগুলো সরিয়ে ফেলা হচ্ছে
-      window.history.replaceState(null, '', window.location.pathname);
+    }
+
+    // --- ধাপ ৩: URL পরিষ্কার করা (ঐচ্ছিক কিন্তু সেরা প্র্যাকটিস) ---
+    // এটি নিশ্চিত করে যে, ব্যবহারকারী যদি পেজটি রিলোড করে,
+    // তাহলে purchase ইভেন্টটি আবার পাঠানো হবে না এবং clearCart আবার কল হবে না।
+    if (orderDataParam || shouldClearCart) {
+        window.history.replaceState(null, '', window.location.pathname);
     }
     
-  }, [searchParams, clearCart]);
+  }, []); // <-- সমাধান: খালি dependency array নিশ্চিত করে যে এই লজিকটি শুধু একবারই রান হবে
 
   return (
     <div className={styles.container}>

@@ -300,12 +300,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   const clearCart = async () => { 
-    if (cartItems.length === 0) return;
+    if (cartItems.length === 0 && !localStorage.getItem('woo-session')) {
+        // যদি কার্ট এবং সেশন দুটোই খালি থাকে, তাহলে কিছু করার দরকার নেই
+        return;
+    }
+    
     setLoading(true);
     try {
+      // ধাপ ১: WooCommerce সার্ভারে কার্ট খালি করার জন্য মিউটেশন পাঠানো হচ্ছে
       await client.mutate({ mutation: CLEAR_CART_MUTATION });
+      
+      // ধাপ ২: ব্রাউজারের লোকাল স্টেট খালি করা হচ্ছে
       setCartItems([]);
+
+      // ধাপ ৩ (সবচেয়ে গুরুত্বপূর্ণ): WooCommerce সেশন টোকেন মুছে ফেলা হচ্ছে
+      localStorage.removeItem('woo-session');
+      
       toast.success("Cart has been cleared.");
+
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Could not clear the cart.";
       toast.error(errorMessage);
