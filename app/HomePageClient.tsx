@@ -505,43 +505,54 @@ export default function HomePageClient() {
     <>
       <HeroSlider />
       <TrustBadges />
-       <div className={styles.sectionDividerWrapper}>
+      
+      <div className={styles.sectionDividerWrapper}>
         <hr className={styles.sectionDivider} />
       </div>
       <ProductCollection />
-       <div className={styles.sectionDividerWrapper}>
+      
+      <div className={styles.sectionDividerWrapper}>
         <hr className={styles.sectionDivider} />
       </div>
       <OurStory />
-       <div className={styles.sectionDividerWrapper}>
+      
+      <div className={styles.sectionDividerWrapper}>
         <hr className={styles.sectionDivider} />
       </div>
       <SmarterChoice />
-       <div className={styles.sectionDividerWrapper}>
+      
+      <div className={styles.sectionDividerWrapper}>
         <hr className={styles.sectionDivider} />
       </div>
       <FeaturedBikes />
-       <div className={styles.sectionDividerWrapper}>
+      
+      <div className={styles.sectionDividerWrapper}>
         <hr className={styles.sectionDivider} />
       </div>
       <DifferenceSection />
+
+      {/* --- সমাধান: প্রতিটি সেকশন এখন তার নিজের জায়গায় --- */}
       <CommunitySection />
-       <div className={styles.sectionDividerWrapper}>
+      
+      <div className={styles.sectionDividerWrapper}>
         <hr className={styles.sectionDivider} />
       </div>
       <HomePageReviews />
-       <div className={styles.sectionDividerWrapper}>
+
+      <div className={styles.sectionDividerWrapper}>
         <hr className={styles.sectionDivider} />
       </div>
       <VideoReviews />
-       <div className={styles.sectionDividerWrapper}>
+
+      <div className={styles.sectionDividerWrapper}>
         <hr className={styles.sectionDivider} />
       </div>
       <FaqSection />
-       <div className={styles.sectionDividerWrapper}>
+      
+      <div className={styles.sectionDividerWrapper}>
         <hr className={styles.sectionDivider} />
       </div>
       <BlogSection />
-      </>
+    </>
   );
 }

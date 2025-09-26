@@ -6,6 +6,15 @@ import Link from 'next/link';
 import Image from 'next/image';
 import styles from './BlogListPage.module.css'; // <-- নতুন CSS ফাইল ইম্পোর্ট করা হয়েছে
 import Breadcrumbs from '../../components/Breadcrumbs';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'GoBike Kids E-Bike Blog | Tips, Guides & Stories',
+  description: "Expert tips, safety guides, and inspiring stories for your little rider's next big adventure. Explore the official GoBike Australia blog for parents and kids.",
+  alternates: {
+    canonical: '/blog',
+  },
+};
 
 export default function BlogPage() {
   const blogDir = 'blogs';

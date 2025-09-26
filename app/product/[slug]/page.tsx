@@ -65,8 +65,8 @@ const GET_PRODUCT_QUERY = gql`
       shortDescription
       image { sourceUrl }
       galleryImages { nodes { sourceUrl } }
-      ... on SimpleProduct { price(format: FORMATTED) regularPrice(format: FORMATTED) salePrice(format: FORMATTED) onSale sku stockStatus attributes { nodes { name options } } weight length width height }
-      ... on VariableProduct { price(format: FORMATTED) regularPrice(format: FORMATTED) salePrice(format: FORMATTED) onSale sku stockStatus attributes { nodes { name options } } weight length width height }
+      ... on SimpleProduct { price(format: FORMATTED) regularPrice(format: FORMATTED) salePrice(format: FORMATTED) onSale sku stockStatus stockQuantity attributes { nodes { name options } } weight length width height }
+      ... on VariableProduct { price(format: FORMATTED) regularPrice(format: FORMATTED) salePrice(format: FORMATTED) onSale sku stockStatus stockQuantity attributes { nodes { name options } } weight length width height }
       averageRating
       reviewCount
       reviews(first: 100) { edges { rating node { id author { node { name } } content date } } }

@@ -378,4 +378,28 @@
 }
 
 /* --- Lightbox-এর জন্য Wrapper এবং থাম্বনেইল স্টাইল --- */
+/* --- Stock Status Styles --- */
+/* ProductPage.module.css ফাইলে যোগ করুন */
+
+.stockInfo {
+  margin: 1rem 0;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.inStock {
+  color: #28a745;
+}
+
+.outOfStock {
+  color: #dc3545;
+}
+
+.onBackorder {
+  color: #fd7e14;
+}
+
+.lowStock {
+  color: #d9534f;
+}
 

@@ -2,6 +2,14 @@ import Link from 'next/link';
 import styles from './AboutPage.module.css';
 import Breadcrumbs from '../../components/Breadcrumbs';
 import Image from 'next/image';
+import type { Metadata } from 'next';
+export const metadata: Metadata = {
+  title: 'About GoBike Australia | Our Story & Mission',
+  description: 'Learn about GoBike Australia, our mission to provide safe, fun, and high-performance electric bikes for kids, and our commitment to quality and Aussie customer service.',
+  alternates: {
+    canonical: '/about',
+  },
+};
 
 export default function AboutPage() {
   return (

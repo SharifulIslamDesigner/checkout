@@ -1,7 +1,14 @@
-'use client'; // <-- ক্লায়েন্ট কম্পোনেন্ট হিসেবে চিহ্নিত
-
 import styles from './Privacy.module.css'; // <-- CSS মডিউল ইম্পোর্ট করা হচ্ছে
 import Breadcrumbs from '../../components/Breadcrumbs';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy | GoBike Australia',
+  description: 'Read how GoBike Australia collects, uses, and protects your personal data. Your privacy is important to us. Learn more about our commitment to data security.',
+  alternates: {
+    canonical: '/privacy-policy',
+  },
+};
 
 export default function PrivacyPolicyPage() {
   return (

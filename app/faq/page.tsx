@@ -1,6 +1,14 @@
 import styles from './FaqPage.module.css';
 import Breadcrumbs from '../../components/Breadcrumbs';
 import Image from 'next/image';
+import type { Metadata } from 'next';
+export const metadata: Metadata = {
+  title: 'Frequently Asked Questions (FAQ) | GoBike Australia',
+  description: 'Find answers to common questions about our kids electric bikes, shipping, warranty, safety, and more. Get all the information you need before you buy.',
+  alternates: {
+    canonical: '/faq',
+  },
+};
 
 // SEO এর জন্য সম্পূর্ণ JSON-LD ডেটা
 const jsonLdData = {

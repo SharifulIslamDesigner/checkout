@@ -2,6 +2,16 @@
 import Script from 'next/script';
 import styles from './Returns.module.css';
 import Breadcrumbs from '../../components/Breadcrumbs';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Return and Refund Policy | GoBike Australia',
+  description: 'Learn about our 30-day return policy and process for refunds and exchanges at GoBike Australia. We are committed to ensuring your complete satisfaction.',
+  alternates: {
+    canonical: '/refund-and-returns-policy',
+  },
+};
+
 
 // SEO Schema ডেটা
 const faqSchema = {

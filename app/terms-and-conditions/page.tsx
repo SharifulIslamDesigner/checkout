@@ -1,9 +1,16 @@
 // app/terms-and-conditions/page.tsx
-'use client';
-
 import Link from 'next/link';
 import styles from './Terms.module.css';
 import Breadcrumbs from '../../components/Breadcrumbs'; 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Terms and Conditions | GoBike Australia',
+  description: 'Please read the official terms and conditions for using the GoBike Australia website, purchasing products, and our warranty policies.',
+  alternates: {
+    canonical: '/terms-and-conditions',
+  },
+};
 
 export default function TermsAndConditionsPage() {
   return (

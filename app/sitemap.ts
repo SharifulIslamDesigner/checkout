@@ -6,7 +6,7 @@ import path from 'path';
 import matter from 'gray-matter';
 
 // --- আপনার ফাইনাল ডোমেইন ---
-const SITE_URL = 'https://sharifulbuilds.com';
+const SITE_URL = 'https://gobike.au';
 
 // --- টাইপ ডেফিনিশন ---
 interface ContentNode {

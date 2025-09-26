@@ -35,6 +35,8 @@ interface Product {
   onSale: boolean;
   regularPrice?: string;
   salePrice?: string;
+  stockStatus?: string | null;
+  stockQuantity?: number | null;
   attributes: { nodes: Attribute[]; };
   averageRating: number;
   reviewCount: number;
@@ -142,6 +144,7 @@ export default function ProductClient({ product }: { product: Product }) {
         name: product.name,
         price: product.price,
         image: product.image?.sourceUrl,
+        slug: product.slug,
     };
 
     const allImages = [product.image, ...product.galleryImages.nodes].filter(Boolean) as ImageNode[];
@@ -152,202 +155,207 @@ export default function ProductClient({ product }: { product: Product }) {
 
         
     return (
-        <div className={styles.container}>
-        <div className={styles.productLayout}>
-            <div className={styles.galleryContainer}>
-                {mainImage && <Image src={mainImage} alt={product.name} width={1000} height={1000} className={styles.mainImage} />}
-                {allImages.length > 1 && (
-                    <div className={styles.thumbnailGrid}>
-                    {allImages.map((img, index) => (
-                        <Image key={index} src={img.sourceUrl} width={800} height={800} alt={`${product.name} thumbnail ${index + 1}`}
-                        className={`${styles.thumbnail} ${mainImage === img.sourceUrl ? styles.activeThumbnail : ''}`}
-                        onClick={() => setMainImage(img.sourceUrl)} />
-                    ))}
-                    </div>
-                )}
-            </div>
-
-            <div>
-            <h1 className={styles.productTitle}>{product.name}</h1>
-            <div className={styles.ratingWrapper}>
-                <div className={styles.rating}>★★★★☆</div> {/* এটিকে ডাইনামিক করতে চাইলে StarRating কম্পোনেন্ট ব্যবহার করতে পারেন */}
-                {product.reviewCount > 0 ? (
-                    <a href="#reviews" className={styles.reviewsCount}>({product.reviewCount} customer reviews)</a>
-                ) : (
-                    <div className={styles.reviewsCount}>(No reviews yet)</div>
-                )}
-            </div>
-            <div className={styles.priceWrapper}>
-                <Image src="https://gobike.au/wp-content/uploads/2025/08/hot-deal.svg" width={50} height={50} alt="Hot Deal" className={styles.dealBadge} />
-                {product.onSale && product.salePrice ? (
-        <div className={styles.salePriceContainer}>
-            <span className={styles.regularPriceStriked} dangerouslySetInnerHTML={{ __html: product.regularPrice || '' }} />
-            <span className={styles.salePrice} dangerouslySetInnerHTML={{ __html: product.salePrice }} />
-            {discountPercent > 0 && (
-                <span className={styles.discountBadge}>-{discountPercent}%</span>
+    <div className={styles.container}>
+    <div className={styles.productLayout}>
+        <div className={styles.galleryContainer}>
+            {mainImage && <Image src={mainImage} alt={product.name} width={1000} height={1000} className={styles.mainImage} />}
+            {allImages.length > 1 && (
+                <div className={styles.thumbnailGrid}>
+                {allImages.map((img, index) => (
+                    <Image key={index} src={img.sourceUrl} width={800} height={800} alt={`${product.name} thumbnail ${index + 1}`}
+                    className={`${styles.thumbnail} ${mainImage === img.sourceUrl ? styles.activeThumbnail : ''}`}
+                    onClick={() => setMainImage(img.sourceUrl)} />
+                ))}
+                </div>
             )}
         </div>
-    ) : (
-        <div className={styles.productPrice} dangerouslySetInnerHTML={{ __html: product.price || '' }} />
-    )}
-            </div>
-            {product.shortDescription && (
-                <div 
-                className={styles.shortDescription} 
-                dangerouslySetInnerHTML={{ __html: product.shortDescription.replace(/<ul>/g, `<ul class="${styles.featuresGrid}">`).replace(/<li>/g, `<li class="${styles.featureItem}">`) }} 
-                />
+
+        <div>
+        <h1 className={styles.productTitle}>{product.name}</h1>
+        <div className={styles.ratingWrapper}>
+            <div className={styles.rating}>★★★★☆</div>
+            {product.reviewCount > 0 ? (
+                <a href="#reviews" className={styles.reviewsCount}>({product.reviewCount} customer reviews)</a>
+            ) : (
+                <div className={styles.reviewsCount}>(No reviews yet)</div>
             )}
-            <QuantityAddToCart product={productForCart} />
-
-            <div className={styles.producttrustfeatureswrapper}>
-              <div className={styles.trustfeaturesgrid}>
-                  <div className={styles.trustfeatureitem}>✓ 100% Secure Checkout</div>
-                  <div className={styles.trustfeatureitem}>✓ 30 Days Easy Returns</div>
-                  <div className={styles.trustfeatureitem}>✓ 1 Year Full Warranty</div>
-                  <div className={styles.trustfeatureitem}>✓ Fast Shipping Aus-Wide</div>
-               </div>
-            </div>
-            <div className={styles.checkoutGuarantee}>
-                <p className={styles.guaranteeText}>Guaranteed Safe Checkout</p>
-                <Image src="https://gobikes.au/wp-content/uploads/2018/07/trust-symbols_b-1.jpg" width={1600} height={160} alt="Payment Methods" className={styles.paymentLogos} />
-            </div>
-            </div>
         </div>
-        <div className={styles.lowerSectionsWrapper}>
-        {product.description && (
-            <section className={styles.productInfoSection}>
-            <h2 className={styles.sectionTitle}>Description</h2>
-            <div className={styles.sectionContent} dangerouslySetInnerHTML={{ __html: product.description }} />
-            </section>
-        )}
-
-        {(product.weight || (product.length && product.width && product.height) || (product.attributes && product.attributes.nodes.length > 0)) && (
-    <section className={styles.productInfoSection}>
-        <h2 className={styles.sectionTitle}>Additional Information</h2>
-        <div className={styles.sectionContent}>
-            <table className={styles.attributesTable}>
-                <tbody>
-                    {/* ওজন দেখানোর জন্য নতুন সারি */}
-                    {product.weight && (
-                        <tr>
-                            <th>Weight</th>
-                            <td>{product.weight} kg</td>
-                        </tr>
+        <div className={styles.priceWrapper}>
+            <Image src="https://gobikes.au/wp-content/uploads/2025/08/hot-deal.svg" width={50} height={50} alt="Hot Deal" className={styles.dealBadge} />
+            {product.onSale && product.salePrice ? (
+                <div className={styles.salePriceContainer}>
+                    <span className={styles.regularPriceStriked} dangerouslySetInnerHTML={{ __html: product.regularPrice || '' }} />
+                    <span className={styles.salePrice} dangerouslySetInnerHTML={{ __html: product.salePrice }} />
+                    {discountPercent > 0 && (
+                        <span className={styles.discountBadge}>-{discountPercent}%</span>
                     )}
-
-                    {/* মাপ দেখানোর জন্য নতুন সারি */}
-                    {product.length && product.width && product.height && (
-                        <tr>
-                            <th>Dimensions</th>
-                            <td>{`${product.length} × ${product.width} × ${product.height} cm`}</td>
-                        </tr>
-                    )}
-
-                    {/* আপনার পুরোনো অ্যাট্রিবিউট দেখানোর কোড */}
-                    {product.attributes?.nodes.map((attr: { name: string, options: string[] }, index: number) => (
-                        <tr key={index}>
-                            <th>{attr.name}</th>
-                            <td>{attr.options.join(', ')}</td>
-                        </tr>
-                    ))}
-                 </tbody>
-             </table>
-          </div>
-       </section>
-       )}
+                </div>
+            ) : (
+                <div className={styles.productPrice} dangerouslySetInnerHTML={{ __html: product.price || '' }} />
+            )}
+        </div>
         
-       <section id="reviews" className={styles.productInfoSection}>
-    <h2 className={styles.sectionTitle}>Customer Reviews</h2>
-        <div className={styles.reviewsGrid}>
+        {/* --- সমাধান: স্টকের তথ্য priceWrapper-এর পরে যোগ করা হয়েছে --- */}
+        <div className={styles.stockInfo}>
+            {product.stockStatus === 'IN_STOCK' ? (
+                product.stockQuantity && product.stockQuantity > 0 && product.stockQuantity <= 5 ? 
+                    <span className={styles.lowStock}>Hurry! Only {product.stockQuantity} left in stock!</span> :
+                    <span className={styles.inStock}>✓ In Stock &amp; Ready to Ship</span>
+            ) : product.stockStatus === 'OUT_OF_STOCK' ? (
+                <span className={styles.outOfStock}>✗ Out of Stock</span>
+            ) : product.stockStatus === 'ON_BACKORDER' ? (
+                <span className={styles.onBackorder}>Available on Backorder</span>
+            ) : null}
+        </div>
+        {/* ----------------------------------------------------------- */}
 
-            {/* --- রিভিউ ফর্ম (অপরিবর্তিত) --- */}
-            <div className={styles.reviewFormWrapper}>
-                    <ReviewForm 
-                        productId={product.databaseId}
-                        averageRating={product.averageRating ?? 0}
-                        reviewCount={product.reviewCount ?? 0}
-                    />
-            </div>
-
-            {/* --- রিভিউ তালিকা (এখানে পরিবর্তন করা হয়েছে) --- */}
-            <div className={styles.reviewsList}>
-                {customerImages.length > 0 && (
-                <div className={styles.customerImagesSection}>
-                    <h3>Customer Images</h3>
-                        <div className={styles.customerImagesGrid}>
-                           {customerImages.map((imageUrl, index) => (
-                            imageUrl && ( // <-- সমাধান: এখানে একটি চেক যোগ করা হয়েছে
-                             <div key={index} className={styles.customerImageWrapper}>
-                                 <Image src={imageUrl} alt={`Customer image ${index + 1}`} fill style={{objectFit: 'cover'}} sizes="100px" />
-                            </div>
-                        )
-                    ))}
-                </div>
-            </div>
+        {product.shortDescription && (
+            <div 
+            className={styles.shortDescription} 
+            dangerouslySetInnerHTML={{ __html: product.shortDescription.replace(/<ul>/g, `<ul class="${styles.featuresGrid}">`).replace(/<li>/g, `<li class="${styles.featureItem}">`) }} 
+            />
         )}
-        <div className={styles.reviewsListContainer}>
-            <div className={styles.reviewsListHeader}>
-                <input type="search" placeholder="Search customer reviews" className={styles.reviewSearchInput} />
-                {/* --- কার্যকরী সমাধান: এখানে `visibleReviews` ব্যবহার করা হয়েছে --- */}
-                <span>{`1-${Math.min(visibleReviews, allReviews.length)} of ${allReviews.length} reviews`}</span>
-                <select className={styles.reviewSortDropdown}>
-                    <option>Most Recent</option>
-                    <option>Highest Rating</option>
-                    <option>Lowest Rating</option>
-                </select>
-            </div>
+        <QuantityAddToCart product={productForCart} />
 
-                {allReviews.length > 0 ? (
-                    // --- কার্যকরী সমাধান: শুধুমাত্র `visibleReviews` পর্যন্ত দেখানো হচ্ছে ---
-                    allReviews.slice(0, visibleReviews).map((edge: ReviewEdge) => (
-                        <div key={edge.node.id} className={styles.reviewItem}>
-                            <div className={styles.reviewAuthor}>
-                                <div className={styles.authorAvatar}>{edge.node.author.node.name.substring(0, 2).toUpperCase()}</div>
-                            </div>
-                            <div className={styles.reviewDetails}>
-                                <div className={styles.reviewHeader}>
-                                    <strong>{edge.node.author.node.name}</strong>
-                                <FormattedDate dateString={edge.node.date} />
-                                </div>
-                            {typeof edge.rating === 'number' && edge.rating > 0 && 
-                            <div className={styles.reviewRating}><StarRating rating={edge.rating} /></div>
-                            }
-                            <a href="#" className={styles.verifiedLink}>✓ Verified review</a>
-                            <div className={styles.reviewContent} dangerouslySetInnerHTML={{ __html: edge.node.content }} />
-                        </div>
-                    </div>
-                ))
-                ) : ( <p>There are no reviews yet.</p> )}
-            
-            {/* --- কার্যকরী সমাধান: "See More" বাটন যোগ করা হয়েছে --- */}
-            {hasMoreReviews && (
-                <div className={styles.showMoreContainer}>
-                    <button 
-                        className={styles.showMoreButton} 
-                        onClick={() => setVisibleReviews(allReviews.length)}
-                    >
-                        Show All {allReviews.length} Reviews
-                    </button>
-                </div>
-            )}
-            {/* ---------------------------------------------------- */}
-            </div>
+        <div className={styles.producttrustfeatureswrapper}>
+          <div className={styles.trustfeaturesgrid}>
+              <div className={styles.trustfeatureitem}>✓ 100% Secure Checkout</div>
+              <div className={styles.trustfeatureitem}>✓ 30 Days Easy Returns</div>
+              <div className={styles.trustfeatureitem}>✓ 1 Year Full Warranty</div>
+              <div className={styles.trustfeatureitem}>✓ Fast Shipping Aus-Wide</div>
+           </div>
+        </div>
+        <div className={styles.checkoutGuarantee}>
+            <p className={styles.guaranteeText}>Guaranteed Safe Checkout</p>
+            <Image src="https://gobikes.au/wp-content/uploads/2018/07/trust-symbols_b-1.jpg" width={1600} height={160} alt="Payment Methods" className={styles.paymentLogos} />
+        </div>
         </div>
     </div>
-</section>
+    <div className={styles.lowerSectionsWrapper}>
+    {product.description && (
+        <section className={styles.productInfoSection}>
+        <h2 className={styles.sectionTitle}>Description</h2>
+        <div className={styles.sectionContent} dangerouslySetInnerHTML={{ __html: product.description }} />
+        </section>
+    )}
 
-        {product.related && product.related.nodes.length > 0 && (
-            <div className={styles.relatedProducts}>
-            <h2 className={styles.relatedTitle}>Related Products</h2>
-            <div className={styles.relatedGrid}>
-                {product.related.nodes.map(relatedProduct => (
-                <ProductCard key={relatedProduct.id} product={relatedProduct} />
+    {(product.weight || (product.length && product.width && product.height) || (product.attributes && product.attributes.nodes.length > 0)) && (
+<section className={styles.productInfoSection}>
+    <h2 className={styles.sectionTitle}>Additional Information</h2>
+    <div className={styles.sectionContent}>
+        <table className={styles.attributesTable}>
+            <tbody>
+                {product.weight && (
+                    <tr>
+                        <th>Weight</th>
+                        <td>{product.weight} kg</td>
+                    </tr>
+                )}
+
+                {product.length && product.width && product.height && (
+                    <tr>
+                        <th>Dimensions</th>
+                        <td>{`${product.length} × ${product.width} × ${product.height} cm`}</td>
+                    </tr>
+                )}
+
+                {product.attributes?.nodes.map((attr: { name: string, options: string[] }, index: number) => (
+                    <tr key={index}>
+                        <th>{attr.name}</th>
+                        <td>{attr.options.join(', ')}</td>
+                    </tr>
+                ))}
+             </tbody>
+         </table>
+      </div>
+   </section>
+   )}
+    
+   <section id="reviews" className={styles.productInfoSection}>
+<h2 className={styles.sectionTitle}>Customer Reviews</h2>
+    <div className={styles.reviewsGrid}>
+
+        <div className={styles.reviewFormWrapper}>
+                <ReviewForm 
+                    productId={product.databaseId}
+                    averageRating={product.averageRating ?? 0}
+                    reviewCount={product.reviewCount ?? 0}
+                />
+        </div>
+
+        <div className={styles.reviewsList}>
+            {customerImages.length > 0 && (
+            <div className={styles.customerImagesSection}>
+                <h3>Customer Images</h3>
+                    <div className={styles.customerImagesGrid}>
+                       {customerImages.map((imageUrl, index) => (
+                        imageUrl && (
+                         <div key={index} className={styles.customerImageWrapper}>
+                             <Image src={imageUrl} alt={`Customer image ${index + 1}`} fill style={{objectFit: 'cover'}} sizes="100px" />
+                        </div>
+                    )
                 ))}
             </div>
+        </div>
+    )}
+    <div className={styles.reviewsListContainer}>
+        <div className={styles.reviewsListHeader}>
+            <input type="search" placeholder="Search customer reviews" className={styles.reviewSearchInput} />
+            <span>{`1-${Math.min(visibleReviews, allReviews.length)} of ${allReviews.length} reviews`}</span>
+            <select className={styles.reviewSortDropdown}>
+                <option>Most Recent</option>
+                <option>Highest Rating</option>
+                <option>Lowest Rating</option>
+            </select>
+        </div>
+
+            {allReviews.length > 0 ? (
+                allReviews.slice(0, visibleReviews).map((edge: ReviewEdge) => (
+                    <div key={edge.node.id} className={styles.reviewItem}>
+                        <div className={styles.reviewAuthor}>
+                            <div className={styles.authorAvatar}>{edge.node.author.node.name.substring(0, 2).toUpperCase()}</div>
+                        </div>
+                        <div className={styles.reviewDetails}>
+                            <div className={styles.reviewHeader}>
+                                <strong>{edge.node.author.node.name}</strong>
+                            <FormattedDate dateString={edge.node.date} />
+                            </div>
+                        {typeof edge.rating === 'number' && edge.rating > 0 && 
+                        <div className={styles.reviewRating}><StarRating rating={edge.rating} /></div>
+                        }
+                        <a href="#" className={styles.verifiedLink}>✓ Verified review</a>
+                        <div className={styles.reviewContent} dangerouslySetInnerHTML={{ __html: edge.node.content }} />
+                    </div>
+                </div>
+            ))
+            ) : ( <p>There are no reviews yet.</p> )}
+        
+        {hasMoreReviews && (
+            <div className={styles.showMoreContainer}>
+                <button 
+                    className={styles.showMoreButton} 
+                    onClick={() => setVisibleReviews(allReviews.length)}
+                >
+                    Show All {allReviews.length} Reviews
+                </button>
             </div>
         )}
         </div>
+    </div>
+</div>
+</section>
+
+    {product.related && product.related.nodes.length > 0 && (
+        <div className={styles.relatedProducts}>
+        <h2 className={styles.relatedTitle}>Related Products</h2>
+        <div className={styles.relatedGrid}>
+            {product.related.nodes.map(relatedProduct => (
+            <ProductCard key={relatedProduct.id} product={relatedProduct} />
+            ))}
         </div>
-    );
-    
+        </div>
+    )}
+    </div>
+    </div>
+   );
 }

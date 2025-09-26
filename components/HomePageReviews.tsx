@@ -46,41 +46,24 @@ export default function HomePageReviews() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [visibleReviews, setVisibleReviews] = useState(3);
-
-  // --- নতুন: ক্লায়েন্ট-সাইডে সারাংশ গণনার জন্য স্টেট ---
   const [summary, setSummary] = useState<ReviewSummary | null>(null);
 
   useEffect(() => {
     async function fetchReviewsData() {
       try {
-        const response = await fetch('//sharifulbuilds.com/wp-json/gobike/v1/reviews-summary');
+        // --- সমাধান: URL-এর শুরুতে https:// যোগ করা হয়েছে ---
+        const response = await fetch('https://gobikes.au/wp-json/gobike/v1/reviews-summary');
         if (!response.ok) throw new Error('Failed to fetch reviews data');
+        
         const result: ReviewsData = await response.json();
-        setReviews(result.reviews);
 
-        // --- কার্যকরী সমাধান: ক্লায়েন্ট-সাইডে সারাংশ গণনা করুন ---
-        if (result.reviews.length > 0) {
-            const reviewCount = result.reviews.length;
-            const totalRating = result.reviews.reduce((acc, review) => acc + review.rating, 0);
-            const averageRating = totalRating / reviewCount;
-
-            const ratingCounts = [5, 4, 3, 2, 1].map(star => {
-                return {
-                    rating: star,
-                    count: result.reviews.filter(r => r.rating === star).length
-                };
-            });
-
-            setSummary({
-                review_count: reviewCount,
-                average_rating: averageRating,
-                rating_counts: ratingCounts
-            });
+        // --- সমাধান: এখন আমরা সরাসরি API থেকে আসা ডেটা ব্যবহার করছি ---
+        if (result && Array.isArray(result.reviews) && result.summary) {
+            setReviews(result.reviews);
+            setSummary(result.summary); // <-- সরাসরি API থেকে আসা summary সেট করা হচ্ছে
         }
-        // --------------------------------------------------------
-
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching reviews data:", error);
       } finally {
         setLoading(false);
       }
