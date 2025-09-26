@@ -346,16 +346,19 @@ function YouTubePlayer({ youtubeId, thumbnailUrl }: YouTubePlayerProps) {
             }
         );
 
-        if (ref.current) {
-            observer.observe(ref.current);
-        }
+        const currentRef = ref.current;
 
-        return () => {
-            if (ref.current) {
-                observer.unobserve(ref.current);
-            }
-        };
-    }, []);
+    if (currentRef) {
+        observer.observe(currentRef);
+    }
+
+    // --- সমাধান: cleanup ফাংশনের ভেতরে এখন নিরাপদ ভেরিয়েবলটি ব্যবহার করা হচ্ছে ---
+    return () => {
+        if (currentRef) {
+            observer.unobserve(currentRef);
+        }
+    };
+}, []);
     // -----------------------------------------------------------------
 
     if (showVideo) {
