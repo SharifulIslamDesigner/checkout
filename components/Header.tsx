@@ -36,7 +36,7 @@ export default function Header() {
             </button>
             <div className={`${styles.logo} ${styles.desktopOnly}`}>
               <Link href="/">
-                 <Image src="https://gobike.au/wp-content/uploads/2025/06/cropped-GOBIKE-Electric-Bike-for-kids-1.webp" alt="GoBike Logo" width={1846} height={417} priority className={styles.logoImage} />
+                 <Image src="https://gobikes.au/wp-content/uploads/2025/06/GOBIKE-Electric-Bike-for-kids-1.webp" alt="GoBike Logo" width={1846} height={417} priority className={styles.logoImage} />
               </Link>
             </div>
           </div>
@@ -44,7 +44,7 @@ export default function Header() {
           {/* --- মধ্যম অংশ: মোবাইলে লোগো, ডেস্কটপে নেভিগেশন --- */}
           <div className={`${styles.logo} ${styles.mobileOnly}`}>
             <Link href="/">
-               <Image src="https://gobike.au/wp-content/uploads/2025/06/cropped-GOBIKE-Electric-Bike-for-kids-1.webp" alt="GoBike Logo" width={1846} height={417} priority className={styles.logoImage} />
+               <Image src="https://gobikes.au/wp-content/uploads/2025/06/GOBIKE-Electric-Bike-for-kids-1.webp" alt="GoBike Logo" width={1846} height={417} priority className={styles.logoImage} />
             </Link>
           </div>
           <nav className={styles.desktopNavigation}>
@@ -64,7 +64,7 @@ export default function Header() {
               <IoSearch size={25} />
               <span>Search products</span>
             </button>
-            <a href="https://sharifulbuilds.com/my-account/" className={`${styles.iconButton} ${styles.desktopOnly}`}aria-label="My account link">
+            <a href="https://gobikes.au/my-account/" className={`${styles.iconButton} ${styles.desktopOnly}`}aria-label="My account link">
               <IoPersonOutline size={25} />
             </a>
             <button className={styles.cartIcon} onClick={openMiniCart} aria-label="MiniCart" >
@@ -97,7 +97,7 @@ export default function Header() {
                <Link href="/blog" className={pathname === '/blog' ? styles.activeLink : ''} onClick={closeAllOverlays}>Blog</Link>
             </nav>
           <div className={styles.mobileMenuFooter}>
-            <a href="https://sharifulbuilds.com/my-account/" className={styles.mobileMenuLink} aria-label="My account">
+            <a href="https://gobikes.au/my-account/" className={styles.mobileMenuLink} aria-label="My account">
                 <IoPersonOutline />
                 <span>My Account</span>
             </a>
