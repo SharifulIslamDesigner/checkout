@@ -21,7 +21,6 @@ This one's a no-brainer. Riding a bike is fantastic exercise! It helps children:
 ### 2. Boosting Mental Wellbeing and Confidence
 
 The great outdoors is a natural mood booster. A ride in the park can do wonders for a child's mental health.
-- **Reduces Stress and Anxiety:** Fresh air and physical exertion are proven stress-busters.
 - **Builds Independence and Resilience:** Mastering a new skill like riding a bike gives kids a huge confidence boost. Every wobble they overcome teaches them resilience.
 - **Sparks Creativity:** The outdoors is an unstructured playground. A simple bike ride can turn into a grand adventure in their imagination.
 

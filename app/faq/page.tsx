@@ -51,7 +51,7 @@ export default function FaqPage() {
         
         <section className={styles.ourPromiseSection}>
             <div className={styles.promiseImageWrapper}>
-               <Image src="https://gobike.au/wp-content/uploads/2025/08/Gobike-kids-electric-bike-ebike-for-kids-4-scaled.webp" 
+               <Image src="https://gobikes.au/wp-content/uploads/2025/08/Gobike-kids-electric-bike-ebike-for-kids-4-scaled.webp" 
                      alt="A smiling Australian child with a helmet enjoying a GoBike electric bike in a park"
                      className={styles.promiseImage}
                      width={2049} height={2560} sizes="(max-width: 768px) 100vw, 50vw"

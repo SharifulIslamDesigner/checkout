@@ -30,7 +30,7 @@ export default function AboutPage() {
           <div>
             {/* --- মূল পরিবর্তন এখানে --- */}
             <Image 
-              src="https://gobike.au/wp-content/uploads/2025/08/gobike-scaled.webp" 
+              src="https://gobikes.au/wp-content/uploads/2025/08/gobike-scaled.webp" 
               alt="The founders of GoBike, two Australian dads, with their kids and their electric balance bikes." 
               className={styles['story-image']}
               loading="eager"
