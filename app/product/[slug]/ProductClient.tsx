@@ -1,5 +1,11 @@
 'use client';
+// app/product/[slug]/ProductClient.tsx
 
+// ... আপনার অন্যান্য import ...
+import { productVideoMap } from '../productVideos';
+import LazyLoadYouTube from './LazyLoadYouTube';
+
+// ... বাকি কোড ...
 import { useState, useEffect } from 'react';
 import styles from './ProductPage.module.css';
 import Image from 'next/image';
@@ -153,7 +159,7 @@ export default function ProductClient({ product }: { product: Product }) {
         ?.map((edge: ReviewEdge) => edge.node.author.node.avatar?.url)
         .filter(Boolean) || [];
 
-        
+    const videoId = productVideoMap[product.slug];    
     return (
     <div className={styles.container}>
     <div className={styles.productLayout}>
@@ -231,6 +237,12 @@ export default function ProductClient({ product }: { product: Product }) {
         </div>
         </div>
     </div>
+    {videoId && (
+        <section className={styles.productInfoSection}>
+            <h2 className={styles.sectionTitle}>From Wobbles to Woo-hoos!</h2>
+            <LazyLoadYouTube videoId={videoId} title={product.name} />
+        </section>
+    )}
     <div className={styles.lowerSectionsWrapper}>
     {product.description && (
         <section className={styles.productInfoSection}>
