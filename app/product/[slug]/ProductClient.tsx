@@ -4,9 +4,9 @@
 // ... আপনার অন্যান্য import ...
 import { productVideoMap } from '../productVideos';
 import LazyLoadYouTube from './LazyLoadYouTube';
-
+import StickyAddToCart from './StickyAddToCart';
 // ... বাকি কোড ...
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styles from './ProductPage.module.css';
 import Image from 'next/image';
 import QuantityAddToCart from '../../../components/QuantityAddToCart';
@@ -108,6 +108,8 @@ export default function ProductClient({ product }: { product: Product }) {
         if (!priceStr) return 0;
         return parseFloat(priceStr.replace(/[^0-9.]/g, ''));
     };
+    const mainAddToCartRef = useRef<HTMLDivElement | null>(null);
+    const [isStickyVisible, setStickyVisible] = useState(false);
     const INITIAL_REVIEWS_TO_SHOW = 5;
     const [visibleReviews, setVisibleReviews] = useState(INITIAL_REVIEWS_TO_SHOW);
 
@@ -116,6 +118,37 @@ export default function ProductClient({ product }: { product: Product }) {
     const discountPercent = regularPriceNum > 0 && salePriceNum < regularPriceNum 
         ? Math.round(((regularPriceNum - salePriceNum) / regularPriceNum) * 100) 
         : 0;
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                // --- এখানে নতুন এবং উন্নত লজিক যোগ করা হয়েছে ---
+                const isAboveViewport = entry.boundingClientRect.top < 0;
+                
+                // স্টিকি বারটি তখনই দেখাও যখন:
+                // ১. মূল বাটনটি স্ক্রিনে দেখা যাচ্ছে না (isIntersecting is false)
+                // ২. এবং এটি স্ক্রিনের উপরে চলে গেছে (isAboveViewport is true)
+                if (!entry.isIntersecting && isAboveViewport) {
+                    setStickyVisible(true);
+                } else {
+                    setStickyVisible(false);
+                }
+            },
+            { rootMargin: "0px", threshold: [0, 1] } 
+        );
+
+        const currentRef = mainAddToCartRef.current;
+        if (currentRef) {
+            observer.observe(currentRef);
+        }
+
+        // কম্পোনেন্টটি unmount হওয়ার সময় observer পরিষ্কার করুন
+        return () => {
+            if (currentRef) {
+                observer.unobserve(currentRef);
+            }
+        };
+    }, []);
+
     useEffect(() => {
         if (product) {
             const priceString = product.salePrice || product.price || '0';
@@ -221,7 +254,9 @@ export default function ProductClient({ product }: { product: Product }) {
             dangerouslySetInnerHTML={{ __html: product.shortDescription.replace(/<ul>/g, `<ul class="${styles.featuresGrid}">`).replace(/<li>/g, `<li class="${styles.featureItem}">`) }} 
             />
         )}
-        <QuantityAddToCart product={productForCart} />
+        <div ref={mainAddToCartRef}>
+                    <QuantityAddToCart product={productForCart} />
+                </div>
 
         <div className={styles.producttrustfeatureswrapper}>
           <div className={styles.trustfeaturesgrid}>
@@ -356,7 +391,6 @@ export default function ProductClient({ product }: { product: Product }) {
     </div>
 </div>
 </section>
-
     {product.related && product.related.nodes.length > 0 && (
         <div className={styles.relatedProducts}>
         <h2 className={styles.relatedTitle}>Related Products</h2>
@@ -367,7 +401,9 @@ export default function ProductClient({ product }: { product: Product }) {
         </div>
         </div>
     )}
+    <StickyAddToCart product={productForCart} isVisible={isStickyVisible} />
     </div>
+    
     </div>
    );
 }

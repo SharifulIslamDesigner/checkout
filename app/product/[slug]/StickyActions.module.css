@@ -1,0 +1,80 @@
+/* app/product/[slug]/StickyActions.module.css */
+
+.actionsWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quantitySelector {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  height: 42px;
+}
+
+.quantitySelector button,
+.quantitySelector span {
+  background-color: #f9f9f9;
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  cursor: pointer;
+}
+
+.quantitySelector span {
+  background-color: #fff;
+  min-width: 30px;
+}
+
+.addToCartButton {
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  height: 42px;
+  padding: 0 24px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s;
+}
+
+.addToCartButton:hover:not(:disabled) {
+  background-color: #333;
+}
+
+.addToCartButton:disabled {
+  background-color: #888;
+  cursor: not-allowed;
+}
+
+/* মোবাইলের জন্য স্টাইল */
+@media (max-width: 768px) {
+  .actionsWrapper {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .quantitySelector {
+    height: 40px;
+  }
+  .quantitySelector button,
+  .quantitySelector span {
+    padding: 0 12px;
+  }
+
+  .addToCartButton {
+    height: 40px;
+    padding: 0 16px;
+    font-size: 14px;
+    flex-grow: 1; /* বাটনটি যেন বাকি জায়গা নিয়ে নেয় */
+  }
+}
