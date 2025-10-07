@@ -17,12 +17,17 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'sharifulbuilds.com',
+        hostname: 'devshariful.com',
         pathname: '/wp-content/uploads/**',
       },
       {
         protocol: 'https',
         hostname: 'gobike.au',
+        pathname: '/wp-content/uploads/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'shop.sharifulbuilds.com',
         pathname: '/wp-content/uploads/**',
       },
       {

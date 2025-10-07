@@ -12,17 +12,6 @@ import Image from 'next/image';
 function CheckoutButton() {
     const { cartItems } = useCart();
 
-    const generateCheckoutUrl = () => {
-        if (cartItems.length === 0) return '#';
-        const itemsForUrl = cartItems.map(item => ({
-            id: item.databaseId,
-            quantity: item.quantity
-        }));
-        const cartJson = JSON.stringify(itemsForUrl);
-        const encodedCart = encodeURIComponent(cartJson);
-        return `https://gobikes.au/cart/?cart_items=${encodedCart}`;
-    };
-
     const handleCheckout = () => {
         if (cartItems.length > 0) {
             const gtmItems = cartItems.map(item => {
@@ -39,13 +28,14 @@ function CheckoutButton() {
     };
 
     return (
-        <a
-            href={generateCheckoutUrl()}
+        // এখানে a ট্যাগের পরিবর্তে Next.js-এর Link কম্পোনেন্ট ব্যবহার করা হয়েছে
+        <Link 
+            href="/checkout" // <-- নতুন চেকআউট পেজের লিঙ্ক
             className={styles.checkoutButton}
             onClick={handleCheckout}
         >
             Proceed to Checkout
-        </a>
+        </Link>
     );
 }
 // -----------------------------------------------------------

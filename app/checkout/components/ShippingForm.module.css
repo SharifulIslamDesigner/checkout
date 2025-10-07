@@ -1,0 +1,113 @@
+/* app/checkout/components/ShippingForm.module.css */
+
+.shippingFormContainer {
+  /* YourOrder-এর সাথে সামঞ্জস্য রাখার জন্য */
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  width: 100%;
+}
+
+.title {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1d1d1d;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 1rem;
+}
+
+/* --- Form Grid Layout --- */
+.formGrid {
+  display: grid;
+  /* মোবাইল ডিফল্ট: একটি কলাম */
+  grid-template-columns: 1fr; 
+  gap: 1.5rem; /* ফিল্ডগুলোর মধ্যে ফাঁকা জায়গা */
+  margin-bottom: 1.5rem;
+}
+
+/* ট্যাবলেট এবং বড় স্ক্রিনের জন্য (768px-এর উপরে) */
+@media (min-width: 768px) {
+  .formGrid {
+    /* দুটি সমান কলাম */
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 1.5rem; /* row-gap column-gap */
+  }
+}
+
+/* --- Form Fields and Labels --- */
+/* লেবেল এবং ইনপুটকে একসাথে রাখার জন্য একটি ধারক */
+.fieldWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+.label .required {
+  color: #e53935; /* লাল তারকা */
+}
+
+.inputField {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.inputField:focus, .inputField:focus-within {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+}
+
+.inputField[readOnly] {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+/* --- Full Width Fields --- */
+/* ট্যাবলেট এবং বড় স্ক্রিনে full-width ফিল্ডগুলো দুটি কলাম জুড়ে থাকবে */
+@media (min-width: 768px) {
+  .fullWidth {
+    grid-column: 1 / -1;
+  }
+}
+
+
+/* --- অতিরিক্ত অপশন (Ship to different address) --- */
+.extraOptions {
+  margin-top: 1.5rem;
+}
+
+.extraOptions label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+/* --- Order Notes --- */
+.orderNotes textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: inherit; /* main font ব্যবহার করার জন্য */
+  resize: vertical; /* শুধুমাত্র উল্লম্বভাবে রিসাইজ করা যাবে */
+}
+.orderNotes textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+}

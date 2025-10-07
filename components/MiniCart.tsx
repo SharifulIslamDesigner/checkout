@@ -1,8 +1,9 @@
+// components/MiniCart.tsx
 'use client';
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { useCart } from '../context/CartContext';
+import { useCart } from '../context/CartContext'; // পাথটি আপনার প্রজেক্ট অনুযায়ী সঠিক কিনা তা নিশ্চিত করুন
 import styles from './MiniCart.module.css';
 import { IoClose } from 'react-icons/io5';
 import Image from 'next/image';
@@ -31,25 +32,8 @@ export default function MiniCart({ isOpen, onClose }: MiniCartProps) {
     return total + price * item.quantity;
   }, 0);
 
-  // --- মূল সমাধান: ডাইনামিক চেকআউট URL তৈরি করার ফাংশন ---
-const generateCheckoutUrl = () => {
-    if (cartItems.length === 0) return '#';
-    
-    // কার্ট আইটেমগুলোকে শুধুমাত্র id এবং quantity সহ একটি নতুন অ্যারেতে পরিণত করা হচ্ছে
-    const itemsForUrl = cartItems.map(item => ({
-      id: item.databaseId,
-      quantity: item.quantity
-    }));
-    
-    // অ্যারেটিকে JSON স্ট্রিং-এ পরিণত করা হচ্ছে
-    const cartJson = JSON.stringify(itemsForUrl);
-    
-    // URL-এর জন্য স্ট্রিংটিকে এনকোড করা হচ্ছে
-    const encodedCart = encodeURIComponent(cartJson);
-    
-    // চূড়ান্ত URL তৈরি করা হচ্ছে
-    return `https://gobikes.au/cart/?cart_items=${encodedCart}`;
-  }; 
+  // --- সমাধান: ডাইনামিক URL তৈরি করার ফাংশনটি এখন আর প্রয়োজন নেই ---
+  // const generateCheckoutUrl = () => { ... }; // এই অংশটি সম্পূর্ণ মুছে ফেলা হয়েছে
 
   if (!isOpen) return null;
 
@@ -99,13 +83,15 @@ const generateCheckoutUrl = () => {
               <Link href="/cart" className={`${styles.actionButton} ${styles.viewCart}`} onClick={onClose}>
                 View Cart
               </Link>
-                 <a 
-                href={generateCheckoutUrl()}
+              
+              {/* --- সমাধান: a ট্যাগের পরিবর্তে Link কম্পোনেন্ট ব্যবহার করা হচ্ছে --- */}
+              <Link 
+                href="/checkout"
                 className={`${styles.actionButton} ${styles.checkout}`}
                 onClick={onClose}
               >
                 Checkout
-              </a>
+              </Link>
             </div>
           </footer>
         )}

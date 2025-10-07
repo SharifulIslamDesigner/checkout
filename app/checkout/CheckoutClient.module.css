@@ -1,0 +1,37 @@
+/* app/checkout/CheckoutClient.module.css */
+
+.checkoutLayout {
+    display: grid;
+    grid-template-columns: 1fr; /* মোবাইল ডিভাইসের জন্য ডিফল্ট */
+    gap: 2rem;
+    max-width: 1300px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* বড় স্ক্রিনের জন্য দুই-কলাম লেআউট */
+@media (min-width: 992px) {
+    .checkoutLayout {
+        grid-template-columns: 60% 40%;
+    }
+}
+
+.leftColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.rightColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.pageLoader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+    font-size: 1.5rem;
+}

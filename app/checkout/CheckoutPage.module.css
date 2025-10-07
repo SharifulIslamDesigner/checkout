@@ -1,0 +1,25 @@
+/* app/checkout/CheckoutPage.module.css */
+
+.pageContainer {
+  width: 100%;
+  padding: 2rem 1rem;
+  background-color: #f9f9f9;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.container h1 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #333;
+}
+
+@media (min-width: 768px) {
+  .pageContainer {
+    padding: 3rem 2rem;
+  }
+}

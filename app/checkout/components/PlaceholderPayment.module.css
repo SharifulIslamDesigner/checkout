@@ -1,0 +1,43 @@
+/* app/checkout/components/PlaceholderPayment.module.css */
+
+.placeholderContainer {
+    padding: 1rem 0;
+}
+
+.description {
+    background-color: #f0f8ff;
+    border: 1px solid #cce5ff;
+    border-radius: 5px;
+    padding: 1rem;
+    font-size: 0.95rem;
+    color: #333;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+/* বিবরণীর মধ্যে থাকা p ট্যাগের ডিফল্ট মার্জিন বাতিল করা হচ্ছে */
+.description p:last-child {
+    margin-bottom: 0;
+}
+
+.submitButton {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.submitButton:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+.submitButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}

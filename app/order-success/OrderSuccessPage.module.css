@@ -1,90 +1,20 @@
+/* app/order-success/OrderSuccessPage.module.css */
+
 .container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 70vh; /* পেজের মাঝখানে আনার জন্য */
-  padding: 2rem;
-  background-color: #f8f9fa;
+    max-width: 900px;
+    margin: 3rem auto;
+    padding: 0 1rem;
 }
 
-.successBox {
-  background-color: #fff;
-  border-radius: 12px;
-  padding: 3rem;
-  text-align: center;
-  max-width: 600px;
-  width: 100%;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+.errorBox {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: center;
 }
 
-.iconWrapper {
-  width: 80px;
-  height: 80px;
-  background-color: #28a745; /* সবুজ রঙ */
-  color: #fff;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 3rem;
-  margin: 0 auto 1.5rem auto;
-}
-
-.title {
-  font-size: 2.5rem;
-  font-weight: 600;
-  margin: 0 0 1rem 0;
-}
-
-.message {
-  font-size: 1.1rem;
-  color: #6c757d;
-  margin-bottom: 2.5rem;
-}
-
-.buttonGroup {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap; /* ছোট স্ক্রিনের জন্য */
-}
-
-.primaryButton, .secondaryButton {
-  padding: 0.8rem 1.8rem;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: all 0.2s;
-}
-
-.primaryButton {
-  background-color: #000;
-  color: #fff;
-}
-.primaryButton:hover {
-  background-color: #333;
-}
-
-.secondaryButton {
-  background-color: #e9ecef;
-  color: #1a1a1a;
-}
-.secondaryButton:hover {
-  background-color: #dee2e6;
-}
-/* ... আপনার ফাইলের বাকি সব CSS অপরিবর্তিত থাকবে ... */
-
-.loadingSpinner {
-  border: 5px solid #f3f3f3;
-  border-top: 5px solid #3498db;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 1.5rem auto;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.errorBox h1 {
+    margin-top: 0;
 }
