@@ -4,8 +4,8 @@
 import { Elements, useStripe, useElements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 
-import { createOrderWithRestApi } from './actions'; 
-import { useEffect, useCallback, useReducer, useRef } from 'react';
+// import { createOrderWithRestApi } from './actions'; // ★ এই লাইনটির আর প্রয়োজন নেই
+import { useEffect, useCallback, useReducer, useRef, useState } from 'react';
 import { useCart } from '../../context/CartContext';
 import { useRouter } from 'next/navigation';
 import { gql } from '@apollo/client';
@@ -30,6 +30,21 @@ const APPLY_COUPON_MUTATION = gql` mutation ApplyCoupon($input: ApplyCouponInput
 const REMOVE_COUPON_MUTATION = gql` mutation RemoveCoupons($input: RemoveCouponsInput!) { removeCoupons(input: $input) { cart { total subtotal discountTotal appliedCoupons { code } } } } `;
 const UPDATE_CUSTOMER_MUTATION = gql`mutation UpdateCustomerForCheckout($input: UpdateCustomerInput!) { updateCustomer(input: $input) { customer { id } } }`;
 const UPDATE_SHIPPING_METHOD_MUTATION = gql`mutation UpdateShippingMethod($input: UpdateShippingMethodInput!) { updateShippingMethod(input: $input) { cart { total } } }`;
+
+// ★ নতুন সংযোজন: GraphQL দিয়ে অর্ডার তৈরির জন্য Checkout মিউটেশন
+const CHECKOUT_MUTATION = gql`
+  mutation Checkout($input: CheckoutInput!) {
+    checkout(input: $input) {
+      result
+      redirect
+      order {
+        databaseId
+        orderKey
+        status
+      }
+    }
+  }
+`;
 
 type State = { customerInfo: Partial<ShippingFormData>; shippingRates: ShippingRate[]; selectedShipping: string; selectedPaymentMethod: string; cartData: CartData | null; orderNotes: string; addressInputStarted: boolean; loading: { cart: boolean; shipping: boolean; applyingCoupon: boolean; removingCoupon: boolean; order: boolean; }; };
 type Action = | { type: 'SET_FIELD'; field: keyof State; payload: any } | { type: 'SET_LOADING'; key: keyof State['loading']; payload: boolean } | { type: 'SET_CHECKOUT_DATA'; payload: { cart: CartData } } | { type: 'UPDATE_TOTALS'; payload: { shippingTotal: string; total: string } };
@@ -68,7 +83,6 @@ function CheckoutClientComponent({ paymentGateways }: { paymentGateways: Payment
   const customerInfoRef = useRef(customerInfo);
   useEffect(() => { customerInfoRef.current = customerInfo; }, [customerInfo]);
 
-  // Stripe হুকগুলো এখানে ব্যবহার করা হবে
   const stripe = useStripe();
   const elements = useElements();
 
@@ -79,35 +93,30 @@ function CheckoutClientComponent({ paymentGateways }: { paymentGateways: Payment
   const handleRemoveCoupon = async (couponCode: string) => { if (loading.removingCoupon) return; dispatch({ type: 'SET_LOADING', key: 'removingCoupon', payload: true }); toast.loading('Removing coupon...'); try { await client.mutate({ mutation: REMOVE_COUPON_MUTATION, variables: { input: { codes: [couponCode] } } }); await refetchCartData(); toast.dismiss(); toast.success('Coupon removed.'); } catch (error) { toast.dismiss(); toast.error(getErrorMessage(error)); } finally { dispatch({ type: 'SET_LOADING', key: 'removingCoupon', payload: false }); } };
   const handleShippingSelect = (rateId: string) => { dispatch({ type: 'SET_FIELD', field: 'selectedShipping', payload: rateId }); const selectedRate = shippingRates.find(rate => rate.id === rateId); if (cartData && selectedRate) { const subtotal = parseFloat(cartData.subtotal.replace(/[^0-9.]/g, '')) || 0; const discount = parseFloat(cartData.discountTotal.replace(/[^0-9.]/g, '')) || 0; const shippingCost = parseFloat(selectedRate.cost) || 0; const newTotal = (subtotal - discount) + shippingCost; dispatch({ type: 'UPDATE_TOTALS', payload: { shippingTotal: `$${shippingCost.toFixed(2)}`, total: `$${newTotal.toFixed(2)}` } }); } client.mutate({ mutation: UPDATE_SHIPPING_METHOD_MUTATION, variables: { input: { shippingMethods: [rateId] } }, }).catch(err => { console.error("Failed to sync shipping method with server:", err); toast.error("Could not save shipping preference."); }); };
   
-  // ★★★ আপনার পরিকল্পনা অনুযায়ী আপডেট করা handlePlaceOrder ফাংশন ★★★
+  // ★ পরিবর্তিত ফাংশন: REST API-এর পরিবর্তে GraphQL মিউটেশন ব্যবহার করা হয়েছে
   const handlePlaceOrder = async (paymentData?: { transaction_id?: string; }) => {
     if (!selectedShipping) { toast.error("Please select a shipping method."); return; }
     if (!customerInfoRef.current.firstName || !customerInfoRef.current.email) { toast.error("Please fill in all required shipping details."); return; }
 
     dispatch({ type: 'SET_LOADING', key: 'order', payload: true });
 
-    // --- Stripe পেমেন্টের জন্য নতুন লজিক ---
+    // --- Stripe পেমেন্টের লজিক অপরিবর্তিত ---
     if (selectedPaymentMethod.includes('stripe') || selectedPaymentMethod.includes('klarna') || selectedPaymentMethod.includes('afterpay')) {
         if (!stripe || !elements) {
             toast.error("Stripe is not ready yet.");
             dispatch({ type: 'SET_LOADING', key: 'order', payload: false });
             return;
         }
-
-        // ধাপ ১: PaymentElement-এর ভেতর থেকে তথ্য সংগ্রহ করা
         const { error: submitError } = await elements.submit();
         if (submitError) {
             toast.error(submitError.message || "Please check your details.");
             dispatch({ type: 'SET_LOADING', key: 'order', payload: false });
             return;
         }
-
         const { error } = await stripe.confirmPayment({
             elements,
-            clientSecret: 'YOUR_CLIENT_SECRET', // এটি PaymentMethods কম্পোনেন্ট থেকে পেতে হবে
-            confirmParams: {
-                return_url: `${window.location.origin}/order-success`,
-            },
+            clientSecret: 'YOUR_CLIENT_SECRET', 
+            confirmParams: { return_url: `${window.location.origin}/order-success`, },
         });
 
         if (error) {
@@ -118,44 +127,62 @@ function CheckoutClientComponent({ paymentGateways }: { paymentGateways: Payment
             }
             dispatch({ type: 'SET_LOADING', key: 'order', payload: false });
         }
-        // Stripe রিডাইরেক্ট পরিচালনা করবে, তাই এখানে আর কিছু করার নেই
         return; 
     }
     
-    // --- PayPal এবং অফলাইন পেমেন্টের জন্য আপনার আগের লজিক (অপরিবর্তিত) ---
-    const customerDetails = {
-      first_name: customerInfoRef.current.firstName,
-      last_name: customerInfoRef.current.lastName,
-      address_1: customerInfoRef.current.address1,
-      city: customerInfoRef.current.city,
-      state: customerInfoRef.current.state,
-      postcode: customerInfoRef.current.postcode,
-      email: customerInfoRef.current.email,
-      phone: customerInfoRef.current.phone,
-    };
-    const couponLines = cartData?.appliedCoupons?.map(coupon => ({ code: coupon.code })) || [];
-    const orderPayload = {
-      payment_method: selectedPaymentMethod,
-      payment_method_title: paymentGateways.find(g => g.id === selectedPaymentMethod)?.title || selectedPaymentMethod,
-      set_paid: !!paymentData?.transaction_id,
-      billing: customerDetails,
-      shipping: customerDetails,
-      line_items: cartItems.map(item => ({ product_id: item.databaseId, quantity: item.quantity })),
-      shipping_lines: [{ method_id: selectedShipping, method_title: shippingRates.find(rate => rate.id === selectedShipping)?.label || 'Shipping', total: cartData?.shippingTotal?.replace(/[^0-9.]/g, '') || '0' }],
-      coupon_lines: couponLines,
-      customer_note: orderNotes,
-      transaction_id: paymentData?.transaction_id || '',
-      status: (['cod', 'cheque', 'bacs'].includes(selectedPaymentMethod)) ? 'on-hold' : 'pending',
-    };
-    const result = await createOrderWithRestApi(orderPayload);
-    if (result.success && result.order) {
+    // --- GraphQL ব্যবহার করে অর্ডার তৈরির নতুন লজিক ---
+    try {
+      const customerDetails = {
+          firstName: customerInfoRef.current.firstName,
+          lastName: customerInfoRef.current.lastName,
+          address1: customerInfoRef.current.address1,
+          city: customerInfoRef.current.city,
+          state: customerInfoRef.current.state,
+          postcode: customerInfoRef.current.postcode,
+          email: customerInfoRef.current.email,
+          phone: customerInfoRef.current.phone,
+      };
+
+      const mutationInput = {
+        clientMutationId: `checkout-${Date.now()}`,
+        billing: customerDetails,
+        shipping: customerDetails,
+        paymentMethod: selectedPaymentMethod,
+        shippingMethod: selectedShipping,
+        customerNote: orderNotes,
+        transactionId: paymentData?.transaction_id || '',
+        isPaid: !!paymentData?.transaction_id,
+      };
+
+      const { data } = await client.mutate({
+        mutation: CHECKOUT_MUTATION,
+        variables: { input: mutationInput },
+      });
+
+      const checkoutData = data?.checkout;
+      // REST API-এর মতো একটি সামঞ্জস্যপূর্ণ অবজেক্ট তৈরি করা হচ্ছে
+      const result = {
+        success: checkoutData?.result === 'success',
+        order: {
+          id: checkoutData?.order?.databaseId,
+          orderKey: checkoutData?.order?.orderKey,
+        },
+        message: checkoutData?.result !== 'success' ? 'Failed to place order.' : undefined
+      };
+
+      if (result.success && result.order?.id) {
+        toast.dismiss();
+        toast.success('Order placed successfully!');
+        router.push(`/order-success?order_id=${result.order.id}&key=${result.order.orderKey}`);
+        if (typeof clearCart === 'function') await clearCart();
+      } else {
+        toast.dismiss();
+        toast.error(result.message || 'Failed to place order.');
+        dispatch({ type: 'SET_LOADING', key: 'order', payload: false });
+      }
+    } catch (error) {
       toast.dismiss();
-      toast.success('Order placed successfully!');
-      router.push(`/order-success?order_id=${result.order.id}&key=${result.order.orderKey}`);
-      if (typeof clearCart === 'function') await clearCart();
-    } else {
-      toast.dismiss();
-      toast.error(result.message || 'Failed to place order.');
+      toast.error(getErrorMessage(error));
       dispatch({ type: 'SET_LOADING', key: 'order', payload: false });
     }
   };
@@ -200,10 +227,11 @@ function CheckoutClientComponent({ paymentGateways }: { paymentGateways: Payment
 
 // ★★★ Stripe Elements Provider দিয়ে মূল কম্পোনেন্টকে র‍্যাপ করা ★★★
 export default function CheckoutClient(props: { paymentGateways: PaymentGateway[] }) {
-    const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
-        ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) 
-        : null;
-
+    const [stripePromise] = useState(() => 
+        process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
+            ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) 
+            : null
+    );
     if (!stripePromise) {
         return <div className={styles.pageLoader}>Loading Payment Gateway...</div>;
     }
