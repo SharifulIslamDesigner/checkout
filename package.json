@@ -16,6 +16,7 @@
     "@stripe/stripe-js": "^7.9.0",
     "@types/lodash": "^4.17.20",
     "@types/nprogress": "^0.2.3",
+    "@woocommerce/woocommerce-rest-api": "^1.0.2",
     "apollo-link-context": "^1.0.20",
     "cookies-next": "^6.1.0",
     "graphql": "^16.11.0",

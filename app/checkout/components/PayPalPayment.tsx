@@ -1,75 +1,65 @@
-// app/checkout/components/PayPalPayment.tsx
 'use client';
 
-import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
+import React from 'react';
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import toast from 'react-hot-toast';
+import styles from './PaymentMethods.module.css';
 
+// --- TypeScript Interfaces for Props ---
 interface PayPalPaymentProps {
   total: number;
-  onPlaceOrder: (paymentData: {
-    paymentMethodId: string;
-    transactionId: string;
-  }) => Promise<void>;
+  onPlaceOrder: (paymentData?: { transaction_id?: string; }) => Promise<void>;
+  isPlacingOrder: boolean;
+  currencyCode?: string;
 }
 
-// মূল বাটন কম্পোনেন্ট
-function PayPalButtonComponent({ total, onPlaceOrder }: PayPalPaymentProps) {
-  return (
-    <div>
-      <p>You will be redirected to PayPal to complete your purchase securely.</p>
-      <PayPalButtons
-        style={{ layout: "vertical" }}
-        forceReRender={[total]}
-        createOrder={async (data, actions) => {
-          return actions.order.create({
-            purchase_units: [{
-              amount: {
-                value: total.toFixed(2),
-                currency_code: "AUD",
-              }
-            }]
-          });
-        }}
-        onApprove={async (data, actions) => {
-          if (actions.order) {
-            const details = await actions.order.capture();
-            if (details && details.id) {
-              toast.success(`Payment successful! Finalizing order...`);
-              await onPlaceOrder({
-                paymentMethodId: 'paypal',
-                transactionId: details.id
-              });
-            } else {
-              toast.error("Could not capture your PayPal payment.");
-            }
-          }
-        }}
-        onError={(err) => {
-          console.error("PayPal Error:", err);
-          toast.error("An error occurred with your PayPal payment.");
-        }}
-        disabled={total <= 0}
-      />
-    </div>
-  );
-}
+export default function PayPalPayment({ total, onPlaceOrder, isPlacingOrder, currencyCode = "AUD" }: PayPalPaymentProps) {
+  const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
 
-// Provider সহ এক্সপোর্ট করা হচ্ছে
-export default function PayPalPayment(props: PayPalPaymentProps) {
-  const paypalOptions = {
-    clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
-    currency: "AUD",
-    intent: "capture",
-  };
-
-  if (!paypalOptions.clientId) {
-    console.error("PayPal Client ID is not configured.");
-    return <p>PayPal is currently unavailable.</p>;
+  if (!paypalClientId) {
+    return <p className={styles.errorText}>PayPal Client ID is missing.</p>;
+  }
+  if (total <= 0) {
+    return null;
   }
 
   return (
-    <PayPalScriptProvider options={paypalOptions}>
-      <PayPalButtonComponent {...props} />
-    </PayPalScriptProvider>
+    <div className={styles.paypalContainer}>
+      <p>You will be redirected to PayPal to complete your purchase securely.</p>
+      
+      {/* ★★★ সমাধান: options অবজেক্টের কী 'clientId' (ক্যামেল কেস) হবে ★★★ */}
+      <PayPalScriptProvider options={{ clientId: paypalClientId, currency: currencyCode, intent: "capture" }}>
+        <PayPalButtons
+          style={{ layout: "vertical", color: 'gold', shape: 'rect', label: 'paypal', height: 48 }}
+          disabled={isPlacingOrder}
+          forceReRender={[total, currencyCode]}
+
+          createOrder={(data, actions) => {
+            return actions.order.create({
+              intent: "CAPTURE",
+              purchase_units: [{
+                amount: {
+                  currency_code: currencyCode,
+                  value: total.toFixed(2),
+                },
+              }],
+            });
+          }}
+
+          onApprove={async (data, actions) => {
+            if (actions.order) {
+                const details = await actions.order.capture();
+                toast.success('Payment completed successfully!');
+                await onPlaceOrder({ transaction_id: details.id });
+            }
+          }}
+
+          onError={(err) => {
+            console.error("PayPal Error:", err);
+            toast.error("An error occurred with the PayPal transaction.");
+          }}
+        />
+      </PayPalScriptProvider>
+    </div>
   );
 }

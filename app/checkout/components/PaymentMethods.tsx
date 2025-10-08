@@ -1,198 +1,182 @@
-// app/checkout/components/PaymentMethods.tsx
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { gql } from '@apollo/client';
-import client from '../../../lib/apolloClient';
-import styles from './PaymentMethods.module.css';
-import { Elements, ExpressCheckoutElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js';
+import React, { useRef } from 'react';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import toast from 'react-hot-toast';
+import styles from './PaymentMethods.module.css';
+import ExpressCheckouts from './ExpressCheckouts';
 
-import StripeWrapper from './StripeWrapper';
-import PayPalPayment from './PayPalPayment';
-import PlaceholderPayment from './PlaceholderPayment';
-import WooCommercePayment from './PlaceholderPayment';
-
-const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-  ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
-  : null;
-
-// --- Interfaces and GraphQL Query ---
+// --- TypeScript Interfaces (No changes) ---
 interface PaymentGateway { id: string; title: string; description: string; }
 interface PaymentMethodsProps {
+  gateways: PaymentGateway[];
   selectedPaymentMethod: string;
   onPaymentMethodChange: (methodId: string) => void;
-  onPlaceOrder: (paymentData?: { paymentMethodId?: string }) => Promise<void>;
+  onPlaceOrder: (paymentData?: { transaction_id?: string; }) => Promise<void>;
   isPlacingOrder: boolean;
-  total: number;
   isShippingSelected: boolean;
+  total: number;
+  [key: string]: any;
 }
-const GET_PAYMENT_GATEWAYS = gql`
-  query GetPaymentGateways {
-    paymentGateways {
-      nodes {
-        id
-        title
-        description
-      }
-    }
-  }
-`;
 
-// --- Stripe-এর জন্য বিশেষ প্লেস অর্ডার বাটন ---
-const StripePlaceOrderButton = ({ onPlaceOrder, isPlacingOrder, stripe, elements }: { 
-  onPlaceOrder: () => Promise<void>, 
-  isPlacingOrder: boolean,
-  stripe: any,
-  elements: any 
-}) => {
-  const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    if (!stripe || !elements) { toast.error("Payment form is not ready yet."); return; }
-    await onPlaceOrder();
-  };
-  return (
-    <button onClick={handleSubmit} disabled={!stripe || isPlacingOrder} className={styles.placeOrderButton}>
-      {isPlacingOrder ? 'Processing...' : 'Place Order'}
-    </button>
-  );
-};
+// --- Stripe Sub-Component (No changes) ---
+const StripeForm = React.forwardRef<HTMLFormElement, any>(({ total, onPlaceOrder, isPlacingOrder }, ref) => {
+  const [clientSecret, setClientSecret] = React.useState('');
+  const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) : null;
 
-export default function PaymentMethods({
-  selectedPaymentMethod,
-  onPaymentMethodChange,
-  onPlaceOrder,
-  isPlacingOrder,
-  total,
-  isShippingSelected,
-}: PaymentMethodsProps) {
-  
-  const [gateways, setGateways] = useState<PaymentGateway[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [clientSecret, setClientSecret] = useState<string | null>(null);
-  const paymentIntentIdRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    const fetchGateways = async () => {
-      setIsLoading(true);
-      try {
-        const { data } = await client.query<{ paymentGateways: { nodes: PaymentGateway[] } }>({
-          query: GET_PAYMENT_GATEWAYS, fetchPolicy: 'network-only'
-        });
-        const availableGateways = data?.paymentGateways?.nodes || [];
-        setGateways(availableGateways);
-        
-        if (availableGateways.length > 0 && !selectedPaymentMethod) {
-            const firstStandardGateway = availableGateways.find(gw => !gw.id.includes('express'));
-            if(firstStandardGateway) {
-                onPaymentMethodChange(firstStandardGateway.id);
-            }
-        }
-      } catch(e) { console.error("Failed to fetch gateways:", e);
-      } finally { setIsLoading(false); }
-    };
-    fetchGateways();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
+  React.useEffect(() => {
     if (total > 0) {
-      if (!paymentIntentIdRef.current || clientSecret === null) {
-        fetch('/api/create-payment-intent', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount: total }),
-        }).then(res => res.json()).then(data => {
-          if (data.clientSecret) { setClientSecret(data.clientSecret); paymentIntentIdRef.current = data.clientSecret.split('_secret_')[0]; }
-        });
-      } else {
-        fetch('/api/update-payment-intent', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ paymentIntentId: paymentIntentIdRef.current, amount: total }),
-        });
-      }
+      fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: Math.round(total * 100) }),
+      })
+      .then(res => res.json())
+      .then(data => setClientSecret(data.clientSecret));
     }
-  }, [total, clientSecret]);
+  }, [total]);
 
-  const expressCheckoutOptions: StripeElementsOptions = {
-    mode: 'payment', amount: Math.round(total * 100), currency: 'aud',
-  };
+  if (!clientSecret || !stripePromise) return <div className={styles.loader}>Loading Payment Form...</div>;
 
-  const onExpressConfirm = async () => {
-    if (!isShippingSelected) { toast.error("Please select a shipping method before paying."); return; }
-    await onPlaceOrder({ paymentMethodId: 'stripe_express_checkout' });
-  };
-  
-  // ★★★ StripeWrapper-এর জন্য একটি বিশেষ কম্পোনেন্ট যা useStripe এবং useElements হুক ব্যবহার করতে পারে ★★★
-  const StripePayment = () => {
+  const StripePaymentForm = () => {
     const stripe = useStripe();
     const elements = useElements();
-    return <StripePlaceOrderButton onPlaceOrder={onPlaceOrder} isPlacingOrder={isPlacingOrder} stripe={stripe} elements={elements} />;
+    const handleSubmit = async (event: React.FormEvent) => {
+      event.preventDefault();
+      if (!stripe || !elements || isPlacingOrder) return;
+      toast.loading('Processing...');
+      const { error, paymentIntent } = await stripe.confirmPayment({
+        elements,
+        redirect: 'if_required',
+      });
+      toast.dismiss();
+      if (error) {
+        toast.error(error.message || "An error occurred.");
+      } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+        toast.success('Payment confirmed!');
+        await onPlaceOrder({ transaction_id: paymentIntent.id });
+      }
+    };
+    return (
+      <form ref={ref} onSubmit={handleSubmit}>
+        <PaymentElement />
+      </form>
+    );
   };
+  return (
+    <Elements options={{ clientSecret, appearance: { theme: 'stripe' } }} stripe={stripePromise}>
+      <StripePaymentForm />
+    </Elements>
+  );
+});
+StripeForm.displayName = 'StripeForm';
+
+// --- Main PaymentMethods Component ---
+export default function PaymentMethods(props: PaymentMethodsProps) {
+  const { gateways, selectedPaymentMethod, onPaymentMethodChange, total, onPlaceOrder, isPlacingOrder, isShippingSelected } = props;
+  const stripeFormRef = useRef<HTMLFormElement>(null);
+
+  const getGatewayIcon = (id: string) => {
+    if (id.includes('paypal') || id.includes('ppcp')) return 'https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png';
+    if (id.includes('stripe')) return 'https://checkout.stripe.com/img/v3/checkout/_next/static/media/cards.55328b8e.svg';
+    return '';
+  };
+
+  const handlePlaceOrderClick = () => {
+    if (selectedPaymentMethod.includes('stripe')) {
+      stripeFormRef.current?.requestSubmit();
+    } else {
+      onPlaceOrder();
+    }
+  };
+
+  const isPayPalSelected = selectedPaymentMethod.includes('paypal') || selectedPaymentMethod.includes('ppcp');
 
   return (
     <div className={styles.paymentContainer}>
-      {clientSecret && total > 0 && gateways.some(gw => gw.id.includes('stripe')) && (
-        <div className={styles.expressCheckoutSection}>
-          <Elements options={expressCheckoutOptions} stripe={stripePromise}>
-              <ExpressCheckoutElement onConfirm={onExpressConfirm} />
-          </Elements>
-          <div className={styles.divider}>OR</div>
-        </div>
-      )}
-
-      <div className={styles.paymentMethodsList}>
-        {isLoading ? (
-          <p className={styles.loadingSpinner}>Loading payment methods...</p>
-        ) : gateways.length > 0 ? (
-          gateways.map((gateway) => {
-            if (gateway.id.includes('express')) return null;
-            const isSelected = selectedPaymentMethod === gateway.id;
-            const title = gateway.id === 'stripe' ? 'Credit / Debit Card' : gateway.title;
-
-            return (
-              <div key={gateway.id} className={styles.methodItem}>
-                <label className={styles.methodLabel}>
-                  <input type="radio" name="payment_method" checked={isSelected} onChange={() => onPaymentMethodChange(gateway.id)} className={styles.radioInput} />
-                  <span className={styles.methodTitle}>{title}</span>
-                </label>
-                {isSelected && (
-                  <div className={styles.methodContent}>
-                    {(() => {
-                      switch (gateway.id) {
-                        case 'stripe':
-                          return clientSecret ? (
-                            <Elements stripe={stripePromise} options={{ clientSecret }}>
-                              <StripeWrapper>
-                                <StripePayment />
-                              </StripeWrapper>
-                            </Elements>
-                          ) : <div>Initializing...</div>;
-
-                        case 'PAYPAL':
-                          return <PayPalPayment 
-                                    total={total}
-                                    onPlaceOrder={onPlaceOrder} 
-                                  />;
-
-                        case 'WOOCOMMERCE':
-                          return <WooCommercePayment 
-                                    methodDescription={gateway.description}
-                                    onPlaceOrder={() => onPlaceOrder({ paymentMethodId: gateway.id })}
-                                    isPlacingOrder={isPlacingOrder}
-                                  />;
-                        default:
-                          return <WooCommercePayment methodTitle={gateway.title} methodDescription={gateway.description} onPlaceOrder={() => onPlaceOrder()} isPlacingOrder={isPlacingOrder} />;
-                      }
-                    })()}
-                  </div>
-                )}
+      <ExpressCheckouts total={total} />
+      <div className={styles.orSeparator}>— OR —</div>
+      <div className={styles.gatewayList}>
+        {gateways.map(gateway => (
+          <div key={gateway.id} className={styles.gatewayWrapper}>
+            <div className={styles.gatewayOption} onClick={() => onPaymentMethodChange(gateway.id)}>
+              <input type="radio" id={gateway.id} name="payment_method" value={gateway.id} checked={selectedPaymentMethod === gateway.id} readOnly />
+              <label htmlFor={gateway.id}>{gateway.title}</label>
+              {getGatewayIcon(gateway.id) && (
+                <img src={getGatewayIcon(gateway.id)} alt={gateway.title} className={styles.gatewayIcon} />
+              )}
+            </div>
+            {selectedPaymentMethod === gateway.id && (
+              <div className={styles.gatewayDetails}>
+                {(() => {
+                  if (gateway.id.includes('stripe')) {
+                    return <StripeForm ref={stripeFormRef} {...props} />;
+                  } 
+                  else if (gateway.description) {
+                    return (
+                      <div className={styles.offlinePayment}>
+                        <p dangerouslySetInnerHTML={{ __html: gateway.description }} />
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
               </div>
-            );
-          })
-        ) : (
-          <p className={styles.noMethodsMessage}>No payment methods available for your region.</p>
-        )}
+            )}
+          </div>
+        ))}
+      </div>
+      
+      <div className={styles.finalActionArea}>
+        {isPayPalSelected ? (
+          <div className={styles.paypalContainer}>
+            <PayPalScriptProvider options={{
+              clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "",
+              currency: "AUD"
+            }}>
+              <PayPalButtons
+                style={{ layout: "vertical", color: 'gold', shape: 'rect', label: 'paypal', height: 48 }}
+                disabled={isPlacingOrder || total <= 0}
+                forceReRender={[total]}
+                createOrder={(_, actions) => {
+                  return actions.order.create({
+                    // ★★★ সমাধান: 'intent' প্রপার্টি যোগ করা হয়েছে ★★★
+                    intent: 'CAPTURE',
+                    purchase_units: [{
+                      amount: {
+                        currency_code: "AUD",
+                        value: total.toFixed(2),
+                      }
+                    }]
+                  });
+                }}
+                onApprove={async (_, actions) => {
+                  if (actions.order) {
+                    const details = await actions.order.capture();
+                    toast.success('Payment completed!');
+                    await onPlaceOrder({ transaction_id: details.id });
+                  } else {
+                    toast.error("Could not capture the order.");
+                  }
+                }}
+                onError={(err) => {
+                  console.error("PayPal transaction failed:", err);
+                  toast.error("PayPal transaction failed.");
+                }}
+              />
+            </PayPalScriptProvider>
+          </div>
+        ) : selectedPaymentMethod ? (
+          <button
+            onClick={handlePlaceOrderClick}
+            disabled={isPlacingOrder || !isShippingSelected}
+            className={styles.placeOrderButton}
+          >
+            {isPlacingOrder ? 'Processing...' : 'Place Order'}
+          </button>
+        ) : null}
       </div>
     </div>
   );
