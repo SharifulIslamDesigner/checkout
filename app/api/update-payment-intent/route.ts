@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-04-10' as const,
+  apiVersion: '2025-08-27.basil', 
 });
 
 export async function POST(request: Request) {
@@ -13,14 +13,11 @@ export async function POST(request: Request) {
     if (!paymentIntentId || !amount || typeof amount !== 'number' || amount <= 0) {
       return NextResponse.json({ error: 'Invalid Payment Intent ID or amount.' }, { status: 400 });
     }
-
-    // বিদ্যমান Payment Intent-টিকে নতুন মূল্য দিয়ে আপডেট করা হচ্ছে
+    
     await stripe.paymentIntents.update(paymentIntentId, {
-      amount: Math.round(amount * 100), // নতুন মূল্য সেন্ট-এ কনভার্ট করে
+      amount: Math.round(amount * 100),
     });
     
-    // সফলভাবে আপডেট হলে একটি success বার্তা পাঠানো হচ্ছে
-    // এই রেসপন্সে কোনো ডেটা পাঠানোর প্রয়োজন নেই, শুধু স্ট্যাটাসই যথেষ্ট
     return NextResponse.json({ success: true });
 
   } catch (error: unknown) {
