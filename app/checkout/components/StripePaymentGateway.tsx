@@ -1,162 +1,183 @@
 'use client';
 
-import React, { useEffect, useState, forwardRef, useRef } from 'react';
+import React, { useState, forwardRef} from 'react';
 import { loadStripe } from '@stripe/stripe-js';
-import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import toast from 'react-hot-toast';
 import styles from './PaymentMethods.module.css';
 
-// --- TypeScript Interface ---
+// --- TypeScript Interfaces ---
+interface CustomerInfo {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  address1?: string;
+  city?: string;
+  state?: string;
+  postcode?: string;
+}
 interface StripePaymentGatewayProps {
-  total: number;
-  onPlaceOrder: (paymentData?: { transaction_id?: string; }) => Promise<void>;
-  isPlacingOrder: boolean;
+  selectedPaymentMethod: string;
+  onPlaceOrder: (paymentData?: { transaction_id?: string }) => Promise<void>;
+  customerInfo: CustomerInfo;
+  total: number; 
 }
 
-// --- Stripe Checkout Form Sub-Component ---
-const StripeCheckoutForm = forwardRef<HTMLFormElement, StripePaymentGatewayProps>(
-  ({ onPlaceOrder, isPlacingOrder }, ref) => {
+// --- মূল ফর্ম কম্পোনেন্ট ---
+const StripeForm = forwardRef<HTMLFormElement, StripePaymentGatewayProps>(
+  ({ selectedPaymentMethod, onPlaceOrder, customerInfo, total }, ref) => {
     const stripe = useStripe();
     const elements = useElements();
+    const [isProcessing, setIsProcessing] = useState(false);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      if (!stripe || !elements || isPlacingOrder) {
+
+      if (isProcessing) return;
+      setIsProcessing(true);
+      toast.loading('Processing payment...');
+
+      if (!stripe || !elements) {
+        toast.dismiss();
+        toast.error("Stripe is not initialized.");
+        setIsProcessing(false);
         return;
       }
-      
-      toast.loading('Processing...');
-
-      const { error, paymentIntent } = await stripe.confirmPayment({
-        elements,
-        redirect: 'if_required',
+      const paymentMethodType = selectedPaymentMethod.replace('stripe_', '');
+      const res = await fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: Math.round(total * 100),
+          payment_method_types: [paymentMethodType === 'card' ? 'card' : paymentMethodType]
+        }),
       });
+      const { clientSecret, error: clientSecretError } = await res.json();
 
+      if (clientSecretError) {
+        toast.dismiss();
+        toast.error(clientSecretError.message || "Could not create payment intent.");
+        setIsProcessing(false);
+        return;
+      }
+
+      let confirmationResult;
+      const billingDetails = {
+          name: `${customerInfo.firstName || ''} ${customerInfo.lastName || ''}`,
+          email: customerInfo.email,
+          phone: customerInfo.phone,
+          address: {
+            line1: customerInfo.address1,
+            city: customerInfo.city,
+            state: customerInfo.state,
+            postal_code: customerInfo.postcode,
+            country: 'AU',
+          }
+      };
+      
+      const returnUrl = `${window.location.origin}/order-success`;
+      switch (paymentMethodType) {
+        case 'card':
+          const cardElement = elements.getElement(CardElement);
+          if (!cardElement) {
+            toast.dismiss();
+            toast.error("Card details not found.");
+            setIsProcessing(false);
+            return;
+          }
+          confirmationResult = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: { card: cardElement, billing_details: billingDetails }
+          });
+          break;
+        case 'klarna':
+          confirmationResult = await stripe.confirmKlarnaPayment(clientSecret, {
+            payment_method: { billing_details: billingDetails },
+            return_url: returnUrl,
+          });
+          break;
+        case 'afterpay_clearpay':
+          confirmationResult = await stripe.confirmAfterpayClearpayPayment(clientSecret, {
+            payment_method: { billing_details: billingDetails },
+            return_url: returnUrl,
+          });
+          break;
+        default:
+          toast.dismiss();
+          toast.error("Unsupported payment method selected.");
+          setIsProcessing(false);
+          return;
+      }
+      
       toast.dismiss();
+      const { error, paymentIntent } = confirmationResult;
 
       if (error) {
         toast.error(error.message || "An unexpected error occurred.");
+        setIsProcessing(false);
       } else if (paymentIntent && paymentIntent.status === 'succeeded') {
         toast.success('Payment confirmed!');
         await onPlaceOrder({ transaction_id: paymentIntent.id });
       }
     };
 
+    const renderPaymentUI = () => {
+      const paymentMethodType = selectedPaymentMethod === 'stripe' ? 'card' : selectedPaymentMethod.replace('stripe_', '');
+      
+      switch (paymentMethodType) {
+        case 'card':
+          return (
+            <div>
+              <label className={styles.stripeLabel}>Card details</label>
+              <CardElement options={{ style: { base: { fontSize: '16px', color: '#424770' } }, hidePostalCode: true }} />
+            </div>
+          );
+        case 'klarna':
+          return (
+            <div className={styles.paymentMethodInfo}>
+              <p>You will be redirected to Klarna to complete your purchase securely after clicking `Place Order`.</p>
+            </div>
+          );
+        case 'afterpay_clearpay':
+          return (
+            <div className={styles.paymentMethodInfo}>
+              <p>You will be redirected to Afterpay to complete your purchase securely after clicking `Place Order`.</p>
+            </div>
+          );
+        // Link এবং অন্যান্য পদ্ধতির জন্য আপনি এখানে UI যোগ করতে পারেন
+        default:
+          return <p>This payment method is not configured.</p>;
+      }
+    };
+
     return (
       <form ref={ref} onSubmit={handleSubmit}>
-        <PaymentElement />
+        {renderPaymentUI()}
       </form>
     );
   }
 );
-
-StripeCheckoutForm.displayName = 'StripeCheckoutForm';
-
-
-// --- Main Stripe Gateway Component ---
-// --- Wrapper Component to use hooks ---
-const StripeGatewayComponent = forwardRef<HTMLFormElement, StripePaymentGatewayProps>(
-  ({ total, onPlaceOrder, isPlacingOrder }, ref) => {
-    
-    // ★ useElements হুকটি এখানে ব্যবহার করতে হবে
-    const elements = useElements(); 
-    const paymentIntentIdRef = useRef<string | null>(null);
-
-    useEffect(() => {
-      // Amount যখন ০ এর বেশি হবে তখনই API কল হবে
-      if (total > 0 && elements) {
-        
-        // যদি Payment Intent আগে থেকেই তৈরি করা থাকে, তাহলে এটিকে আপডেট করুন
-        if (paymentIntentIdRef.current) {
-          fetch('/api/update-payment-intent', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              paymentIntentId: paymentIntentIdRef.current,
-              amount: total, // নতুন মোট পরিমাণ পাঠান
-            }),
-          })
-          .then(res => res.json())
-          .then(async (data) => {
-            if (data.success) {
-              // ★★★ সবচেয়ে গুরুত্বপূর্ণ ধাপ ★★★
-              // সার্ভারে PI আপডেট হওয়ার পর ক্লায়েন্টকে রিফ্রেশ করতে বলা
-              const { error } = await elements.fetchUpdates();
-              if (error) {
-                console.error("Failed to fetch payment element updates:", error);
-                toast.error("Could not update payment details.");
-              }
-            }
-          })
-          .catch(error => console.error("Update PI Error:", error));
-
-        } 
-
-        else {
-          fetch('/api/create-payment-intent', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amount: Math.round(total * 100) }),
-          })
-          .then(res => res.json())
-          .then(data => {
-            if (data.clientSecret) {
-              // clientSecret থেকে paymentIntentId বের করে ref-এ সেভ করুন
-              const pi_id = data.clientSecret.split('_secret_')[0];
-              paymentIntentIdRef.current = pi_id;
-            
-            }
-          })
-          .catch(error => {
-            console.error("Create PI Error:", error);
-            toast.error("Could not initialize the payment form.");
-          });
-        }
-      }
-    }, [total, elements]); // ★ elements-কে dependency হিসেবে যোগ করুন
-
-    return <StripeCheckoutForm ref={ref} onPlaceOrder={onPlaceOrder} isPlacingOrder={isPlacingOrder} total={total} />;
-  }
-);
-
-StripeGatewayComponent.displayName = 'StripeGatewayComponent';
+StripeForm.displayName = 'StripeForm';
 
 
-// --- Main Stripe Gateway Component (পরিবর্তিত) ---
-const StripePaymentGateway = forwardRef<HTMLFormElement, StripePaymentGatewayProps>(
-  ({ total, ...props }, ref) => {
-    const [clientSecret, setClientSecret] = useState<string>('');
-    const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
-      ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) 
-      : null;
-    useEffect(() => {
-      if (total > 0 && !clientSecret) {
-        fetch('/api/create-payment-intent', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount: Math.round(total * 100) }),
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.clientSecret) {
-            setClientSecret(data.clientSecret);
-          }
-        });
-      }
-    }, [total, clientSecret]);
+// --- মূল গেটওয়ে কম্পোনেন্ট যা Elements Provider র‍্যাপ করে ---
+const StripePaymentGateway = forwardRef<HTMLFormElement, StripePaymentGatewayProps>((props, ref) => {
+    const [stripePromise] = useState(() => 
+        process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
+            ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) 
+            : null
+    );
 
-    if (!clientSecret || !stripePromise) {
-      return <div className={styles.loader}>Loading Payment Form...</div>;
+    if (!stripePromise) {
+      return <div className={styles.loader}>Loading Stripe...</div>;
     }
 
     return (
-      <Elements options={{ clientSecret, appearance: { theme: 'stripe' } }} stripe={stripePromise}>
-        <StripeGatewayComponent ref={ref} total={total} {...props} />
+      <Elements stripe={stripePromise}>
+        <StripeForm ref={ref} {...props} />
       </Elements>
     );
-  }
-);
-
+});
 StripePaymentGateway.displayName = 'StripePaymentGateway';
 
 export default StripePaymentGateway;

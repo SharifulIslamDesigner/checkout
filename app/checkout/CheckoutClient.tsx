@@ -24,7 +24,15 @@ interface ShippingRate { id: string; label: string; cost: string; }
 interface AppliedCoupon { code: string; }
 interface CartData { subtotal: string; total: string; shippingTotal: string; discountTotal: string; appliedCoupons: AppliedCoupon[] | null; availableShippingMethods?: { rates: ShippingRate[] }[] | null }
 interface PaymentGateway { id: string; title: string; description: string; }
-
+interface CheckoutMutationResult {
+  checkout: {
+    result: 'success' | 'failure';
+    order: {
+      databaseId: number;
+      orderKey: string;
+    } | null;
+  } | null;
+}
 const GET_CHECKOUT_DATA = gql` query GetCheckoutData { cart { subtotal(format: FORMATTED) total(format: FORMATTED) shippingTotal(format: FORMATTED) discountTotal(format: FORMATTED) appliedCoupons { code } availableShippingMethods { rates { id label cost } } } } `;
 const APPLY_COUPON_MUTATION = gql` mutation ApplyCoupon($input: ApplyCouponInput!) { applyCoupon(input: $input) { cart { total subtotal discountTotal appliedCoupons { code } } } } `;
 const REMOVE_COUPON_MUTATION = gql` mutation RemoveCoupons($input: RemoveCouponsInput!) { removeCoupons(input: $input) { cart { total subtotal discountTotal appliedCoupons { code } } } } `;
@@ -154,13 +162,12 @@ function CheckoutClientComponent({ paymentGateways }: { paymentGateways: Payment
         isPaid: !!paymentData?.transaction_id,
       };
 
-      const { data } = await client.mutate({
+       const { data } = await client.mutate<CheckoutMutationResult>({
         mutation: CHECKOUT_MUTATION,
         variables: { input: mutationInput },
-      });
+    });
 
       const checkoutData = data?.checkout;
-      // REST API-এর মতো একটি সামঞ্জস্যপূর্ণ অবজেক্ট তৈরি করা হচ্ছে
       const result = {
         success: checkoutData?.result === 'success',
         order: {

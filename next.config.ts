@@ -40,6 +40,34 @@ const nextConfig = {
         hostname: 'i.ytimg.com',
         pathname: '/**', // <-- समाधान: pathname যোগ করা হয়েছে
       },
+      {
+        protocol: 'https',
+        hostname: 'www.paypalobjects.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'x.klarnacdn.net',
+      },
+      {
+        protocol: 'https',
+        hostname: 'static.afterpay.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'checkout.stripe.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'upload.wikimedia.org',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.americanexpress.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'js.stripe.com', // Mastercard-এর জন্য
+      },
     ],
   },
   

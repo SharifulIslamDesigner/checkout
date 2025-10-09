@@ -240,3 +240,34 @@
   50% { background-color: #e0e0e0; }
   100% { background-color: #f0f0f0; }
 }
+.cardIcons {
+  display: flex;
+  align-items: center;
+  gap: 4px; 
+}
+
+.cardIcons img {
+  height: 30px; 
+  width: 50px;
+  border-radius: 2px;
+}
+/* ... আপনার অন্যান্য স্টাইলের পর ... */
+
+.gatewayDetails {
+  padding: 15px 15px 5px 15px; /* কন্টেইনারের জন্য প্যাডিং */
+  background-color: #f9f9f9;
+  border-top: 1px solid #e0e0e0;
+}
+
+.cardElementContainer {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.paymentMethodInfo p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+}

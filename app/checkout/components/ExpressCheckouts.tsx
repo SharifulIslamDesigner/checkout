@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, ExpressCheckoutElement, useStripe } from '@stripe/react-stripe-js';
 import styles from './PaymentMethods.module.css';
@@ -38,7 +38,7 @@ const CheckoutForm = ({ onOrderPlace, clientSecret }: { onOrderPlace: ExpressChe
 export default function ExpressCheckouts({ total, onOrderPlace }: ExpressCheckoutsProps) {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
-  // ★★★ পরিবর্তন ১: কম্পোনেন্ট রি-মাউন্ট করার জন্য একটি স্টেট যোগ করা হলো ★★★
+
   const [remountKey, setRemountKey] = useState(0);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export default function ExpressCheckouts({ total, onOrderPlace }: ExpressCheckou
           if (data.clientSecret) {
             setClientSecret(data.clientSecret);
             setPaymentIntentId(data.clientSecret.split('_secret_')[0]);
-            // ★★★ পরিবর্তন ২: প্রথমবার লোড হওয়ার পরেও key সেট করা হলো ★★★
+
             setRemountKey(prevKey => prevKey + 1);
           }
         } catch (error) {
@@ -69,7 +69,6 @@ export default function ExpressCheckouts({ total, onOrderPlace }: ExpressCheckou
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ paymentIntentId, amount: total }),
           });
-          // ★★★ পরিবর্তন ৩: সফলভাবে আপডেট হওয়ার পর key পরিবর্তন করা হলো ★★★
           setRemountKey(prevKey => prevKey + 1);
         } catch (error) {
           console.error("Failed to update Express Payment Intent:", error);
@@ -78,7 +77,7 @@ export default function ExpressCheckouts({ total, onOrderPlace }: ExpressCheckou
     };
 
     managePaymentIntent();
-  }, [total]); // এখন আর paymentIntentId ডিপেন্ডেন্সি হিসেবে রাখার দরকার নেই
+  }, [total, paymentIntentId]);
 
   if (!clientSecret || !stripePromise) {
     return <div className={styles.expressCheckoutLoader}></div>;

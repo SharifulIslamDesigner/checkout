@@ -17,7 +17,7 @@ async function getPaymentGateways() {
       headers: {
         'Authorization': 'Basic ' + Buffer.from(`${consumerKey}:${consumerSecret}`).toString('base64'),
       },
-      next: { revalidate: 3600 } // ১ ঘন্টার জন্য ক্যাশ করা হবে
+      next: { revalidate: 0 } 
     });
 
     if (!response.ok) {
