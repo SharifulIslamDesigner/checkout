@@ -1,7 +1,7 @@
 // app/checkout/components/OrderNotes.tsx
 'use client';
 
-import styles from './OrderNotes.module.css';
+import styles from './ShippingForm.module.css';
 
 // TypeScript ইন্টারফেস
 interface OrderNotesProps {

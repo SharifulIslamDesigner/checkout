@@ -4,7 +4,7 @@ import "./globals.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import DelayedScripts from '../components/DelayedScripts';
-import { ClientProviders } from "./providers"; // <-- নতুন Provider কম্পোনেন্টটি import করা হয়েছে
+import { ClientProviders } from "./providers"; 
 
 // --- ফন্ট কনফিগারেশন ---
 const geistSans = Geist({

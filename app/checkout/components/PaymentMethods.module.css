@@ -72,7 +72,7 @@
   text-align: center;
   color: #6b7280;
   font-weight: 500;
-  margin: 20px 0;
+  margin:  0;
 }
 
 .placeOrderButton {
@@ -245,7 +245,18 @@
   align-items: center;
   gap: 4px; 
 }
-
+@media (max-width: 768px) {
+.cardIcons {
+  display: flex;
+  align-items: center;
+  gap: 4px; 
+}
+.cardIcons img {
+  height: 20px; 
+  width: 30px;
+  border-radius: 2px;
+}
+}
 .cardIcons img {
   height: 30px; 
   width: 50px;
@@ -270,4 +281,38 @@
   margin: 0;
   font-size: 14px;
   color: #555;
+}
+/* ... আপনার অন্যান্য স্টাইলের পর ... */
+
+.redirectInfoBox {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.infoText {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 14px;
+  color: #333;
+}
+
+.infoText small {
+  font-size: 12px;
+  color: #777;
+}
+
+.infoText a {
+    text-decoration: underline;
+    color: #007bff;
+}
+.paypalMessageContainer {
+  margin-bottom: 1rem; /* ایکسپریس বাটনগুলো থেকে সামান্য দূরত্ব তৈরি করে */
+  text-align: center;
+  padding-left: 10px; /* টেক্সটকে মাঝখানে আনে */
 }

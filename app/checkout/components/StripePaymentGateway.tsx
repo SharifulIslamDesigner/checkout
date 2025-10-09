@@ -1,6 +1,5 @@
-'use client';
-
 import React, { useState, forwardRef, useEffect } from 'react';
+import Image from 'next/image'; // Image কম্পোনেন্ট আমদানি করা
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import toast from 'react-hot-toast';
@@ -137,10 +136,27 @@ const StripeForm = forwardRef<HTMLFormElement, StripePaymentGatewayProps & { cli
         );
       }
       
-      if (selectedPaymentMethod.includes('klarna') || selectedPaymentMethod.includes('afterpay')) {
+      if (selectedPaymentMethod === 'stripe_klarna') {
+        const installment = (total / 4).toFixed(2);
         return (
-          <div className={styles.paymentMethodInfo}>
-            <p>You will be redirected to complete your purchase securely after clicking `Place Order`.</p>
+          <div className={styles.redirectInfoBox}>
+            <Image src="https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg" alt="Klarna" width={40} height={20} />
+            <div className={styles.infoText}>
+              <span>Pay now, or in 4 interest-free payments of <strong>A${installment}</strong>. <a href="https://www.klarna.com/au/payments/pay-in-4/" target="_blank" rel="noopener noreferrer">Learn more</a></span>
+              <small>After submission, you will be redirected to securely complete next steps.</small>
+            </div>
+          </div>
+        );
+      }
+      
+      if (selectedPaymentMethod === 'stripe_afterpay_clearpay') {
+        const installment = (total).toFixed(2);
+        return (
+          <div className={styles.redirectInfoBox}>
+            <Image src="https://static.afterpay.com/integration/logo-afterpay-colour.svg" alt="Afterpay" width={60} height={20} unoptimized/>
+            <div className={styles.infoText}>
+                <span>Pay <strong>A${installment}</strong> After submission, you will be redirected to securely complete next steps.</span>
+            </div>
           </div>
         );
       }
@@ -166,7 +182,16 @@ const StripePaymentGateway = forwardRef<HTMLFormElement, StripePaymentGatewayPro
             fetch('/api/create-payment-intent', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ amount: Math.round(props.total * 100) })
+                body: JSON.stringify({ 
+                    amount: Math.round(props.total * 100),
+                    // ★ নতুন: সার্ভারকে গ্রাহকের তথ্য পাঠানো হচ্ছে
+                    customer_details: {
+                        name: `${props.customerInfo.firstName} ${props.customerInfo.lastName}`,
+                        address: {
+                            country: 'AU' 
+                        }
+                    }
+                })
             })
             .then(res => res.json())
             .then(data => {
@@ -175,7 +200,7 @@ const StripePaymentGateway = forwardRef<HTMLFormElement, StripePaymentGatewayPro
                 }
             });
         }
-    }, [props.total, props.selectedPaymentMethod]);
+    }, [props.total, props.selectedPaymentMethod, props.customerInfo]);
 
     if (!stripePromise) {
         return <div className={styles.loader}>Loading Stripe...</div>;

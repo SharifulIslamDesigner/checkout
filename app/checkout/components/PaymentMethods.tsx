@@ -5,6 +5,8 @@ import styles from './PaymentMethods.module.css';
 import ExpressCheckouts from './ExpressCheckouts';
 import PayPalPaymentGateway from './PayPalPaymentGateway';
 import StripePaymentGateway from './StripePaymentGateway'; 
+import PayPalMessage from './PayPalMessage';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 
 // --- TypeScript Interfaces ---
 interface PaymentGateway {
@@ -46,6 +48,15 @@ export default function PaymentMethods(props: PaymentMethodsProps) {
   } = props;
 
   const stripeFormRef = useRef<HTMLFormElement>(null);
+  
+  const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+
+  const initialOptions = {
+    clientId: paypalClientId || "",
+    currency: "AUD",
+    intent: "capture",
+    components: "buttons,messages",
+  };
 
   // ★★★ চূড়ান্ত সংশোধিত getGatewayIcon ফাংশন (অরিজিনাল ব্র্যান্ড লোগো সহ) ★★★
   const getGatewayIcon = (id: string): React.ReactNode => {
@@ -62,9 +73,6 @@ export default function PaymentMethods(props: PaymentMethodsProps) {
       return <Image src="https://static.afterpay.com/integration/logo-afterpay-colour.svg" alt="Afterpay" width={80} height={20} className={styles.gatewayIcon} unoptimized />;
     }
     // Link
-    if (id.includes('link')) {
-        return <Image src="https://checkout.stripe.com/images/checkout/payment-methods/link.svg" alt="Link" width={35} height={20} className={styles.gatewayIcon} />;
-    }
     // Card
     if (id.includes('stripe')) {
       return (
@@ -85,26 +93,20 @@ export default function PaymentMethods(props: PaymentMethodsProps) {
     }
   };
 
-  const isPayPalSelected = selectedPaymentMethod.includes('paypal') || selectedPaymentMethod.includes('ppcp');
+  const isPayPalSelected = selectedPaymentMethod.includes('ppcp-gateway');
+  const filteredGateways = gateways.filter(gateway => gateway.id !== 'stripe_link');
 
   return (
-    <div className={styles.paymentContainer}>
-      <ExpressCheckouts total={total} onOrderPlace={onPlaceOrder} />
+    <PayPalScriptProvider options={initialOptions}>
+      <div className={styles.paymentContainer}>
+      <ExpressCheckouts total={total} onOrderPlace={onPlaceOrder } />
+      <PayPalMessage total={total} />
       <div className={styles.orSeparator}>— OR —</div>
-      
       <div className={styles.gatewayList}>
-        {gateways.map(gateway => (
-          
+        {filteredGateways.map(gateway => (
           <div key={gateway.id} className={styles.gatewayWrapper}>
             <div className={styles.gatewayOption} onClick={() => onPaymentMethodChange(gateway.id)}>
-              <input
-                type="radio"
-                id={gateway.id}
-                name="payment_method"
-                value={gateway.id}
-                checked={selectedPaymentMethod === gateway.id}
-                readOnly
-              />
+              <input type="radio" id={gateway.id} name="payment_method" value={gateway.id} checked={selectedPaymentMethod === gateway.id} readOnly />
               <label htmlFor={gateway.id}>{gateway.title}</label>
               <div className={styles.iconContainer}>
                 {getGatewayIcon(gateway.id)}
@@ -112,44 +114,23 @@ export default function PaymentMethods(props: PaymentMethodsProps) {
             </div>
             {selectedPaymentMethod === gateway.id && gateway.id.includes('stripe') && (
               <div className={styles.gatewayDetails}>
-                <StripePaymentGateway
-                  ref={stripeFormRef}
-                  selectedPaymentMethod={selectedPaymentMethod}
-                  onPlaceOrder={onPlaceOrder}
-                  customerInfo={customerInfo}
-                  total={total}
-                />
+                <StripePaymentGateway ref={stripeFormRef} selectedPaymentMethod={selectedPaymentMethod} onPlaceOrder={onPlaceOrder} customerInfo={customerInfo} total={total} />
               </div>
             )}
-
             {selectedPaymentMethod === gateway.id && !gateway.id.includes('stripe') && gateway.description && (
-               <div className={styles.gatewayDetails}>
-                  <div className={styles.offlinePayment}>
-                    <p dangerouslySetInnerHTML={{ __html: gateway.description }} />
-                  </div>
-               </div>
+               <div className={styles.gatewayDetails}><div className={styles.offlinePayment}><p dangerouslySetInnerHTML={{ __html: gateway.description }} /></div></div>
             )}
           </div>
         ))}
       </div>
-      
       <div className={styles.finalActionArea}>
         {isPayPalSelected ? (
-          <div className={styles.paypalContainer}>
-            <PayPalPaymentGateway total={total} isPlacingOrder={isPlacingOrder} onPlaceOrder={onPlaceOrder} />
-          </div>
+          <div className={styles.paypalContainer}><PayPalPaymentGateway total={total} isPlacingOrder={isPlacingOrder} onPlaceOrder={onPlaceOrder} /></div>
         ) : (
-          selectedPaymentMethod && (
-            <button
-              onClick={handlePlaceOrderClick}
-              disabled={isPlacingOrder || !isShippingSelected}
-              className={styles.placeOrderButton}
-            >
-              {isPlacingOrder ? 'Processing...' : `Place Order`}
-            </button>
-          )
+          selectedPaymentMethod && (<button onClick={handlePlaceOrderClick} disabled={isPlacingOrder || !isShippingSelected} className={styles.placeOrderButton}>{isPlacingOrder ? 'Processing...' : `Place Order`}</button>)
         )}
       </div>
     </div>
+    </PayPalScriptProvider>
   );
 }

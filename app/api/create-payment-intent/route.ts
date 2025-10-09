@@ -7,6 +7,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(request: Request) {
   try {
+    
     const { amount, payment_method_types } = await request.json();
 
     if (!amount || amount < 1) {

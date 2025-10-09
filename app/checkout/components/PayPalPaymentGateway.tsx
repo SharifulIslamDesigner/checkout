@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
+import { PayPalButtons } from '@paypal/react-paypal-js';
 import toast from 'react-hot-toast';
 interface PayPalGatewayProps {
   total: number;
@@ -11,10 +11,7 @@ interface PayPalGatewayProps {
 
 export default function PayPalPaymentGateway({ total, isPlacingOrder, onPlaceOrder }: PayPalGatewayProps) {
   return (
-    <PayPalScriptProvider options={{
-      clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "",
-      currency: "AUD"
-    }}>
+    
       <PayPalButtons
         style={{ layout: "vertical", color: 'gold', shape: 'rect', label: 'paypal', height: 48 }}
         disabled={isPlacingOrder || total <= 0}
@@ -49,6 +46,6 @@ export default function PayPalPaymentGateway({ total, isPlacingOrder, onPlaceOrd
           toast.error("A PayPal error occurred. Please try again.");
         }}
       />
-    </PayPalScriptProvider>
+    
   );
 }
