@@ -101,7 +101,6 @@ export default function PaymentMethods(props: PaymentMethodsProps) {
       <div className={styles.paymentContainer}>
       <ExpressCheckouts total={total} onOrderPlace={onPlaceOrder } />
       <PayPalMessage total={total} />
-      <div className={styles.orSeparator}>— OR —</div>
       <div className={styles.gatewayList}>
         {filteredGateways.map(gateway => (
           <div key={gateway.id} className={styles.gatewayWrapper}>
