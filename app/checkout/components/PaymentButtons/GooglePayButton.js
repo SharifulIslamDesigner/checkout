@@ -44,6 +44,7 @@ const GooglePayButton = ({ total, onOrderPlace }) => {
       },
       requestPayerName: true,
       requestPayerEmail: true,
+      requestPayerPhone: true,
       requestShipping: true, // <-- শিপিংয়ের জন্য এটি প্রয়োজন হতে পারে, এমনকি ভার্চুয়াল প্রোডাক্টের জন্যও
     });
 
