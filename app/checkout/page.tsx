@@ -1,3 +1,4 @@
+//app/checkout/page.tsx
 import CheckoutClient from './CheckoutClient';
 import styles from './CheckoutPage.module.css';
 

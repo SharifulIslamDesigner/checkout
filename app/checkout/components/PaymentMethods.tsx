@@ -1,3 +1,5 @@
+//app/checkout/components/PaymentMethods.tsx
+
 'use client';
 import Image from 'next/image';
 import React, { useRef } from 'react';
@@ -55,7 +57,7 @@ export default function PaymentMethods(props: PaymentMethodsProps) {
     clientId: paypalClientId || "",
     currency: "AUD",
     intent: "capture",
-    components: "buttons,messages",
+    components: "buttons,messages,googlepay",
   };
 
   // ★★★ চূড়ান্ত সংশোধিত getGatewayIcon ফাংশন (অরিজিনাল ব্র্যান্ড লোগো সহ) ★★★
@@ -92,6 +94,7 @@ export default function PaymentMethods(props: PaymentMethodsProps) {
       onPlaceOrder();
     }
   };
+  const isGooglePaySelected = selectedPaymentMethod === 'ppcp-google-pay';
 
   const isPayPalSelected = selectedPaymentMethod.includes('ppcp-gateway');
   const filteredGateways = gateways.filter(gateway => gateway.id !== 'stripe_link');
@@ -123,10 +126,20 @@ export default function PaymentMethods(props: PaymentMethodsProps) {
         ))}
       </div>
       <div className={styles.finalActionArea}>
-        {isPayPalSelected ? (
-          <div className={styles.paypalContainer}><PayPalPaymentGateway total={total} isPlacingOrder={isPlacingOrder} onPlaceOrder={onPlaceOrder} /></div>
+        {isPayPalSelected || isGooglePaySelected ? (
+            <div className={styles.paypalContainer}>
+                <PayPalPaymentGateway 
+                    total={total} 
+                    isPlacingOrder={isPlacingOrder} 
+                    onPlaceOrder={onPlaceOrder} 
+                />
+            </div>
         ) : (
-          selectedPaymentMethod && (<button onClick={handlePlaceOrderClick} disabled={isPlacingOrder || !isShippingSelected} className={styles.placeOrderButton}>{isPlacingOrder ? 'Processing...' : `Place Order`}</button>)
+          selectedPaymentMethod && (
+            <button onClick={handlePlaceOrderClick} disabled={isPlacingOrder || !isShippingSelected} className={styles.placeOrderButton}>
+              {isPlacingOrder ? 'Processing...' : `Place Order`}
+            </button>
+          )
         )}
       </div>
     </div>

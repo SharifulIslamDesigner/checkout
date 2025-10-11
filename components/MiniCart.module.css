@@ -1,5 +1,4 @@
-/* components/MiniCart.module.css */
-
+/* === Main Container & Overlay === */
 .miniCartOverlay {
   position: fixed;
   top: 0;
@@ -10,7 +9,7 @@
   z-index: 1000;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
-  pointer-events: none; /* বন্ধ থাকা অবস্থায় ক্লিক করতে দেয় না */
+  pointer-events: none;
 }
 
 .miniCartOverlay.open {
@@ -23,13 +22,13 @@
   top: 0;
   right: 0;
   width: 100%;
-  max-width: 450px; /* প্রস্থ সামান্য কমানো হয়েছে */
+  max-width: 450px;
   height: 100%;
   background-color: white;
   box-shadow: -5px 0 25px rgba(0,0,0,0.15);
   z-index: 1001;
   transform: translateX(100%);
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* স্মুথ ট্রানজিশন */
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   display: flex;
   flex-direction: column;
 }
@@ -38,6 +37,7 @@
   transform: translateX(0);
 }
 
+/* === Header === */
 .header {
   padding: 1rem 1.5rem;
   border-bottom: 1px solid #eaeaea;
@@ -49,7 +49,7 @@
 
 .header h3 {
   margin: 0;
-  font-size: 1.3rem; /* শিরোনাম বড় করা হয়েছে */
+  font-size: 1.3rem;
   font-weight: 700;
 }
 
@@ -66,6 +66,7 @@
     transform: rotate(90deg);
 }
 
+/* === Cart Body & Items === */
 .cartBody {
   flex-grow: 1;
   overflow-y: auto;
@@ -80,37 +81,44 @@
 }
 
 .cartItem {
-  display: grid; /* ফ্লেক্সের পরিবর্তে গ্রিড ব্যবহার করা হয়েছে */
-  grid-template-columns: 80px 1fr auto ;
-  gap: 1.5rem;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  grid-template-rows: auto auto;
+  gap: 0.5rem 1.5rem;
+  align-items: start;
   margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;
   border-bottom: 1px solid #f0f0f0;
 }
+
 .cartItem:last-child {
-  border-bottom: none; /* শেষ আইটেমের নিচে বর্ডার থাকবে না */
+  border-bottom: none;
   margin-bottom: 0;
 }
 
-
 .itemImage {
+  grid-column: 1;
+  grid-row: 1 / span 2;
   width: 80px;
   height: 80px;
   object-fit: cover;
   border-radius: 8px;
   border: 1px solid #eee;
+  align-self: center;
 }
 
 .itemDetails {
+  grid-column: 2;
+  grid-row: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem; /* আইটেমগুলোর মধ্যে ফাঁকা জায়গা */
+  gap: 0.75rem;
 }
+
 .itemActions {
-  text-align: right;
-  /* প্রয়োজনে align-self ব্যবহার করা যেতে পারে */
-  align-self: center; /* <-- এটি বাটনটিকে উল্লম্বভাবে মাঝখানে রাখতে সাহায্য করবে */
+  grid-column: 2;
+  grid-row: 2;
+  margin-top: 0.5rem;
 }
 
 .itemName {
@@ -125,13 +133,12 @@
   font-size: 1rem;
 }
 
-/* === কার্যকরী সমাধান: পরিমাণ (+/-) অংশের নতুন স্টাইল === */
 .quantityControl {
     display: flex;
     align-items: center;
     border: 1px solid #e0e0e0;
     border-radius: 6px;
-    width: fit-content; /* কন্টেন্ট অনুযায়ী প্রস্থ */
+    width: fit-content;
 }
 
 .quantityControl button {
@@ -160,14 +167,11 @@
     border-left: 1px solid #e0e0e0;
     border-right: 1px solid #e0e0e0;
 }
-/* ---------------------------------------------------- */
 
-
-/* === কার্যকরী সমাধান: Remove বাটনের নতুন স্টাইল === */
 .removeButton {
   background-color: transparent;
-  color: #e53e3e; /* লাল রঙ */
-  border: 1px solid #e53e3e; /* লাল বর্ডার */
+  color: #e53e3e;
+  border: 1px solid #e53e3e;
   border-radius: 6px;
   padding: 0.4rem 0.8rem;
   font-size: 0.9rem;
@@ -180,22 +184,21 @@
   background-color: #e53e3e;
   color: #fff;
 }
-/* ------------------------------------------------ */
 
-
+/* === Footer === */
 .footer {
   padding: 1.5rem;
   border-top: 1px solid #eaeaea;
   background-color: #f8f9fa;
   flex-shrink: 0;
-  box-shadow: 0 -5px 15px rgba(0,0,0,0.05); /* হালকা শ্যাডো */
+  box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
 }
 
 .subtotal {
   display: flex;
   justify-content: space-between;
-  font-size: 1.2rem; /* বড় করা হয়েছে */
-  font-weight: 700; /* বোল্ড করা হয়েছে */
+  font-size: 1.2rem;
+  font-weight: 700;
   margin-bottom: 1.5rem;
 }
 
@@ -208,11 +211,11 @@
 .actionButton {
   display: block;
   width: 100%;
-  padding: .5rem; /* প্যাডিং বাড়ানো হয়েছে */
+  padding: .5rem;
   text-align: center;
   text-decoration: none;
   border-radius: 8px;
-  font-weight: 700; /* বোল্ড করা হয়েছে */
+  font-weight: 700;
   transition: all 0.2s;
 }
 
@@ -236,7 +239,7 @@
     background-color: #333;
 }
 
-/* লোডিং বারের জন্য স্টাইল (ঐচ্ছিক) */
+/* === Misc === */
 .loadingBar {
   padding: 0.5rem;
   background-color: #fffbe6;

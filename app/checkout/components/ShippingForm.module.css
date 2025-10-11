@@ -79,7 +79,7 @@
 /* --- Mobile (ডিভাইসের প্রস্থ 768px বা তার কম হলে) --- */
 @media (max-width: 768px) {
   .title {
-    font-size: 2rem; /* 24px */
+    font-size: 1.4rem; /* 24px */
     padding-bottom: 0.75rem;
     text-align: center;
     font-weight: 800;
@@ -142,3 +142,29 @@
   outline: none;
   border-color: #007bff;
 }
+
+.checkboxContainer {
+  margin-top: 24px;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+}
+
+.checkboxContainer label {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.checkboxContainer input {
+  margin-right: 12px;
+  width: 18px;
+  height: 18px;
+}
+
+.differentShippingSection {
+  margin-top: 24px;
+}
+
+

@@ -7,7 +7,7 @@
 .title {
   text-align: center;
   margin-bottom: 2rem;
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 600;
 }
 .continueShopping {
@@ -140,7 +140,7 @@
   }
   
   .title {
-    font-size: 2rem;
+    font-size: 1.6rem;
   }
 
   /* --- মোবাইল স্ক্রিনের জন্য আইটেমের লেআউট সম্পূর্ণ নতুন করে লেখা হয়েছে --- */
@@ -199,4 +199,9 @@
     font-size: 0.8rem;
     align-items: center;
   }
+  .checkoutButton {
+  padding: .5rem;
+  font-size: 1rem;
+  
+}
 }

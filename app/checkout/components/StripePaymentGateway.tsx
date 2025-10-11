@@ -1,3 +1,5 @@
+//app/checkout/components/StripePaymentGateway.tsx
+
 import React, { useState, forwardRef, useEffect } from 'react';
 import Image from 'next/image'; // Image কম্পোনেন্ট আমদানি করা
 import { loadStripe } from '@stripe/stripe-js';
@@ -155,7 +157,7 @@ const StripeForm = forwardRef<HTMLFormElement, StripePaymentGatewayProps & { cli
           <div className={styles.redirectInfoBox}>
             <Image src="https://static.afterpay.com/integration/logo-afterpay-colour.svg" alt="Afterpay" width={60} height={20} unoptimized/>
             <div className={styles.infoText}>
-                <span>Pay <strong>A${installment}</strong> After submission, you will be redirected to securely complete next steps.</span>
+                <span>Pay <strong>A${installment}</strong> -<strong>You can pay Up to 2000AUD</strong>-After submission, you will be redirected to securely complete next steps.</span>
             </div>
           </div>
         );

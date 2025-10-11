@@ -101,9 +101,13 @@ export default function OrderSummary({
             </div>
             <p className={styles.itemPrice} dangerouslySetInnerHTML={{ __html: item.price }} />
           </div>
+          
         ))}
       </div>
-
+      <div className={`${styles.totalRow} ${styles.Subtotal}`}>
+        <p>Subtotal</p>
+        <span dangerouslySetInnerHTML={{ __html: subtotalDisplay }} />
+      </div>
       {/* --- Coupon Form (from CouponForm.tsx) --- */}
       <div className={styles.couponContainer}>
         <h3 className={styles.couponTitle}>Have a Coupon Code?</h3>
@@ -128,10 +132,7 @@ export default function OrderSummary({
       
       {/* --- Price Summary & Shipping Options --- */}
       <div className={styles.totalsSection}>
-        <div className={`${styles.totalRow} ${styles.Subtotal}`}>
-          <p>Subtotal</p>
-          <span dangerouslySetInnerHTML={{ __html: subtotalDisplay }} />
-        </div>
+        
 
         {cartData?.appliedCoupons?.map(coupon => (
           <div key={coupon.code} className={`${styles.totalRow} ${styles.couponRow}`}>

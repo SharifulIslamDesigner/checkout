@@ -1,3 +1,5 @@
+//app/checkout/components/ExpressCheckouts.tsx
+
 'use client';
 
 import React, { useState, useEffect, } from 'react';
@@ -9,10 +11,22 @@ import toast from 'react-hot-toast';
 const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
   ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) 
   : null;
-
+interface ShippingFormData {
+  firstName: string;
+  lastName: string;
+  address1: string;
+  city: string;
+  state: string;
+  postcode: string;
+  email: string;
+  phone: string;
+}
 interface ExpressCheckoutsProps {
   total: number;
-  onOrderPlace: (paymentData: { transaction_id: string }) => Promise<void>;
+  onOrderPlace: (paymentData: { 
+    transaction_id: string; 
+    shippingAddress?: Partial<ShippingFormData>; 
+  }) => Promise<void>;
 }
 
 const CheckoutForm = ({ onOrderPlace, clientSecret }: { onOrderPlace: ExpressCheckoutsProps['onOrderPlace'], clientSecret: string }) => {
@@ -23,9 +37,29 @@ const CheckoutForm = ({ onOrderPlace, clientSecret }: { onOrderPlace: ExpressChe
       return;
     }
     const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
+
     if (paymentIntent && paymentIntent.status === 'succeeded') {
       toast.success('Payment Successful!');
-      await onOrderPlace({ transaction_id: paymentIntent.id });
+
+      // ★★★ সমাধান: paymentIntent থেকে ঠিকানা সংগ্রহ করা হচ্ছে ★★★
+      const stripeAddress = paymentIntent.shipping;
+      const names = stripeAddress?.name?.split(' ') || [];
+      const shippingDetails = {
+        firstName: names[0] || '',
+        lastName: names.slice(1).join(' ') || '',
+        address1: stripeAddress?.address?.line1 || '',
+        city: stripeAddress?.address?.city || '',
+        state: stripeAddress?.address?.state || '',
+        postcode: stripeAddress?.address?.postal_code || '',
+        email: paymentIntent.receipt_email || '', // ইমেলও পাওয়া যায়
+      };
+      
+      // ★★★ সমাধান: এখন ঠিকানাসহ onOrderPlace কল করা হচ্ছে ★★★
+      await onOrderPlace({ 
+        transaction_id: paymentIntent.id,
+        shippingAddress: shippingDetails 
+      });
+
     } else {
       const errorMessage = paymentIntent?.last_payment_error?.message || 'Payment failed. Please try another method.';
       toast.error(errorMessage);
@@ -88,6 +122,7 @@ export default function ExpressCheckouts({ total, onOrderPlace }: ExpressCheckou
       <Elements key={remountKey} options={{ clientSecret }} stripe={stripePromise}>
         <CheckoutForm onOrderPlace={onOrderPlace} clientSecret={clientSecret} />
       </Elements>
+      <div className={styles.orSeparator}>— OR —</div>
     </div>
   );
 }

@@ -33,7 +33,7 @@
 .gatewayOption input[type="radio"] {
   width: 18px;
   height: 18px;
-  margin-right: 15px;
+  margin-right: 10px;
   flex-shrink: 0;
 }
 
@@ -103,7 +103,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 20px; /* Express checkout এবং Accordion লিস্টের মধ্যে ফাঁকা জায়গা */
+  gap: 10px; /* Express checkout এবং Accordion লিস্টের মধ্যে ফাঁকা জায়গা */
 }
 
 /* --- Express Checkout Section --- */
@@ -155,7 +155,7 @@
   height: 18px;
   margin-right: 15px;
   flex-shrink: 0;
-  accent-color: #000; /* Makes the selected radio dot black */
+  accent-color: #ff0000; /* Makes the selected radio dot black */
 }
 
 .gatewayOption label {
@@ -253,19 +253,19 @@
 }
 .cardIcons img {
   height: 20px; 
-  width: 30px;
+  width: 20px;
   border-radius: 2px;
 }
 }
 .cardIcons img {
-  height: 30px; 
-  width: 50px;
+  height: 25px; 
+  width: 30px;
   border-radius: 2px;
 }
 /* ... আপনার অন্যান্য স্টাইলের পর ... */
 
 .gatewayDetails {
-  padding: 15px 15px 5px 15px; /* কন্টেইনারের জন্য প্যাডিং */
+  padding: 10px 5px 5px 5px; /* কন্টেইনারের জন্য প্যাডিং */
   background-color: #f9f9f9;
   border-top: 1px solid #e0e0e0;
 }

@@ -1,3 +1,5 @@
+//app/checkout/components/PaypalPaymentGateway.tsx
+
 'use client';
 
 import React from 'react';

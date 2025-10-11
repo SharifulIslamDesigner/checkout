@@ -1,3 +1,5 @@
+//app/checkout/components/PaypalMessage.tsx
+
 'use client';
 import React from 'react';
 import { PayPalMessages } from '@paypal/react-paypal-js';

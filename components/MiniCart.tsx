@@ -3,7 +3,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { useCart } from '../context/CartContext'; // পাথটি আপনার প্রজেক্ট অনুযায়ী সঠিক কিনা তা নিশ্চিত করুন
+import { useCart } from '../context/CartContext';
 import styles from './MiniCart.module.css';
 import { IoClose } from 'react-icons/io5';
 import Image from 'next/image';
@@ -31,10 +31,6 @@ export default function MiniCart({ isOpen, onClose }: MiniCartProps) {
     const price = parsePrice(item.price);
     return total + price * item.quantity;
   }, 0);
-
-  // --- সমাধান: ডাইনামিক URL তৈরি করার ফাংশনটি এখন আর প্রয়োজন নেই ---
-  // const generateCheckoutUrl = () => { ... }; // এই অংশটি সম্পূর্ণ মুছে ফেলা হয়েছে
-
   if (!isOpen) return null;
 
   return (
@@ -83,8 +79,6 @@ export default function MiniCart({ isOpen, onClose }: MiniCartProps) {
               <Link href="/cart" className={`${styles.actionButton} ${styles.viewCart}`} onClick={onClose}>
                 View Cart
               </Link>
-              
-              {/* --- সমাধান: a ট্যাগের পরিবর্তে Link কম্পোনেন্ট ব্যবহার করা হচ্ছে --- */}
               <Link 
                 href="/checkout"
                 className={`${styles.actionButton} ${styles.checkout}`}
