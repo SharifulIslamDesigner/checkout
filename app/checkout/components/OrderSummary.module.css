@@ -5,7 +5,7 @@
   background-color: #f9f9f9; /* हल्का ধূসর ব্যাকগ্রাউন্ড */
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  padding: 1.5rem;
+  padding: .5rem;
   width: 100%;
 }
 
@@ -80,8 +80,9 @@
 /* --- Coupon Form Section --- */
 .couponContainer {
   border-top: 1px solid #e0e0e0;
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  
 }
 
 .couponTitle {
@@ -119,7 +120,7 @@
   background-color: #000;
 }
 .couponButton:disabled {
-  background-color: #aaa;
+  background-color: #575757;
   border-color: #aaa;
   cursor: not-allowed;
 }
@@ -146,7 +147,7 @@
 }
 .totalRow span:last-child {
   font-weight: 600;
-  color: #333;
+  color: #000000;
 }
 
 .couponRow .couponValue {
@@ -168,15 +169,25 @@
   flex-direction: column;
   margin-top: -0.5rem; /* Align with Subtotal row */
 }
-
+.Subtotal p{
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #000;
+}
+.Subtotal span{
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #000;
+}
 .shippingTitleRow {
   margin-bottom: 0.5rem;
+  font-size: 1.5rem;
 }
 
 .shippingOptionsContainer {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: .2rem;
 }
 
 .shippingOption {
@@ -187,31 +198,32 @@
 }
 
 .shippingOption.selected {
-  border-color: #007bff;
-  background-color: #e9f5ff; /* হালকা নীল ব্যাকগ্রাউন্ড */
+  border-color: #b39f9f;
+  background-color: #e9f5ff; 
 }
 
 .rateLabel {
   display: flex;
   align-items: center;
-  padding: 0.75rem 1rem;
+  padding: 0.3rem .5rem;
   width: 100%;
   cursor: pointer;
 }
 
 .radioInput {
-  margin-right: 0.75rem;
-  accent-color: #007bff; /* রেডিও বাটনের রঙ পরিবর্তন */
+  margin-right: 0.5rem;
+  accent-color: #ff0000; 
 }
 
 .labelText {
   flex-grow: 1;
-  color: #555;
+  color: #2b2b2b;
 }
 
 .rateCost {
   font-weight: 700;
-  color: #333;
+  color: #000000;
+
 }
 
 .loadingContainer, .infoMessageContainer {
@@ -228,4 +240,123 @@
 }
 .grandTotal span {
   color: #1d1d1d;
+}
+
+/* app/checkout/components/OrderSummary.module.css এর শেষে যোগ করুন */
+
+/* --- রেসপন্সিভ ডিজাইন --- */
+
+/* ট্যাবলেট এবং ছোট ডেস্কটপ (max-width: 992px) */
+@media (max-width: 992px) {
+  .yourOrderContainer {
+    padding: .5rem;
+  }
+
+  .title {
+    font-size: 1.6rem;
+  }
+
+  .grandTotal {
+    font-size: 1.5rem;
+  }
+}
+
+/* বড় মোবাইল এবং ট্যাবলেট (max-width: 768px) */
+@media (max-width: 768px) {
+  .title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+  }
+  
+  .couponContainer,
+  .totalsSection {
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+  }
+
+  .couponInput, .couponButton {
+    padding: 0.65rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .grandTotal {
+    font-size: 1.5rem;
+  }
+}
+
+/* ছোট মোবাইল ডিভাইস (max-width: 480px) */
+@media (max-width: 480px) {
+  .yourOrderContainer {
+    padding: .3rem;
+    border: none; /* ছোট স্ক্রিনে বর্ডার ছাড়াও ভালো দেখায় */
+    border-radius: 0;
+    background-color: #fff; /* পৃষ্ঠার ব্যাকগ্রাউন্ডের সাথে মিশে যেতে পারে */
+  }
+
+  .title {
+    font-size: 2rem;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
+    font-weight: 800;
+  }
+  
+  .summaryItem {
+    gap: 0.75rem;
+  }
+
+  .itemInfo {
+    padding-right: 0.5rem;
+  }
+
+  .itemName {
+    font-size: 0.95rem;
+  }
+  
+  .itemPrice {
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  /* কুপন ফর্মটিকে ভার্টিকাল লেআউটে পরিবর্তন করা */
+  .couponForm {
+    flex-direction: column;
+    align-items: stretch; /* বাটন এবং ইনপুটকে পুরো প্রস্থ দেওয়া */
+    gap: 0.75rem;
+  }
+
+  .couponTitle {
+    font-size: 1rem;
+  }
+
+  .couponInput, .couponButton {
+    width: 100%;
+  }
+
+  .totalRow {
+    font-size: 0.9rem;
+  }
+  .shippingTitleRow {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+  .shippingOption {
+    padding: 0; /* লেবেলের প্যাডিং ব্যবহার করা হবে */
+  }
+
+  .rateLabel {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .grandTotal {
+    font-size: 1.25rem;
+    padding-top: 0.75rem;
+    font-weight: 800;
+  }
+  .totalRow span.total {
+   font-size: 1.5rem;
+   font-weight: 800;
+  }
 }

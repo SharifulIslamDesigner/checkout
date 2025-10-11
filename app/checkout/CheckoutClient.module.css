@@ -1,31 +1,43 @@
-/* app/checkout/CheckoutClient.module.css */
-
 .checkoutLayout {
-    display: grid;
-    grid-template-columns: 1fr; /* মোবাইল ডিভাইসের জন্য ডিফল্ট */
-    gap: 2rem;
-    max-width: 1300px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+  display: grid;
+  /* মোবাইল-ফার্স্ট: ডিফল্টভাবে একটি কলাম */
+  grid-template-columns: 1fr; 
+  gap: 2rem;
+  width: 100%;
+  max-width: 1400px; /* সর্বোচ্চ প্রস্থ বাড়ানো যেতে পারে */
+  margin: 0 auto; /* page.tsx-এর container থেকে margin এখানে নিয়ে আসা ভালো */
+  padding: 1rem 1rem;
 }
-
-/* বড় স্ক্রিনের জন্য দুই-কলাম লেআউট */
-@media (min-width: 992px) {
+@media (max-width: 768px) {
+    .checkoutLayout{
+        display: flex
+;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+}
+/* ট্যাবলেট এবং তার থেকে বড় স্ক্রিনের জন্য */
+@media (min-width: 768px) {
     .checkoutLayout {
-        grid-template-columns: 60% 40%;
+        gap: 2.5rem;
     }
 }
 
-.leftColumn {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
+/* ডেস্কটপ এবং তার থেকে বড় স্ক্রিনের জন্য দুই-কলাম লেআউট */
+@media (min-width: 992px) {
+    .checkoutLayout {
+        /* বাম কলামটি প্রয়োজনীয় জায়গা নেবে, ডান কলামটি নির্দিষ্ট প্রস্থের হবে */
+        grid-template-columns: 1fr 550px;
+        gap: 3rem;
+    }
 }
 
+.leftColumn,
 .rightColumn {
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    /* এই কলামগুলোর প্রস্থ গ্রিড দ্বারা নিয়ন্ত্রিত হবে */
 }
 
 .pageLoader {

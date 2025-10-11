@@ -128,8 +128,8 @@ export default function OrderSummary({
       
       {/* --- Price Summary & Shipping Options --- */}
       <div className={styles.totalsSection}>
-        <div className={styles.totalRow}>
-          <span>Subtotal</span>
+        <div className={`${styles.totalRow} ${styles.Subtotal}`}>
+          <p>Subtotal</p>
           <span dangerouslySetInnerHTML={{ __html: subtotalDisplay }} />
         </div>
 
@@ -182,7 +182,7 @@ export default function OrderSummary({
         </div>
 
         <div className={`${styles.totalRow} ${styles.grandTotal}`}>
-          <span>Total</span>
+          <span className={styles.total}>Total</span>
           <span dangerouslySetInnerHTML={{ __html: totalDisplay }} />
         </div>
       </div>
