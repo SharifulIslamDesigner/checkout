@@ -241,6 +241,10 @@
 .grandTotal span {
   color: #1d1d1d;
 }
+.totalRow span.total {
+   font-size: 1.6rem;
+   font-weight: 800;
+  }
 
 /* app/checkout/components/OrderSummary.module.css এর শেষে যোগ করুন */
 

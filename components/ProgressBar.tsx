@@ -31,7 +31,7 @@ export default function ProgressBar() {
 
             // যদি এটি একটি অভ্যন্তরীণ নেভিগেশন হয় এবং হ্যাশ লিঙ্ক না হয়
            if (newUrl.origin === currentUrl.origin && newUrl.pathname !== currentUrl.pathname) {
-                const dynamicRoutes = ['/bikes', '/products', '/product/', '/spare-parts'];
+                const dynamicRoutes = ['/bikes', '/products', '/product/', '/spare-parts', '/checkout'];
                 if (dynamicRoutes.some(route => newUrl.pathname.startsWith(route))) {
                     if (!nprogressStarted) {
                         NProgress.start();

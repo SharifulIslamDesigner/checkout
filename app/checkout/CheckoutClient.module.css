@@ -8,14 +8,7 @@
   margin: 0 auto; /* page.tsx-এর container থেকে margin এখানে নিয়ে আসা ভালো */
   padding: 1rem 1rem;
 }
-@media (max-width: 768px) {
-    .checkoutLayout{
-        display: flex
-;
-        flex-wrap: wrap;
-        justify-content: space-between;
-    }
-}
+
 /* ট্যাবলেট এবং তার থেকে বড় স্ক্রিনের জন্য */
 @media (min-width: 768px) {
     .checkoutLayout {
