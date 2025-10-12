@@ -35,7 +35,7 @@ async function getPaymentGateways(): Promise<PaymentGateway[]> {
       },
       // revalidate: 0 মানে হলো এই ডেটা ক্যাশ করা হবে না, প্রতিবার নতুন করে আনা হবে।
       // চেকআউটের জন্য এটিই সঠিক পদ্ধতি।
-      next: { revalidate: 0 } 
+      next: { revalidate: 1800 } 
     });
 
     if (!response.ok) {
@@ -59,15 +59,9 @@ async function getPaymentGateways(): Promise<PaymentGateway[]> {
  * Next.js প্রথমে এই কম্পোনেন্টটি সার্ভারে রান করবে।
  */
 export default async function CheckoutPage() {
-  // ১. সার্ভারে পেমেন্ট গেটওয়ের ডেটা আনা হচ্ছে
   const paymentGateways = await getPaymentGateways();
-
   return (
     <div className={styles.container}>
-      {/* 
-        ২. ডেটা সফলভাবে আনার পর, সেটি props হিসেবে ক্লায়েন্ট কম্পোনেন্টকে পাস করা হচ্ছে।
-        এর পরের সমস্ত কাজ (ফর্ম দেখানো, স্টেট ম্যানেজমেন্ট, অর্ডার প্লেস করা) CheckoutClient নিজেই করবে।
-      */}
       <CheckoutClient paymentGateways={paymentGateways} />
     </div>
   );

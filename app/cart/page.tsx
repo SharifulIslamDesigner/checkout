@@ -28,9 +28,8 @@ function CheckoutButton() {
     };
 
     return (
-        // এখানে a ট্যাগের পরিবর্তে Next.js-এর Link কম্পোনেন্ট ব্যবহার করা হয়েছে
         <Link 
-            href="/checkout" // <-- নতুন চেকআউট পেজের লিঙ্ক
+            href="/checkout" 
             className={styles.checkoutButton}
             onClick={handleCheckout}
         >
@@ -38,9 +37,6 @@ function CheckoutButton() {
         </Link>
     );
 }
-// -----------------------------------------------------------
-
-
 export default function CartPage() {
   const { cartItems, updateQuantity, removeFromCart, loading } = useCart();
 
@@ -110,22 +106,17 @@ export default function CartPage() {
                 </div>
               ))}
             </div>
-
             <div className={styles.cartSummary}>
               <h2>Order Summary</h2>
               <div className={styles.summaryRow}>
                 <span>Subtotal</span>
                 <span>${subtotal.toFixed(2)}</span>
               </div>
-              
-              {/* --- কার্যকরী সমাধান: নতুন CheckoutButton কম্পוננטটি এখানে ব্যবহার করা হয়েছে --- */}
               <CheckoutButton />
-              {/* ---------------------------------------------------------------------- */}
             </div>
           </div>
         </>
       )}
-
       <CartCrossSell />
     </div>
     </>
