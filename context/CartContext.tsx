@@ -137,15 +137,6 @@ interface CartContextType {
   closeMiniCart: () => void;
 }
 
-interface UpdateQuantitiesMutationData {
-  updateItemQuantities: {
-    refreshedCart: {
-      contents: {
-        nodes: FetchedCartItem[];
-      } | null;
-    } | null;
-  } | null;
-}
 // ====================================================================
 // Context এবং Provider
 // ====================================================================
@@ -173,12 +164,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
                 key: item.key,
                 total: item.total,
             }));
-            setCartItems(JSON.parse(JSON.stringify(fetchedItems)));
+            setCartItems(fetchedItems);
         }
-        else {
-            setCartItems([]);
-        }
-    } catch (error) { console.error("Failed to fetch initial cart", error); setCartItems([]);} 
+    } catch (error) { console.error("Failed to fetch initial cart", error); } 
     finally { setLoading(false); }
   }, []);
 
@@ -265,30 +253,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setLoading(true);
     toast.loading("Updating cart...");
     try {
-        // ★★★ পরিবর্তন: client.mutate-কে এখন সুনির্দিষ্ট টাইপ দেওয়া হয়েছে ★★★
-        await client.mutate<UpdateQuantitiesMutationData>({ // <--- এখানে টাইপ যোগ করা হয়েছে
+        await client.mutate({
             mutation: UPDATE_CART_ITEM_QUANTITIES_MUTATION,
             variables: { items: [{ key, quantity: newQuantity }] },
-            
-            update: (cache, { data: mutationData }) => {
-                // এখন TypeScript জানে mutationData-এর গঠন কেমন হবে
-                const newCartContents = mutationData?.updateItemQuantities?.refreshedCart?.contents;
-                if (!newCartContents) return;
-
-                const existingCartData = cache.readQuery<GetCartQueryData>({ query: GET_CART });
-
-                cache.writeQuery({
-                    query: GET_CART,
-                    data: {
-                        cart: {
-                            ...existingCartData?.cart,
-                            contents: newCartContents,
-                        },
-                    },
-                });
-            }
         });
-
+        await fetchInitialCart();
         toast.dismiss();
         toast.success("Cart updated!");
     } catch (error: unknown) {
@@ -298,7 +267,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     } finally {
         setLoading(false);
     }
-};
+  };
 
   const removeFromCart = async (key: string) => {
     const itemToRemove = cartItems.find(item => item.key === key);

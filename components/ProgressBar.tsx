@@ -1,3 +1,5 @@
+// components/ProgressBar.tsx
+
 'use client';
 
 import { useEffect } from 'react';
@@ -16,55 +18,51 @@ export default function ProgressBar() {
       NProgress.done();
       nprogressStarted = false;
     }
+  }, [pathname, searchParams]); 
 
-    // --- সমাধান: ইভেন্ট প্যারামিটারের টাইপ 'Event' করা হয়েছে ---
-    const handleAnchorClick = (event: Event) => {
-        try {
-            // সমাধান: ইভেন্টের টার্গেটকে HTMLAnchorElement হিসেবে কাস্ট করা হচ্ছে
-            const target = event.currentTarget as HTMLAnchorElement;
-            const targetUrl = target.href;
+  useEffect(() => {
+    const handleAnchorClick = (event: MouseEvent) => {
+      try {
+        const target = (event.target as HTMLElement).closest('a'); 
+        if (!target) return;
 
-            if (!targetUrl) return;
+        const targetUrl = target.href;
+        if (!targetUrl) return;
 
-            const currentUrl = new URL(window.location.href);
-            const newUrl = new URL(targetUrl);
-
-            // যদি এটি একটি অভ্যন্তরীণ নেভিগেশন হয় এবং হ্যাশ লিঙ্ক না হয়
-           if (newUrl.origin === currentUrl.origin && newUrl.pathname !== currentUrl.pathname) {
-                const dynamicRoutes = ['/bikes', '/products', '/product/', '/spare-parts', '/checkout'];
-                if (dynamicRoutes.some(route => newUrl.pathname.startsWith(route))) {
-                    if (!nprogressStarted) {
-                        NProgress.start();
-                        nprogressStarted = true;
-                    }
-                }
+        const currentUrl = new URL(window.location.href);
+        const newUrl = new URL(targetUrl);
+        if (newUrl.origin === currentUrl.origin && newUrl.pathname !== currentUrl.pathname) {
+          const dynamicRoutes = ['/bikes', '/products', '/product/', '/spare-parts', '/checkout', '/cart'];
+          if (dynamicRoutes.some(route => newUrl.pathname.startsWith(route))) {
+            if (!nprogressStarted) {
+              NProgress.start();
+              nprogressStarted = true;
             }
-        } catch (err) {
-           console.warn("Could not parse URL, ignoring NProgress.", err);
-            // URL পার্স করতে ব্যর্থ হলে কিছু করার দরকার নেই
+          }
         }
+      } catch (err) {
+        console.warn("Could not parse URL, ignoring NProgress.", err);
+      }
     };
-    
+
     const handlePopState = () => {
-        if (!nprogressStarted) {
-            NProgress.start();
-            nprogressStarted = true;
-        }
+      if (!nprogressStarted) {
+        NProgress.start();
+        nprogressStarted = true;
+      }
     };
-
-    document.querySelectorAll('a[href]').forEach(anchor => {
-        anchor.addEventListener('click', handleAnchorClick);
-    });
-
+    document.body.addEventListener('click', handleAnchorClick);
     window.addEventListener('popstate', handlePopState);
 
     return () => {
-      document.querySelectorAll('a[href]').forEach(anchor => {
-        anchor.removeEventListener('click', handleAnchorClick);
-      });
+      document.body.removeEventListener('click', handleAnchorClick);
       window.removeEventListener('popstate', handlePopState);
+      if (nprogressStarted) {
+          NProgress.done();
+          nprogressStarted = false;
+      }
     };
-  }, [pathname, searchParams]);
+  }, []);
 
   return null;
 }
