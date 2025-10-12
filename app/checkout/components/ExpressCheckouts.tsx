@@ -1,8 +1,6 @@
-//app/checkout/components/ExpressCheckouts.tsx
-
 'use client';
 
-import React, { useState, useEffect, } from 'react';
+import React, { useState, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, ExpressCheckoutElement, useStripe } from '@stripe/react-stripe-js';
 import styles from './PaymentMethods.module.css';
@@ -41,7 +39,6 @@ const CheckoutForm = ({ onOrderPlace, clientSecret }: { onOrderPlace: ExpressChe
     if (paymentIntent && paymentIntent.status === 'succeeded') {
       toast.success('Payment Successful!');
 
-      // ★★★ সমাধান: paymentIntent থেকে ঠিকানা সংগ্রহ করা হচ্ছে ★★★
       const stripeAddress = paymentIntent.shipping;
       const names = stripeAddress?.name?.split(' ') || [];
       const shippingDetails = {
@@ -51,10 +48,9 @@ const CheckoutForm = ({ onOrderPlace, clientSecret }: { onOrderPlace: ExpressChe
         city: stripeAddress?.address?.city || '',
         state: stripeAddress?.address?.state || '',
         postcode: stripeAddress?.address?.postal_code || '',
-        email: paymentIntent.receipt_email || '', // ইমেলও পাওয়া যায়
+        email: paymentIntent.receipt_email || '', 
       };
       
-      // ★★★ সমাধান: এখন ঠিকানাসহ onOrderPlace কল করা হচ্ছে ★★★
       await onOrderPlace({ 
         transaction_id: paymentIntent.id,
         shippingAddress: shippingDetails 
@@ -117,9 +113,20 @@ export default function ExpressCheckouts({ total, onOrderPlace }: ExpressCheckou
     return <div className={styles.expressCheckoutLoader}></div>;
   }
 
+  // 👇 START: পরিবর্তন এখানে করা হয়েছে
+  const options = {
+    clientSecret,
+    paymentMethods: {
+      googlePay: 'always',
+      applePay: 'always',
+    },
+  };
+  // 👆 END: পরিবর্তন শেষ
+
   return (
     <div className={styles.expressCheckoutContainer}>
-      <Elements key={remountKey} options={{ clientSecret }} stripe={stripePromise}>
+      {/* 👇 options অবজেক্টটি এখানে পাস করা হয়েছে */}
+      <Elements key={remountKey} options={options} stripe={stripePromise}>
         <CheckoutForm onOrderPlace={onOrderPlace} clientSecret={clientSecret} />
       </Elements>
       <div className={styles.orSeparator}>— OR —</div>

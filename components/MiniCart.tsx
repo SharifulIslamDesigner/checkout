@@ -79,13 +79,13 @@ export default function MiniCart({ isOpen, onClose }: MiniCartProps) {
               <Link href="/cart" className={`${styles.actionButton} ${styles.viewCart}`} onClick={onClose}>
                 View Cart
               </Link>
-              <Link 
+              <a 
                 href="/checkout"
                 className={`${styles.actionButton} ${styles.checkout}`}
                 onClick={onClose}
               >
                 Checkout
-              </Link>
+              </a>
             </div>
           </footer>
         )}

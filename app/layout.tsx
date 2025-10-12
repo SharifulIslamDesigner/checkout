@@ -92,13 +92,13 @@ export default function RootLayout({
         suppressHydrationWarning={true}
       >
         <ClientProviders>
+          
           <Header />
           <main>
             {children}
           </main>
           <Footer />
         </ClientProviders>
-        
         <DelayedScripts />
       </body>
     </html>

@@ -10,6 +10,7 @@ import StripePaymentGateway from './StripePaymentGateway';
 import PayPalMessage from './PayPalMessage';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 
+
 // --- TypeScript Interfaces ---
 interface PaymentGateway {
   id: string;
@@ -94,7 +95,7 @@ export default function PaymentMethods(props: PaymentMethodsProps) {
       onPlaceOrder();
     }
   };
-  const isGooglePaySelected = selectedPaymentMethod === 'ppcp-google-pay';
+  //const isGooglePaySelected = selectedPaymentMethod === 'ppcp-google-pay';
 
   const isPayPalSelected = selectedPaymentMethod.includes('ppcp-gateway');
   const filteredGateways = gateways.filter(gateway => gateway.id !== 'stripe_link');
@@ -126,17 +127,23 @@ export default function PaymentMethods(props: PaymentMethodsProps) {
         ))}
       </div>
       <div className={styles.finalActionArea}>
-        {isPayPalSelected || isGooglePaySelected ? (
-            <div className={styles.paypalContainer}>
-                <PayPalPaymentGateway 
-                    total={total} 
-                    isPlacingOrder={isPlacingOrder} 
-                    onPlaceOrder={onPlaceOrder} 
-                />
-            </div>
+        {isPayPalSelected ? (
+          // ★ যখন PayPal সিলেক্ট করা হবে, তখন PayPalPaymentGateway দেখানো হবে
+          <div className={styles.paypalContainer}>
+            <PayPalPaymentGateway
+              total={total}
+              isPlacingOrder={isPlacingOrder}
+              onPlaceOrder={onPlaceOrder}
+            />
+          </div>
         ) : (
+          // ★ অন্য কোনো পেমেন্ট পদ্ধতি সিলেক্ট করা থাকলে সাধারণ "Place Order" বাটন দেখানো হবে
           selectedPaymentMethod && (
-            <button onClick={handlePlaceOrderClick} disabled={isPlacingOrder || !isShippingSelected} className={styles.placeOrderButton}>
+            <button
+              onClick={handlePlaceOrderClick}
+              disabled={isPlacingOrder || !isShippingSelected}
+              className={styles.placeOrderButton}
+            >
               {isPlacingOrder ? 'Processing...' : `Place Order`}
             </button>
           )

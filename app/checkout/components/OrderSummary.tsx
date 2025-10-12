@@ -104,9 +104,11 @@ export default function OrderSummary({
           
         ))}
       </div>
-      <div className={`${styles.totalRow} ${styles.Subtotal}`}>
-        <p>Subtotal</p>
-        <span dangerouslySetInnerHTML={{ __html: subtotalDisplay }} />
+      <div className={styles.totalsSection}>
+        <div className={`${styles.totalRow} ${styles.Subtotal}`}>
+          <p>Subtotal</p>
+          <span dangerouslySetInnerHTML={{ __html: subtotalDisplay }} />
+        </div>
       </div>
       {/* --- Coupon Form (from CouponForm.tsx) --- */}
       <div className={styles.couponContainer}>
