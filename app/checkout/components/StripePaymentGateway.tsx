@@ -17,10 +17,23 @@ interface CustomerInfo {
   state?: string;
   postcode?: string;
 }
-
+interface ShippingFormData {
+  firstName: string;
+  lastName: string;
+  address1: string;
+  city: string;
+  state: string;
+  postcode: string;
+  email: string;
+  phone: string;
+}
 interface StripePaymentGatewayProps {
   selectedPaymentMethod: string;
-  onPlaceOrder: (paymentData?: { transaction_id?: string }) => Promise<void>;
+  onPlaceOrder: (paymentData?: { 
+    transaction_id?: string;
+    shippingAddress?: Partial<ShippingFormData>;
+    redirect_needed?: boolean;
+  }) => Promise<{ orderId: number, orderKey: string } | void | null>;
   customerInfo: CustomerInfo;
   total: number;
 }
@@ -51,7 +64,29 @@ const StripeForm = forwardRef<HTMLFormElement, StripePaymentGatewayProps & { cli
           }
       };
       
-      const returnUrl = `${window.location.origin}/order-success`;
+
+      const isRedirectMethod = selectedPaymentMethod === 'stripe_klarna' || selectedPaymentMethod === 'stripe_afterpay_clearpay';
+       let returnUrl = `${window.location.origin}/order-success`;
+
+      if (isRedirectMethod) {
+        try {
+         // ধাপ ১: প্রথমে একটি পেন্ডিং অর্ডার তৈরি করার জন্য onPlaceOrder কল করুন
+         const orderDetails = await onPlaceOrder({ redirect_needed: true });
+          if (!orderDetails?.orderId) {
+          toast.dismiss();
+          // onPlaceOrder নিজেই এরর দেখাবে
+           setIsProcessing(false);
+          return;
+        }
+        returnUrl = `${window.location.origin}/order-confirmation?order_id=${orderDetails.orderId}&key=${orderDetails.orderKey}&payment_method=stripe`;
+       } catch (e) {
+        console.error("Failed to prepare order:", e);
+          toast.dismiss();
+          toast.error("Could not prepare order for payment.");
+          setIsProcessing(false);
+          return;
+        }
+     }
 
       if (selectedPaymentMethod === 'stripe') {
         if (!clientSecret) {

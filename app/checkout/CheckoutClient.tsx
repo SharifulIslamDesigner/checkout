@@ -184,67 +184,46 @@ function CheckoutClientComponent({ paymentGateways }: { paymentGateways: Payment
   }, []);
 
   // ★ পরিবর্তিত ফাংশন: REST API-এর পরিবর্তে GraphQL মিউটেশন ব্যবহার করা হয়েছে
-  const handlePlaceOrder = async (paymentData?: { transaction_id?: string; shippingAddress?: Partial<ShippingFormData>; }) => {
-    if (!selectedShipping) { toast.error("Please select a shipping method."); return; }
+  const handlePlaceOrder = async (paymentData?: { 
+  transaction_id?: string; 
+  shippingAddress?: Partial<ShippingFormData>; 
+  redirect_needed?: boolean; // ★ নতুন প্রপার্টি: Redirect হবে কিনা তা জানানোর জন্য
+ }) => {
+  // --- প্রাথমিক ভ্যালিডেশন ---
+  const isExpressCheckout = !!paymentData?.shippingAddress;
+  if (!isExpressCheckout && !selectedShipping) {
+    toast.error("Please select a shipping method.");
+    return;
+  }
 
-    const isBillingAddressValid = customerInfoRef.current.firstName && customerInfoRef.current.email;
-    const isShippingAddressValid = !shipToDifferentAddress || (shippingInfoRef.current.firstName && shippingInfoRef.current.email);
+  const isBillingAddressValid = customerInfoRef.current.firstName && customerInfoRef.current.email;
+  const isShippingAddressValid = !shipToDifferentAddress || (shippingInfoRef.current.firstName && shippingInfoRef.current.email);
 
-    if (!paymentData?.shippingAddress && (!isBillingAddressValid || !isShippingAddressValid)) { 
-        toast.error("Please fill in all required billing and shipping details."); 
-        return; 
-    }
+  if (!paymentData?.shippingAddress && (!isBillingAddressValid || !isShippingAddressValid)) { 
+      toast.error("Please fill in all required billing and shipping details."); 
+      return; 
+  }
 
-    dispatch({ type: 'SET_LOADING', key: 'order', payload: true });
+  dispatch({ type: 'SET_LOADING', key: 'order', payload: true });
 
-    // --- Stripe পেমেন্টের লজিক অপরিবর্তিত ---
-    /*if (selectedPaymentMethod.includes('stripe') || selectedPaymentMethod.includes('klarna') || selectedPaymentMethod.includes('afterpay')) {
-        if (!stripe || !elements) {
-            toast.error("Stripe is not ready yet.");
-            dispatch({ type: 'SET_LOADING', key: 'order', payload: false });
-            return;
-        }
-        const { error: submitError } = await elements.submit();
-        if (submitError) {
-            toast.error(submitError.message || "Please check your details.");
-            dispatch({ type: 'SET_LOADING', key: 'order', payload: false });
-            return;
-        }
-        const { error } = await stripe.confirmPayment({
-            elements,
-            clientSecret: 'YOUR_CLIENT_SECRET', 
-            confirmParams: { return_url: `${window.location.origin}/order-success`, },
-        });
-
-        if (error) {
-            if (error.type === "card_error" || error.type === "validation_error") {
-                toast.error(error.message || "Please check your details.");
-            } else {
-                toast.error("An unexpected error occurred with payment.");
-            }
-            dispatch({ type: 'SET_LOADING', key: 'order', payload: false });
-        }
-        return; 
-    }*/
+  try {
+    // --- ঠিকানা নির্ধারণ ---
+    const billingDetails = paymentData?.shippingAddress && paymentData.shippingAddress.address1
+      ? {
+          firstName: paymentData.shippingAddress.firstName || '',
+          lastName: paymentData.shippingAddress.lastName || '',
+          address1: paymentData.shippingAddress.address1 || '',
+          city: paymentData.shippingAddress.city || '',
+          state: paymentData.shippingAddress.state || '',
+          postcode: paymentData.shippingAddress.postcode || '',
+          email: paymentData.shippingAddress.email || customerInfoRef.current.email,
+          phone: paymentData.shippingAddress.phone || customerInfoRef.current.phone,
+      }
+      : customerInfoRef.current;
     
-    // --- GraphQL ব্যবহার করে অর্ডার তৈরির নতুন লজিক ---
-    try {
-      const billingDetails = paymentData?.shippingAddress && paymentData.shippingAddress.address1
-        ? {
-            firstName: paymentData.shippingAddress.firstName || '',
-            lastName: paymentData.shippingAddress.lastName || '',
-            address1: paymentData.shippingAddress.address1 || '',
-            city: paymentData.shippingAddress.city || '',
-            state: paymentData.shippingAddress.state || '',
-            postcode: paymentData.shippingAddress.postcode || '',
-            email: paymentData.shippingAddress.email || customerInfoRef.current.email,
-            phone: paymentData.shippingAddress.phone || customerInfoRef.current.phone,
-        }
-        : customerInfoRef.current;
-      
-      // ★ নতুন সংযোজন: শিপিং ঠিকানা নির্ধারণ
       const shippingDetails = shipToDifferentAddress ? shippingInfoRef.current : billingDetails;
 
+      // --- মিউটেশন ইনপুট তৈরি ---
       const mutationInput = {
         clientMutationId: `checkout-${Date.now()}`,
         billing: billingDetails,
@@ -253,41 +232,68 @@ function CheckoutClientComponent({ paymentGateways }: { paymentGateways: Payment
         shippingMethod: selectedShipping,
         customerNote: orderNotes,
         transactionId: paymentData?.transaction_id || '',
+        // ★ মূল পরিবর্তন: পেমেন্ট সফল হলেই isPaid: true হবে
         isPaid: !!paymentData?.transaction_id,
       };
 
-       const { data } = await client.mutate<CheckoutMutationResult>({
-        mutation: CHECKOUT_MUTATION,
-        variables: { input: mutationInput },
-    });
+      // ★★★ মূল লজিক: Redirect এবং ডিরেক্ট পেমেন্টের জন্য আলাদা ব্যবস্থা ★★★
+    
+      // কেস ১: Klarna/Afterpay - যেখানে প্রথমে অর্ডার তৈরি করে তারপর Redirect করতে হবে
+      if (paymentData?.redirect_needed) {
+        // isPaid: false থাকবে কারণ পেমেন্ট এখনো হয়নি
+        mutationInput.isPaid = false; 
 
-      const checkoutData = data?.checkout;
-      const result = {
-        success: checkoutData?.result === 'success',
-        order: {
-          id: checkoutData?.order?.databaseId,
-          orderKey: checkoutData?.order?.orderKey,
-        },
-        message: checkoutData?.result !== 'success' ? 'Failed to place order.' : undefined
-      };
+        const { data } = await client.mutate<CheckoutMutationResult>({
+            mutation: CHECKOUT_MUTATION,
+            variables: { input: mutationInput },
+        });
 
-      if (result.success && result.order?.id) {
-        toast.dismiss();
-        toast.success('Order placed successfully!');
-        router.push(`/order-success?order_id=${result.order.id}&key=${result.order.orderKey}`);
-        if (typeof clearCart === 'function') await clearCart();
-      } else {
-        toast.dismiss();
-        toast.error(result.message || 'Failed to place order.');
-        dispatch({ type: 'SET_LOADING', key: 'order', payload: false });
+        const order = data?.checkout?.order;
+        if (data?.checkout?.result === 'success' && order?.databaseId && order.orderKey) {
+          // StripePaymentGateway-কে অর্ডার আইডি এবং কী রিটার্ন করুন, যাতে সে এটি return_url-এ ব্যবহার করতে পারে
+          return { orderId: order.databaseId, orderKey: order.orderKey };
+        } else {
+          toast.error("Failed to initialize order for payment.");
+          dispatch({ type: 'SET_LOADING', key: 'order', payload: false });
+          return null;
+        }
+      }
+    
+      // কেস ২: PayPal/Card/Express Checkout - যেখানে পেমেন্ট আগেই সফল হয়েছে
+      else {
+        const { data } = await client.mutate<CheckoutMutationResult>({
+          mutation: CHECKOUT_MUTATION,
+            variables: { input: mutationInput },
+        });
+      
+        const checkoutData = data?.checkout;
+        const result = {
+            success: checkoutData?.result === 'success',
+            order: {
+              id: checkoutData?.order?.databaseId,
+              orderKey: checkoutData?.order?.orderKey,
+            },
+            message: checkoutData?.result !== 'success' ? 'Failed to place order.' : undefined
+        };
+      
+        if (result.success && result.order?.id) {
+           toast.dismiss();
+            toast.success('Order placed successfully!');
+            // ★ পরিবর্তন: Redirect URL এখন অর্ডার তথ্য সহ তৈরি হবে
+            router.push(`/order-success?order_id=${result.order.id}&key=${result.order.orderKey}`);
+            if (typeof clearCart === 'function') await clearCart();
+        } else {
+            toast.dismiss();
+            toast.error(result.message || 'Failed to process order after payment.');
+            dispatch({ type: 'SET_LOADING', key: 'order', payload: false });
+        }
       }
     } catch (error) {
       toast.dismiss();
       toast.error(getErrorMessage(error));
       dispatch({ type: 'SET_LOADING', key: 'order', payload: false });
     }
-  };
-
+ };
   const total = cartData?.total ? parseFloat(cartData.total.replace(/[^0-9.]/g, '')) : 0;
   if (loading.cart && !cartData) { return ( <div className={styles.pageLoader}><h1 className={styles.loaderTitle}>Checkout</h1></div> ); }
 

@@ -8,9 +8,8 @@ import toast from 'react-hot-toast';
 interface PayPalGatewayProps {
   total: number;
   isPlacingOrder: boolean;
-  onPlaceOrder: (paymentData: { transaction_id: string }) => Promise<void>;
+  onPlaceOrder: (paymentData: { transaction_id: string }) => Promise<{ orderId: number; orderKey: string } | void | null>; // এখানে পরিবর্তন করুন
 }
-
 export default function PayPalPaymentGateway({ total, isPlacingOrder, onPlaceOrder }: PayPalGatewayProps) {
   return (
     

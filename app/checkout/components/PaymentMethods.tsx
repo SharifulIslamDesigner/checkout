@@ -27,11 +27,25 @@ interface CustomerInfo {
   state?: string;
   postcode?: string;
 }
+interface ShippingFormData {
+  firstName: string;
+  lastName: string;
+  address1: string;
+  city: string;
+  state: string;
+  postcode: string;
+  email: string;
+  phone: string;
+}
 interface PaymentMethodsProps {
   gateways: PaymentGateway[];
   selectedPaymentMethod: string;
   onPaymentMethodChange: (methodId: string) => void;
-  onPlaceOrder: (paymentData?: { transaction_id?: string; }) => Promise<void>;
+  onPlaceOrder: (paymentData?: { 
+    transaction_id?: string; 
+    shippingAddress?: Partial<ShippingFormData>; 
+    redirect_needed?: boolean; 
+  }) => Promise<{ orderId: number; orderKey: string } | void | null>;
   isPlacingOrder: boolean;
   isShippingSelected: boolean;
   total: number;
@@ -131,6 +145,7 @@ export default function PaymentMethods(props: PaymentMethodsProps) {
           // ★ যখন PayPal সিলেক্ট করা হবে, তখন PayPalPaymentGateway দেখানো হবে
           <div className={styles.paypalContainer}>
             <PayPalPaymentGateway
+            key={selectedPaymentMethod}
               total={total}
               isPlacingOrder={isPlacingOrder}
               onPlaceOrder={onPlaceOrder}

@@ -24,7 +24,7 @@ interface ExpressCheckoutsProps {
   onOrderPlace: (paymentData: { 
     transaction_id: string; 
     shippingAddress?: Partial<ShippingFormData>; 
-  }) => Promise<void>;
+  }) => Promise<{ orderId: number; orderKey: string } | void | null>; 
 }
 
 const CheckoutForm = ({ onOrderPlace, clientSecret }: { onOrderPlace: ExpressCheckoutsProps['onOrderPlace'], clientSecret: string }) => {
