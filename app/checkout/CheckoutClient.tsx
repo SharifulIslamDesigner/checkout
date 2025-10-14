@@ -183,103 +183,164 @@ function CheckoutClientComponent({ paymentGateways }: { paymentGateways: Payment
     dispatch({ type: 'SET_SHIPPING_INFO', payload: address });
   }, []);
 
-  // ★ পরিবর্তিত ফাংশন: REST API-এর পরিবর্তে GraphQL মিউটেশন ব্যবহার করা হয়েছে
-  const handlePlaceOrder = async (paymentData?: { 
-  transaction_id?: string; 
-  shippingAddress?: Partial<ShippingFormData>; 
-  redirect_needed?: boolean; // ★ নতুন প্রপার্টি: Redirect হবে কিনা তা জানানোর জন্য
- }) => {
-  // --- প্রাথমিক ভ্যালিডেশন ---
-  const isExpressCheckout = !!paymentData?.shippingAddress;
-  if (!isExpressCheckout && !selectedShipping) {
-    toast.error("Please select a shipping method.");
-    return;
-  }
-
-  const isBillingAddressValid = customerInfoRef.current.firstName && customerInfoRef.current.email;
-  const isShippingAddressValid = !shipToDifferentAddress || (shippingInfoRef.current.firstName && shippingInfoRef.current.email);
-
-  if (!paymentData?.shippingAddress && (!isBillingAddressValid || !isShippingAddressValid)) { 
-      toast.error("Please fill in all required billing and shipping details."); 
-      return; 
-  }
-
-  dispatch({ type: 'SET_LOADING', key: 'order', payload: true });
-
-  try {
-    // --- ঠিকানা নির্ধারণ ---
-    const billingDetails = paymentData?.shippingAddress && paymentData.shippingAddress.address1
-      ? {
-          firstName: paymentData.shippingAddress.firstName || '',
-          lastName: paymentData.shippingAddress.lastName || '',
-          address1: paymentData.shippingAddress.address1 || '',
-          city: paymentData.shippingAddress.city || '',
-          state: paymentData.shippingAddress.state || '',
-          postcode: paymentData.shippingAddress.postcode || '',
-          email: paymentData.shippingAddress.email || customerInfoRef.current.email,
-          phone: paymentData.shippingAddress.phone || customerInfoRef.current.phone,
-      }
-      : customerInfoRef.current;
+const handlePlaceOrder = async (paymentData?: { 
+    transaction_id?: string; 
+    shippingAddress?: Partial<ShippingFormData>; 
+    redirect_needed?: boolean;
+  }) => {
     
-      const shippingDetails = shipToDifferentAddress ? shippingInfoRef.current : billingDetails;
+    const isExpressCheckout = !!paymentData?.shippingAddress;
+    if (!isExpressCheckout && !selectedShipping) {
+      toast.error("Please select a shipping method.");
+      return;
+    }
+  
+    const isBillingAddressValid = customerInfoRef.current.firstName && customerInfoRef.current.email;
+    const isShippingAddressValid = !shipToDifferentAddress || (shippingInfoRef.current.firstName && shippingInfoRef.current.email);
+  
+    if (!paymentData?.shippingAddress && (!isBillingAddressValid || !isShippingAddressValid)) { 
+        toast.error("Please fill in all required billing and shipping details."); 
+        return; 
+    }
+  
+    dispatch({ type: 'SET_LOADING', key: 'order', payload: true });
 
-      // --- মিউটেশন ইনপুট তৈরি ---
-      const mutationInput = {
-        clientMutationId: `checkout-${Date.now()}`,
-        billing: billingDetails,
-        shipping: shippingDetails,
-        paymentMethod: selectedPaymentMethod,
-        shippingMethod: selectedShipping,
-        customerNote: orderNotes,
-        transactionId: paymentData?.transaction_id || '',
-        // ★ মূল পরিবর্তন: পেমেন্ট সফল হলেই isPaid: true হবে
-        isPaid: !!paymentData?.transaction_id,
-      };
+    const isRedirectMethodByStripeGateway = selectedPaymentMethod === 'stripe_klarna' || selectedPaymentMethod === 'stripe_afterpay_clearpay';
 
-      // ★★★ মূল লজিক: Redirect এবং ডিরেক্ট পেমেন্টের জন্য আলাদা ব্যবস্থা ★★★
+    // ★★★ কেস ১: Klarna/Afterpay (এবং অন্যান্য Redirect) - REST API ব্যবহার করে অর্ডার তৈরি ★★★
+    // (এখানে redirect_needed চেক করা হচ্ছে, যা StripePaymentGateway থেকে আসবে)
+    if (paymentData?.redirect_needed && isRedirectMethodByStripeGateway) {
+        // StripePaymentGateway এখন শুধুমাত্র একটি সিগন্যাল পাঠাবে, অর্ডার তৈরির মূল লজিক এখানেই থাকবে।
+        // যেহেতু এটি একটি redirect ফ্লো, onPlaceOrder একটি Promise রিটার্ন করবে যা StripePaymentGateway ব্যবহার করবে।
+        try {
+            // REST API-এর জন্য ডেটা প্রস্তুত করার আগে ভ্যালিডেশন
+            if (!cartData) {
+                throw new Error("Cart data is not available.");
+            }
+
+            const billingDetails = customerInfoRef.current;
+            const shippingDetails = shipToDifferentAddress ? shippingInfoRef.current : billingDetails;
+            const selectedRate = shippingRates.find(rate => rate.id === selectedShipping);
+            if (!selectedRate) { throw new Error("Selected shipping rate not found."); }
+
+            const getPaymentMethodTitle = (methodId: string): string => {
+              if (methodId === 'stripe_klarna') return 'Klarna';
+              if (methodId === 'stripe_afterpay_clearpay') return 'Afterpay';
+              return 'Redirect Payment';
+            };
+
+            const orderPayload = {
+              payment_method: selectedPaymentMethod,
+              payment_method_title: getPaymentMethodTitle(selectedPaymentMethod),
+              set_paid: false,
+              billing: {
+                first_name: billingDetails.firstName,
+                last_name: billingDetails.lastName,
+                address_1: billingDetails.address1,
+                city: billingDetails.city,
+                state: billingDetails.state,
+                postcode: billingDetails.postcode,
+                country: 'AU',
+                email: billingDetails.email,
+                phone: billingDetails.phone,
+              },
+              shipping: {
+                first_name: shippingDetails.firstName,
+                last_name: shippingDetails.lastName,
+                address_1: shippingDetails.address1,
+                city: shippingDetails.city,
+                state: shippingDetails.state,
+                postcode: shippingDetails.postcode,
+                country: 'AU',
+              },
+              line_items: cartItems.map(item => ({
+                product_id: item.databaseId,
+                quantity: item.quantity,
+              })),
+              shipping_lines: [{
+                  method_id: selectedRate.id,
+                  method_title: selectedRate.label,
+                  total: (parseFloat(selectedRate.cost) || 0).toString(),
+              }],
+              coupon_lines: cartData.appliedCoupons?.map(coupon => ({ code: coupon.code })) || [],
+              customer_note: orderNotes,
+            };
+
+            const response = await fetch('/api/create-order', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(orderPayload),
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(errorData.message || 'Failed to create order via REST API.');
+            }
+            
+            const newOrder = await response.json();
+            
+            // ★★★ StripePaymentGateway-কে অর্ডার আইডি এবং কী রিটার্ন করুন ★★★
+            if (newOrder.id && newOrder.order_key) {
+                return { orderId: newOrder.id, orderKey: newOrder.order_key };
+            } else {
+                throw new Error('Order created, but required details are missing.');
+            }
+
+        } catch (error) {
+            toast.dismiss();
+            toast.error(getErrorMessage(error));
+            dispatch({ type: 'SET_LOADING', key: 'order', payload: false });
+            return null; // ব্যর্থ হলে null রিটার্ন করুন
+        }
+    }
     
-      // কেস ১: Klarna/Afterpay - যেখানে প্রথমে অর্ডার তৈরি করে তারপর Redirect করতে হবে
-      if (paymentData?.redirect_needed) {
-        // isPaid: false থাকবে কারণ পেমেন্ট এখনো হয়নি
-        mutationInput.isPaid = false; 
-
+    // ★★★ কেস ২: Card/PayPal/GPay ইত্যাদি - বিদ্যমান GraphQL মিউটেশন ব্যবহার ★★★
+    else {
+      try {
+        const billingDetails = paymentData?.shippingAddress && paymentData.shippingAddress.address1
+          ? {
+              firstName: paymentData.shippingAddress.firstName || '',
+              lastName: paymentData.shippingAddress.lastName || '',
+              address1: paymentData.shippingAddress.address1 || '',
+              city: paymentData.shippingAddress.city || '',
+              state: paymentData.shippingAddress.state || '',
+              postcode: paymentData.shippingAddress.postcode || '',
+              email: paymentData.shippingAddress.email || customerInfoRef.current.email,
+              phone: paymentData.shippingAddress.phone || customerInfoRef.current.phone,
+          }
+          : customerInfoRef.current;
+        
+        const shippingDetails = shipToDifferentAddress ? shippingInfoRef.current : billingDetails;
+    
+        const mutationInput = {
+          clientMutationId: `checkout-${Date.now()}`,
+          billing: billingDetails,
+          shipping: shippingDetails,
+          paymentMethod: selectedPaymentMethod,
+          shippingMethod: selectedShipping,
+          customerNote: orderNotes,
+          transactionId: paymentData?.transaction_id || '',
+          isPaid: !!paymentData?.transaction_id,
+        };
+    
         const { data } = await client.mutate<CheckoutMutationResult>({
             mutation: CHECKOUT_MUTATION,
             variables: { input: mutationInput },
         });
-
-        const order = data?.checkout?.order;
-        if (data?.checkout?.result === 'success' && order?.databaseId && order.orderKey) {
-          // StripePaymentGateway-কে অর্ডার আইডি এবং কী রিটার্ন করুন, যাতে সে এটি return_url-এ ব্যবহার করতে পারে
-          return { orderId: order.databaseId, orderKey: order.orderKey };
-        } else {
-          toast.error("Failed to initialize order for payment.");
-          dispatch({ type: 'SET_LOADING', key: 'order', payload: false });
-          return null;
-        }
-      }
-    
-      // কেস ২: PayPal/Card/Express Checkout - যেখানে পেমেন্ট আগেই সফল হয়েছে
-      else {
-        const { data } = await client.mutate<CheckoutMutationResult>({
-          mutation: CHECKOUT_MUTATION,
-            variables: { input: mutationInput },
-        });
-      
+        
         const checkoutData = data?.checkout;
         const result = {
             success: checkoutData?.result === 'success',
             order: {
-              id: checkoutData?.order?.databaseId,
-              orderKey: checkoutData?.order?.orderKey,
+                id: checkoutData?.order?.databaseId,
+                orderKey: checkoutData?.order?.orderKey,
             },
             message: checkoutData?.result !== 'success' ? 'Failed to place order.' : undefined
         };
-      
+        
         if (result.success && result.order?.id) {
-           toast.dismiss();
+            toast.dismiss();
             toast.success('Order placed successfully!');
-            // ★ পরিবর্তন: Redirect URL এখন অর্ডার তথ্য সহ তৈরি হবে
             router.push(`/order-success?order_id=${result.order.id}&key=${result.order.orderKey}`);
             if (typeof clearCart === 'function') await clearCart();
         } else {
@@ -287,13 +348,13 @@ function CheckoutClientComponent({ paymentGateways }: { paymentGateways: Payment
             toast.error(result.message || 'Failed to process order after payment.');
             dispatch({ type: 'SET_LOADING', key: 'order', payload: false });
         }
+      } catch (error) {
+        toast.dismiss();
+        toast.error(getErrorMessage(error));
+        dispatch({ type: 'SET_LOADING', key: 'order', payload: false });
       }
-    } catch (error) {
-      toast.dismiss();
-      toast.error(getErrorMessage(error));
-      dispatch({ type: 'SET_LOADING', key: 'order', payload: false });
     }
- };
+  };
   const total = cartData?.total ? parseFloat(cartData.total.replace(/[^0-9.]/g, '')) : 0;
   if (loading.cart && !cartData) { return ( <div className={styles.pageLoader}><h1 className={styles.loaderTitle}>Checkout</h1></div> ); }
 

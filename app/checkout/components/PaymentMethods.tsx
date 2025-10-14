@@ -27,7 +27,7 @@ interface CustomerInfo {
   state?: string;
   postcode?: string;
 }
-interface ShippingFormData {
+export interface ShippingFormData {
   firstName: string;
   lastName: string;
   address1: string;
@@ -145,7 +145,6 @@ export default function PaymentMethods(props: PaymentMethodsProps) {
           // ★ যখন PayPal সিলেক্ট করা হবে, তখন PayPalPaymentGateway দেখানো হবে
           <div className={styles.paypalContainer}>
             <PayPalPaymentGateway
-            key={selectedPaymentMethod}
               total={total}
               isPlacingOrder={isPlacingOrder}
               onPlaceOrder={onPlaceOrder}

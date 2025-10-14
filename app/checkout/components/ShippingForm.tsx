@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react'; // ★ useMemo ইম্পোর্ট করা হয়েছে
+import { useState, useEffect,useCallback } from 'react'; 
 import AsyncSelect from 'react-select/async';
-import { debounce } from 'lodash';
+
 import styles from './ShippingForm.module.css';
 import type { CSSObject } from '@emotion/react'; // ★ টাইপ-নিরাপদ স্টাইলিং এর জন্য
 
@@ -47,17 +47,10 @@ export default function ShippingForm({ title, onAddressChange, defaultValues = {
   });
 
   // ★★★ পরিবর্তন: useCallback-এর পরিবর্তে useMemo ব্যবহার করে debounced ফাংশন তৈরি করা হয়েছে ★★★
-  const debouncedOnAddressChange = useMemo(
-    () => debounce((data: ShippingFormData) => onAddressChange(data), 400),
-    [onAddressChange]
-  );
-
+  
   useEffect(() => {
-    debouncedOnAddressChange(formData);
-    return () => {
-      debouncedOnAddressChange.cancel();
-    };
-  }, [formData, debouncedOnAddressChange]);
+   onAddressChange(formData); // সরাসরি কল করা হচ্ছে, কোনো debounce নেই
+  }, [formData, onAddressChange]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

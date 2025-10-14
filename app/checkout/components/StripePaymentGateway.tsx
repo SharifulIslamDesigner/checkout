@@ -31,7 +31,7 @@ interface StripePaymentGatewayProps {
   selectedPaymentMethod: string;
   onPlaceOrder: (paymentData?: { 
     transaction_id?: string;
-    shippingAddress?: Partial<ShippingFormData>;
+    shippingAddress?: Partial<ShippingFormData>; 
     redirect_needed?: boolean;
   }) => Promise<{ orderId: number, orderKey: string } | void | null>;
   customerInfo: CustomerInfo;
@@ -45,125 +45,130 @@ const StripeForm = forwardRef<HTMLFormElement, StripePaymentGatewayProps & { cli
     const [isProcessing, setIsProcessing] = useState(false);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      if (isProcessing || !stripe || !elements) return;
-      
-      setIsProcessing(true);
-      toast.loading('Processing payment...');
+  event.preventDefault();
+  if (isProcessing || !stripe || !elements) return;
+  
+  setIsProcessing(true);
+  toast.loading('Processing payment...');
 
-      const billingDetails = {
-          name: `${customerInfo.firstName || ''} ${customerInfo.lastName || ''}`,
-          email: customerInfo.email,
-          phone: customerInfo.phone,
-          address: {
-            line1: customerInfo.address1,
-            city: customerInfo.city,
-            state: customerInfo.state,
-            postal_code: customerInfo.postcode,
-            country: 'AU',
-          }
-      };
-      
-
-      const isRedirectMethod = selectedPaymentMethod === 'stripe_klarna' || selectedPaymentMethod === 'stripe_afterpay_clearpay';
-       let returnUrl = `${window.location.origin}/order-success`;
-
-      if (isRedirectMethod) {
-        try {
-         // ধাপ ১: প্রথমে একটি পেন্ডিং অর্ডার তৈরি করার জন্য onPlaceOrder কল করুন
-         const orderDetails = await onPlaceOrder({ redirect_needed: true });
-          if (!orderDetails?.orderId) {
-          toast.dismiss();
-          // onPlaceOrder নিজেই এরর দেখাবে
-           setIsProcessing(false);
-          return;
-        }
-        returnUrl = `${window.location.origin}/order-confirmation?order_id=${orderDetails.orderId}&key=${orderDetails.orderKey}&payment_method=stripe`;
-       } catch (e) {
-        console.error("Failed to prepare order:", e);
-          toast.dismiss();
-          toast.error("Could not prepare order for payment.");
-          setIsProcessing(false);
-          return;
-        }
-     }
-
-      if (selectedPaymentMethod === 'stripe') {
-        if (!clientSecret) {
-            toast.dismiss();
-            toast.error("Could not initialize card payment. Please try again.");
-            setIsProcessing(false);
-            return;
-        }
-
-        const { error: submitError } = await elements.submit();
-        if (submitError) {
-          toast.dismiss();
-          toast.error(submitError.message || "Please check your payment details.");
-          setIsProcessing(false);
-          return;
-        }
-
-        const { error, paymentIntent } = await stripe.confirmPayment({
-          elements,
-          clientSecret,
-          confirmParams: {
-            return_url: returnUrl,
-          },
-          redirect: 'if_required',
-        });
-        
-        toast.dismiss();
-        if (error) {
-          toast.error(error.message || "An unexpected error occurred.");
-        } else if (paymentIntent?.status === 'succeeded') {
-          toast.success('Payment confirmed!');
-          await onPlaceOrder({ transaction_id: paymentIntent.id });
-        }
-        setIsProcessing(false);
-        return;
+  const billingDetails = {
+      name: `${customerInfo.firstName || ''} ${customerInfo.lastName || ''}`,
+      email: customerInfo.email,
+      phone: customerInfo.phone,
+      address: {
+        line1: customerInfo.address1,
+        city: customerInfo.city,
+        state: customerInfo.state,
+        postal_code: customerInfo.postcode,
+        country: 'AU',
       }
-      
-      const paymentMethodType = selectedPaymentMethod.replace('stripe_', '');
-      const res = await fetch('/api/create-payment-intent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: Math.round(total * 100),
-          payment_method_types: [paymentMethodType],
-        }),
+  };
+  
+  // ★★★ পথ ১: কার্ড পেমেন্টের জন্য সম্পূর্ণ লজিক ★★★
+  if (selectedPaymentMethod === 'stripe') {
+    if (!clientSecret) {
+      toast.dismiss();
+      toast.error("Could not initialize card payment. Please try again.");
+      setIsProcessing(false);
+      return;
+    }
+
+    const { error: submitError } = await elements.submit();
+    if (submitError) {
+      toast.dismiss();
+      toast.error(submitError.message || "Please check your payment details.");
+      setIsProcessing(false);
+      return;
+    }
+
+    const { error, paymentIntent } = await stripe.confirmPayment({
+      elements,
+      clientSecret,
+      confirmParams: {
+        return_url: `${window.location.origin}/order-success`,
+      },
+      redirect: 'if_required',
+    });
+    
+    toast.dismiss();
+    if (error) {
+      toast.error(error.message || "An unexpected error occurred.");
+    } else if (paymentIntent?.status === 'succeeded') {
+      toast.success('Payment confirmed!');
+      // ★ কার্ড পেমেন্ট সফল হওয়ার পর অর্ডার তৈরি হচ্ছে
+      await onPlaceOrder({ transaction_id: paymentIntent.id });
+    }
+    setIsProcessing(false);
+    // এই ব্লকের কাজ শেষ, তাই ফাংশন থেকে বেরিয়ে যান
+    return; 
+  }
+
+  // ★★★ পথ ২: Klarna/Afterpay (রিডাইরেক্ট) এর জন্য সম্পূর্ণ লজিক ★★★
+  const isRedirectMethod = selectedPaymentMethod === 'stripe_klarna' || selectedPaymentMethod === 'stripe_afterpay_clearpay';
+
+  if (isRedirectMethod) {
+    // ধাপ ১: পেন্ডিং অর্ডার তৈরি করুন
+    const orderDetails = await onPlaceOrder({ redirect_needed: true });
+    
+    if (!orderDetails || !orderDetails.orderId || !orderDetails.orderKey) {
+      toast.dismiss();
+      toast.error("Could not create order. Please try again.");
+      setIsProcessing(false);
+      return;
+    }
+    
+    // ধাপ ২: Payment Intent তৈরি করুন
+    const paymentMethodType = selectedPaymentMethod.replace('stripe_', '');
+    const res = await fetch('/api/create-payment-intent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        amount: Math.round(total * 100),
+        payment_method_types: [paymentMethodType],
+        metadata: { order_id: orderDetails.orderId } // ঐচ্ছিক কিন্তু প্রস্তাবিত
+      }),
+    });
+
+    const { clientSecret: redirectClientSecret, error: piError } = await res.json();
+
+    if (piError) {
+      toast.dismiss();
+      toast.error(piError.message || "Could not create payment intent.");
+      setIsProcessing(false);
+      return;
+    }
+
+    // ধাপ ৩: ব্যবহারকারীকে রিডাইরেক্ট করুন
+    const returnUrl = `${window.location.origin}/order-confirmation?order_id=${orderDetails.orderId}&key=${orderDetails.orderKey}`;
+    let confirmationResult;
+
+    if (selectedPaymentMethod === 'stripe_klarna') {
+      confirmationResult = await stripe.confirmKlarnaPayment(redirectClientSecret, {
+        payment_method: { billing_details: billingDetails },
+        return_url: returnUrl,
       });
+    } else if (selectedPaymentMethod === 'stripe_afterpay_clearpay') {
+      confirmationResult = await stripe.confirmAfterpayClearpayPayment(redirectClientSecret, {
+        payment_method: { billing_details: billingDetails },
+        return_url: returnUrl,
+      });
+    }
 
-      const { clientSecret: redirectClientSecret, error: piError } = await res.json();
+    // যদি কোনো কারণে রিডাইরেক্ট না হয় এবং এরর আসে
+    if (confirmationResult?.error) {
+      toast.dismiss();
+      toast.error(confirmationResult.error.message || "An unexpected error occurred.");
+      setIsProcessing(false);
+    }
+    // সফলভাবে রিডাইরেক্ট হলে, ব্যবহারকারী অন্য পেইজে চলে যাবে, তাই isProcessing state রিসেট করার দরকার নেই।
+    return;
+  }
 
-      if (piError) {
-        toast.dismiss();
-        toast.error(piError.message || "Could not create payment intent.");
-        setIsProcessing(false);
-        return;
-      }
-
-      let confirmationResult;
-
-      if (selectedPaymentMethod === 'stripe_klarna') {
-        confirmationResult = await stripe.confirmKlarnaPayment(redirectClientSecret, {
-          payment_method: { billing_details: billingDetails },
-          return_url: returnUrl,
-        });
-      } else if (selectedPaymentMethod === 'stripe_afterpay_clearpay') {
-        confirmationResult = await stripe.confirmAfterpayClearpayPayment(redirectClientSecret, {
-          payment_method: { billing_details: billingDetails },
-          return_url: returnUrl,
-        });
-      }
-
-      if (confirmationResult?.error) {
-        toast.dismiss();
-        toast.error(confirmationResult.error.message || "An unexpected error occurred.");
-        setIsProcessing(false);
-      }
-    };
-
+  // যদি কোনো পেমেন্ট পদ্ধতি না মেলে
+  toast.dismiss();
+  toast.error("Selected payment method is not configured.");
+  setIsProcessing(false);
+};
     const renderPaymentUI = () => {
       if (selectedPaymentMethod === 'stripe') {
         return (
