@@ -97,7 +97,7 @@ const StripeForm = forwardRef<HTMLFormElement, StripePaymentGatewayProps & { cli
           if (piError) { throw new Error(piError.message || "Could not create payment intent."); }
 
           // ধাপ ৩: Redirect করুন
-          const returnUrl = `${window.location.origin}/order-confirmation?order_id=${orderDetails.orderId}&key=${orderDetails.orderKey}`;
+          const returnUrl = `${window.location.origin}/order-success?order_id=${orderDetails.orderId}&key=${orderDetails.orderKey}`;
           let confirmationResult;
 
           if (paymentMethodType === 'klarna') {
