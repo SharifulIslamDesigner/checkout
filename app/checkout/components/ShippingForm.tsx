@@ -38,18 +38,41 @@ const selectStyles = {
     '&:hover': { borderColor: '#aaa' },
   }),
 };
-
+const FORM_DATA_SESSION_KEY = 'checkoutShippingFormData';
 export default function ShippingForm({ title, onAddressChange, defaultValues = {} }: ShippingFormProps) {
-  const [formData, setFormData] = useState<ShippingFormData>({
-    firstName: '', lastName: '', address1: '', city: '',
-    state: '', postcode: '', email: '', phone: '',
-    ...defaultValues,
+  
+  // ★★★ পরিবর্তন: useState-কে একটি ফাংশন দিয়ে ইনিশিয়ালাইজ করা হচ্ছে ★★★
+  const [formData, setFormData] = useState<ShippingFormData>(() => {
+    try {
+      // ক্লায়েন্ট সাইডে sessionStorage থেকে ডেটা লোড করার চেষ্টা করা হচ্ছে
+      const savedData = sessionStorage.getItem(FORM_DATA_SESSION_KEY);
+      if (savedData) {
+        return JSON.parse(savedData);
+      }
+    } catch (error) {
+      // যদি কোনো কারণে sessionStorage কাজ না করে (যেমন প্রাইভেট মোড)
+      console.error("Could not load form data from session storage", error);
+    }
+    
+    // যদি কোনো সেভ করা ডেটা না থাকে, তাহলে ডিফল্ট ভ্যালু ব্যবহার করা হবে
+    return {
+      firstName: '', lastName: '', address1: '', city: '',
+      state: '', postcode: '', email: '', phone: '',
+      ...defaultValues,
+    };
   });
 
-  // ★★★ পরিবর্তন: useCallback-এর পরিবর্তে useMemo ব্যবহার করে debounced ফাংশন তৈরি করা হয়েছে ★★★
-  
   useEffect(() => {
-   onAddressChange(formData); // সরাসরি কল করা হচ্ছে, কোনো debounce নেই
+    // যখনই formData পরিবর্তিত হবে, onAddressChange কল করা হবে
+    onAddressChange(formData);
+    
+    // ★★★ পরিবর্তন: formData-কে sessionStorage-এ সেভ করা হচ্ছে ★★★
+    try {
+      sessionStorage.setItem(FORM_DATA_SESSION_KEY, JSON.stringify(formData));
+    } catch (error) {
+      console.error("Could not save form data to session storage", error);
+    }
+
   }, [formData, onAddressChange]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

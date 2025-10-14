@@ -35,7 +35,7 @@ async function getPaymentGateways(): Promise<PaymentGateway[]> {
       },
       // revalidate: 0 মানে হলো এই ডেটা ক্যাশ করা হবে না, প্রতিবার নতুন করে আনা হবে।
       // চেকআউটের জন্য এটিই সঠিক পদ্ধতি।
-      next: { revalidate: 0 } 
+      next: { revalidate: 900 } 
     });
 
     if (!response.ok) {

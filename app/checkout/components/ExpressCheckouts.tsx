@@ -91,6 +91,7 @@ export default function ExpressCheckouts({ total, onOrderPlace }: ExpressCheckou
           }
         } catch (error) {
           console.error("Failed to create Express Payment Intent:", error);
+          toast.error("Could not initialize Express Checkout.");
         }
       } else {
         try {
