@@ -1,3 +1,5 @@
+//app/order-success/Comfirmation.tsx
+
 'use client'; // এই ফাইলটিকে একটি ক্লায়েন্ট কম্পোনেন্ট হিসেবে চিহ্নিত করা হলো
 
 import { useSearchParams } from 'next/navigation';

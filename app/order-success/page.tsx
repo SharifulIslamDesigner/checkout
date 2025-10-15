@@ -1,3 +1,4 @@
+//app/order-success/Page.tsx
 import { Suspense } from 'react';
 import Confirmation from './Confirmation'; // নতুন ক্লায়েন্ট কম্পোনেন্টটি ইমপোর্ট করুন
 import styles from './OrderSuccessPage.module.css'; // লোডারের জন্য স্টাইল

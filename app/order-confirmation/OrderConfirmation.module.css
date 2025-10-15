@@ -1,0 +1,40 @@
+/* app/order-confirmation/OrderConfirmation.module.css */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    text-align: center;
+    padding: 20px;
+}
+
+.loader {
+    border: 8px solid #f3f3f3; /* Light grey */
+    border-top: 8px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1.5s linear infinite;
+    margin-bottom: 25px;
+}
+
+/* স্পিন অ্যানিমেশন */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.title {
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: 500;
+}
+
+.error {
+    font-size: 1.1rem;
+    color: #e74c3c; /* Red */
+    margin-top: 20px;
+    max-width: 500px;
+}
