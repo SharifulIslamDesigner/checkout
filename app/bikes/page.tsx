@@ -92,7 +92,7 @@ async function getBikeProducts(
         }
       `,
       variables: { first, after, last, before },
-      context: { fetchOptions: { next: { revalidate: 50000 } } },
+      context: { fetchOptions: { next: { revalidate: 60 } } },
     });
     if (!data || !data.products) {
         console.error("No spare parts data returned from GraphQL query.");

@@ -14,15 +14,23 @@ const nextConfig = {
 
   // Next.js-এর ইমেজ অপ্টিমাইজেশনের জন্য অনুমোদিত ডোমেইনগুলো
   images: {
+    // remotePatterns ব্যবহার করাই সেরা অভ্যাস
     remotePatterns: [
+      // gobikes.au (www ছাড়া এবং www সহ উভয়ই যোগ করা ভালো)
       {
         protocol: 'https',
-        hostname: 'devshariful.com',
+        hostname: 'gobikes.au',
         pathname: '/wp-content/uploads/**',
       },
       {
         protocol: 'https',
-        hostname: 'gobike.au',
+        hostname: 'www.gobikes.au', // ★ www সহ যোগ করা হলো
+        pathname: '/wp-content/uploads/**',
+      },
+      // আপনার অন্যান্য ডোমেইনগুলো
+      {
+        protocol: 'https',
+        hostname: 'devshariful.com',
         pathname: '/wp-content/uploads/**',
       },
       {
@@ -32,47 +40,18 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'gobikes.au',
-        pathname: '/wp-content/uploads/**',
-      },
-      {
-        protocol: 'https',
         hostname: 'i.ytimg.com',
-        pathname: '/**', // <-- समाधान: pathname যোগ করা হয়েছে
+        pathname: '/**',
       },
-      {
-        protocol: 'https',
-        hostname: 'www.paypalobjects.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'x.klarnacdn.net',
-      },
-      {
-        protocol: 'https',
-        hostname: 'static.afterpay.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'checkout.stripe.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'upload.wikimedia.org',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.americanexpress.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'js.stripe.com', // Mastercard-এর জন্য
-      },
+      { protocol: 'https', hostname: 'www.paypalobjects.com' },
+      { protocol: 'https', hostname: 'x.klarnacdn.net' },
+      { protocol: 'https', hostname: 'static.afterpay.com' },
+      { protocol: 'https', hostname: 'checkout.stripe.com' },
+      { protocol: 'https', hostname: 'upload.wikimedia.org' },
+      { protocol: 'https', hostname: 'www.americanexpress.com' },
+      { protocol: 'https', hostname: 'js.stripe.com' },
     ],
   },
-  
-  // দ্রষ্টব্য: Partytown ("worker" strategy)-এর জন্য এখানে আর কোনো কনফিগারেশনের প্রয়োজন নেই।
 };
 
-// --- সমাধান: ES Module সিনট্যাক্স ব্যবহার করা হচ্ছে ---
 export default nextConfig;
