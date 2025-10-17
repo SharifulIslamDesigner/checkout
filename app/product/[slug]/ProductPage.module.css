@@ -1,5 +1,5 @@
 /* app/product/[slug]/ProductPage.module.css */
-.container { max-width: 1700px; margin:.5rem auto auto auto; padding: 0 .7rem 3rem .7rem; font-family: sans-serif; }
+.container { max-width: 1300px; margin:.5rem auto auto auto; padding: 0 .7rem 3rem .7rem; font-family: sans-serif; }
 
 /* --- মূল লেআউট --- */
 .productLayout { display: grid; grid-template-columns: 520px 1fr; gap: 3rem; align-items: flex-start;   }
@@ -102,13 +102,8 @@
   font-weight: bold;
   padding: 0 1rem;
 }
-.trustBadges {
-  
-  margin-top: 1rem;
-  font-size: 0.9rem;
-  color: #4a5568;
-}
-.trustfeaturesgrid{display:grid;gap:5px;padding:0;grid-template-columns:repeat(4,1fr)}.trustfeatureitem{text-align:center;font-size:15px;font-weight:700;color:#333}
+
+.trustfeaturesgrid{display:grid;gap:5px;padding-top:1rem;grid-template-columns:repeat(4,1fr)}.trustfeatureitem{text-align:center;font-size:15px;font-weight:700;color:#333}
 
 @media (max-width:991px){.trustfeaturesgrid{grid-template-columns:repeat(2,1fr)}.trustfeatureitem{text-align:left}}
 
