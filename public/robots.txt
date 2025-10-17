@@ -4,7 +4,11 @@
 
 # Allow all friendly search engine crawlers to access the entire site
 User-agent: *
-Disallow: /
+Allow: /
 Disallow: /cart
 Disallow: /checkout
 Disallow: /account
+
+
+# Provide the location of the sitemap to all crawlers
+Sitemap: https://sharifulbuilds.com/sitemap.xml
